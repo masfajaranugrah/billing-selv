@@ -14,65 +14,57 @@
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     transition: all 0.3s;
   }
-  .form-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-  }
+  .form-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
   .card-header-custom {
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
+    background: #18181b;
     border-radius: 12px 12px 0 0;
     padding: 1.25rem 1.5rem;
     border: none;
   }
   .card-title-custom {
-    color: white;
+    color: #fafafa;
     font-weight: 600;
     font-size: 1.125rem;
     margin: 0;
     display: flex;
     align-items: center;
   }
-  .card-title-custom i {
-    margin-right: 0.75rem;
-    font-size: 1.5rem;
-  }
+  .card-title-custom i { margin-right: 0.75rem; font-size: 1.5rem; color: #fafafa; }
   .form-label {
     font-weight: 600;
-    color: #5a5f7d;
+    color: #18181b;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
     display: flex;
     align-items: center;
   }
-  .form-label i {
-    margin-right: 0.5rem;
-    color: #696cff;
-    font-size: 1.1rem;
-  }
+  .form-label i { margin-right: 0.5rem; color: #18181b; font-size: 1.1rem; }
   .form-control, .form-select {
     border-radius: 8px;
-    border: 1.5px solid #e8e8e8;
+    border: 1.5px solid #e4e4e7;
     padding: 0.75rem 1rem;
     transition: all 0.3s;
     font-size: 0.9375rem;
   }
   .form-control:focus, .form-select:focus {
-    border-color: #696cff;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15);
+    border-color: #18181b;
+    box-shadow: 0 0 0 0.2rem rgba(24,24,27,0.1);
   }
-  .form-control::placeholder {
-    color: #a8afc7;
-    font-size: 0.875rem;
-  }
-  .btn-save {
+  .form-control::placeholder { color: #a1a1aa; font-size: 0.875rem; }
+  .btn-save, .btn-primary {
     padding: 0.625rem 2rem;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(105, 108, 255, 0.3);
+    background: #18181b !important;
+    color: #fafafa !important;
+    border: 1px solid #18181b !important;
+    box-shadow: 0 4px 12px rgba(24,24,27,0.2);
   }
-  .btn-save:hover {
+  .btn-save:hover, .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(105, 108, 255, 0.4);
+    background: #27272a !important;
+    box-shadow: 0 6px 20px rgba(24,24,27,0.3);
   }
   .btn-cancel {
     padding: 0.625rem 2rem;
@@ -80,35 +72,20 @@
     font-weight: 600;
     transition: all 0.3s;
   }
-  .btn-cancel:hover {
-    transform: translateY(-2px);
-  }
+  .btn-cancel:hover { transform: translateY(-2px); }
   .page-header {
-    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    background: #f4f4f5;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid #e8e8e8;
+    border: 1px solid #e4e4e7;
   }
-  .page-header h4 {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-  .page-header p {
-    color: #6c757d;
-    margin: 0;
-    font-size: 0.875rem;
-  }
-  .form-text-muted {
-    color: #a8afc7;
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
-    display: block;
-  }
+  .page-header h4 { color: #18181b; font-weight: 700; margin-bottom: 0.25rem; }
+  .page-header p { color: #71717a; margin: 0; font-size: 0.875rem; }
+  .form-text-muted { color: #a1a1aa; font-size: 0.8125rem; margin-top: 0.25rem; display: block; }
   .section-divider {
     height: 2px;
-    background: linear-gradient(90deg, #696cff 0%, transparent 100%);
+    background: linear-gradient(90deg, #18181b 0%, transparent 100%);
     margin: 1.5rem 0;
   }
 </style>

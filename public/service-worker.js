@@ -13,9 +13,9 @@ var filesToCache = [
   '/images/icons/icon-512x512.png'
 ];
 
-// Cache on install
+// Cache on install - skipWaiting untuk langsung aktif
 self.addEventListener('install', event => {
-  this.skipWaiting();
+  self.skipWaiting();
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll(filesToCache);
@@ -23,32 +23,63 @@ self.addEventListener('install', event => {
   );
 });
 
-// Clear cache on activate
+// Clear cache on activate - claim clients untuk auto update
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames
-          .filter(cacheName => cacheName.startsWith('pwa-'))
-          .filter(cacheName => cacheName !== staticCacheName)
-          .map(cacheName => caches.delete(cacheName))
-      );
-    })
+    Promise.all([
+      // Hapus cache lama
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames
+            .filter(cacheName => cacheName.startsWith('pwa-'))
+            .filter(cacheName => cacheName !== staticCacheName)
+            .map(cacheName => caches.delete(cacheName))
+        );
+      }),
+      // Ambil kontrol semua client tanpa perlu refresh
+      self.clients.claim()
+    ])
   );
 });
 
-// Serve from Cache
+// Serve from Cache - Network First untuk HTML, Cache First untuk assets
 self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+
+  // Network first untuk HTML pages (agar selalu dapat update terbaru)
+  if (event.request.mode === 'navigate' || event.request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          return response;
+        })
+        .catch(() => {
+          return caches.match('/offline');
+        })
+    );
+    return;
+  }
+
+  // Cache first untuk static assets
   event.respondWith(
-    caches
-      .match(event.request)
+    caches.match(event.request)
       .then(response => {
         return response || fetch(event.request);
       })
       .catch(() => {
-        return caches.match('offline');
+        return caches.match('/offline');
       })
   );
+});
+
+// Listen for message to force update
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('push', event => {

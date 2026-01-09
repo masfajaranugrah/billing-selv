@@ -564,7 +564,7 @@
                 @csrf
                 <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;">
                 <div class="input-wrapper">
-                    <button type="button" class="emoji-button">😊</button>
+                    <button type="button" class="emoji-button">??</button>
                     <input type="text" class="chat-input" id="messageInput" placeholder="Tulis pesan"
                         autocomplete="off">
                     <button type="button" class="attach-button" id="attachButton" title="Kirim foto/video">

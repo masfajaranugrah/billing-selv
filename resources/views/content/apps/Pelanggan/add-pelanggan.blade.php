@@ -8,208 +8,314 @@
     'resources/assets/vendor/libs/flatpickr/flatpickr.scss'
 ])
 <style>
-  .form-card {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    transition: all 0.3s;
-  }
-  .form-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-  }
-  .card-header-custom {
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-    border-radius: 12px 12px 0 0;
-    padding: 1.25rem 1.5rem;
-    border: none;
-  }
-  .card-title-custom {
-    color: white;
-    font-weight: 600;
-    font-size: 1.125rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-  .card-title-custom i {
-    margin-right: 0.75rem;
-    font-size: 1.5rem;
-  }
-  .form-label {
-    font-weight: 600;
-    color: #5a5f7d;
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-  }
-  .form-label i {
-    margin-right: 0.5rem;
-    color: #696cff;
-    font-size: 1.1rem;
-  }
-  .form-control, .form-select {
-    border-radius: 8px;
-    border: 1.5px solid #e8e8e8;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s;
-    font-size: 0.9375rem;
-  }
-  .form-control:focus, .form-select:focus {
-    border-color: #696cff;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15);
-  }
-  .form-control::placeholder {
-    color: #a8afc7;
-    font-size: 0.875rem;
-  }
-  .btn-save {
-    padding: 0.625rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(105, 108, 255, 0.3);
-  }
-  .btn-save:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(105, 108, 255, 0.4);
-  }
-  .btn-cancel {
-    padding: 0.625rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
-  }
-  .btn-cancel:hover {
-    transform: translateY(-2px);
-  }
-  .page-header {
-    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #e8e8e8;
-  }
-  .page-header h4 {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-  .page-header p {
-    color: #6c757d;
-    margin: 0;
-    font-size: 0.875rem;
-  }
-  .preview-image {
-    max-width: 300px;
-    border-radius: 12px;
-    border: 2px solid #e8e8e8;
-    margin-top: 1rem;
-  }
-  .section-header {
-    color: #696cff;
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #e8e8e8;
-    display: flex;
-    align-items: center;
-  }
-  .section-header i {
-    margin-right: 0.75rem;
-    font-size: 1.25rem;
-  }
-  .form-text-muted {
-    color: #a8afc7;
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
-    display: block;
-  }
-  .display-field {
-    background: #f8f9fa;
-    border: 1.5px solid #e8e8e8;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    color: #5a5f7d;
-  }
+/* ========================================= */
+/* SHADCN UI STYLE - BLACK & WHITE */
+/* ========================================= */
+:root {
+  --primary-color: #18181b;
+  --gray-bg: #fafafa;
+  --gray-border: #e4e4e7;
+  --text-muted: #71717a;
+}
 
-  /* Select2 Custom Styling */
-  .select2-container--default .select2-selection--single {
-    border-radius: 8px;
-    border: 1.5px solid #e8e8e8;
-    height: auto;
-    padding: 0.75rem 1rem;
-    transition: all 0.3s;
-  }
+.form-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s;
+  background: white;
+}
 
-  .select2-container--default .select2-selection--single:focus,
-  .select2-container--default.select2-container--open .select2-selection--single {
-    border-color: #696cff;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15);
-  }
+.form-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
 
-  .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #5a5f7d;
-    line-height: 1.5;
-    padding: 0;
-    font-size: 0.9375rem;
-  }
+.card-header-custom {
+  background: #18181b !important;
+  border-radius: 12px 12px 0 0;
+  padding: 1.5rem 2rem;
+  border: none;
+}
 
-  .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #a8afc7;
-    font-size: 0.875rem;
-  }
+.card-title-custom {
+  color: #fafafa;
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
 
-  .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 100%;
-    right: 10px;
-  }
+.card-title-custom i {
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+  color: #fafafa;
+}
 
-  .select2-dropdown {
-    border: 1.5px solid #e8e8e8;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
+.form-label {
+  font-weight: 600;
+  color: #18181b;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
 
-  .select2-container--default .select2-search--dropdown .select2-search__field {
-    border: 1.5px solid #e8e8e8;
-    border-radius: 6px;
-    padding: 0.625rem;
-    font-size: 0.875rem;
-  }
+.form-label i {
+  margin-right: 0.5rem;
+  color: #18181b;
+  font-size: 1.1rem;
+}
 
-  .select2-container--default .select2-search--dropdown .select2-search__field:focus {
-    border-color: #696cff;
-    outline: none;
-    box-shadow: 0 0 0 0.15rem rgba(105, 108, 255, 0.15);
-  }
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1.5px solid #e4e4e7;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s;
+  font-size: 0.9375rem;
+  color: #18181b;
+}
 
-  .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #696cff;
-  }
+.form-control:focus, .form-select:focus {
+  border-color: #18181b;
+  box-shadow: 0 0 0 0.2rem rgba(24, 24, 27, 0.1);
+}
 
-  .select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: #f0f0ff;
-    color: #696cff;
-  }
+.form-control::placeholder {
+  color: #a1a1aa;
+  font-size: 0.875rem;
+}
 
-  .select2-results__option {
-    padding: 0.625rem 1rem;
-    font-size: 0.9375rem;
-  }
+/* Buttons */
+.btn-save {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  padding: 0.625rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(24, 24, 27, 0.25);
+}
 
-  /* Select2 Clear Button */
-  .select2-container--default .select2-selection--single .select2-selection__clear {
-    color: #a8afc7;
-    font-size: 1.2rem;
-    margin-right: 10px;
-  }
+.btn-save:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 24, 27, 0.35);
+}
 
-  .select2-container--default .select2-selection--single .select2-selection__clear:hover {
-    color: #696cff;
-  }
+.btn-cancel {
+  background: transparent !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+  padding: 0.625rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border-color: #18181b !important;
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn-primary:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+}
+
+.page-header {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.page-header h4 {
+  color: #18181b;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.page-header h4 i {
+  color: #18181b;
+}
+
+.page-header p {
+  color: #71717a;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.preview-image {
+  max-width: 300px;
+  border-radius: 12px;
+  border: 2px solid #e4e4e7;
+  margin-top: 1rem;
+}
+
+.section-header {
+  color: #18181b;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #18181b;
+  display: flex;
+  align-items: center;
+}
+
+.section-header i {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  color: #18181b;
+}
+
+.form-text-muted {
+  color: #71717a;
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.display-field {
+  background: #fafafa;
+  border: 1.5px solid #e4e4e7;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #18181b;
+}
+
+/* Select2 Custom Styling - Black Theme */
+.select2-container--default .select2-selection--single {
+  border-radius: 8px !important;
+  border: 1.5px solid #e4e4e7 !important;
+  height: auto !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s !important;
+  background: #fff !important;
+}
+
+.select2-container--default .select2-selection--single:hover {
+  border-color: #18181b !important;
+}
+
+.select2-container--default .select2-selection--single:focus,
+.select2-container--default.select2-container--open .select2-selection--single {
+  border-color: #18181b !important;
+  box-shadow: 0 0 0 0.2rem rgba(24, 24, 27, 0.1) !important;
+  background: #fff !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #18181b !important;
+  line-height: 1.5 !important;
+  padding: 0 !important;
+  font-size: 0.9375rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+  color: #a1a1aa !important;
+  font-size: 0.875rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100% !important;
+  right: 10px !important;
+  color: #18181b !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #18181b transparent transparent transparent !important;
+}
+
+.select2-dropdown {
+  border: 1.5px solid #e4e4e7 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+  background: #fff !important;
+  color: #18181b !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+  border: 1.5px solid #e4e4e7 !important;
+  border-radius: 6px !important;
+  padding: 0.625rem !important;
+  font-size: 0.875rem !important;
+  color: #18181b !important;
+  background: #fff !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+  border-color: #18181b !important;
+  outline: none !important;
+  box-shadow: 0 0 0 0.15rem rgba(24, 24, 27, 0.1) !important;
+  background: #fff !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected],
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true],
+.select2-container--default .select2-results__option--selected {
+  background-color: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+.select2-results__option {
+  padding: 0.625rem 1rem !important;
+  font-size: 0.9375rem !important;
+  color: #18181b !important;
+  background: #fff !important;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+  background: #fff !important;
+}
+
+/* Select2 Clear Button */
+.select2-container--default .select2-selection--single .select2-selection__clear {
+  color: #71717a;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear:hover {
+  color: #18181b;
+}
+
+/* Alert Styling */
+.alert-danger {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #dc2626 !important;
+  border-radius: 8px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-card {
+  animation: fadeIn 0.3s ease-out;
+}
 </style>
 @endsection
 
@@ -270,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('#paket_id').on('change', function() {
         const selectedValue = $(this).val();
         const selected = paketData.find(p => p.id == selectedValue);
-        
+
         if (selected) {
             hargaDisplay.textContent = new Intl.NumberFormat('id-ID', {
                 style: 'currency',
@@ -363,11 +469,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="nama_lengkap" class="form-label">
                             <i class="ri-user-3-line"></i>Nama Lengkap
                         </label>
-                        <input 
-                            type="text" 
-                            class="form-control @error('nama_lengkap') is-invalid @enderror" 
-                            id="nama_lengkap" 
-                            name="nama_lengkap" 
+                        <input
+                            type="text"
+                            class="form-control @error('nama_lengkap') is-invalid @enderror"
+                            id="nama_lengkap"
+                            name="nama_lengkap"
                             placeholder="Masukkan nama lengkap pelanggan"
                             value="{{ old('nama_lengkap') }}"
                             required>
@@ -382,11 +488,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="no_whatsapp" class="form-label">
                                 <i class="ri-whatsapp-line"></i>Nomor WhatsApp
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('no_whatsapp') is-invalid @enderror" 
-                                id="no_whatsapp" 
-                                name="no_whatsapp" 
+                            <input
+                                type="text"
+                                class="form-control @error('no_whatsapp') is-invalid @enderror"
+                                id="no_whatsapp"
+                                name="no_whatsapp"
                                 placeholder="Contoh: 08xxxxxxxxxx"
                                 value="{{ old('no_whatsapp') }}">
                             @error('no_whatsapp')
@@ -397,11 +503,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="no_telp" class="form-label">
                                 <i class="ri-phone-line"></i>Nomor Telepon
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('no_telp') is-invalid @enderror" 
-                                id="no_telp" 
-                                name="no_telp" 
+                            <input
+                                type="text"
+                                class="form-control @error('no_telp') is-invalid @enderror"
+                                id="no_telp"
+                                name="no_telp"
                                 placeholder="Contoh: 08xxxxxxxxxx"
                                 value="{{ old('no_telp') }}">
                             @error('no_telp')
@@ -421,11 +527,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="alamat_jalan" class="form-label">
                             <i class="ri-road-map-line"></i>Alamat Jalan
                         </label>
-                        <input 
-                            type="text" 
-                            class="form-control @error('alamat_jalan') is-invalid @enderror" 
-                            id="alamat_jalan" 
-                            name="alamat_jalan" 
+                        <input
+                            type="text"
+                            class="form-control @error('alamat_jalan') is-invalid @enderror"
+                            id="alamat_jalan"
+                            name="alamat_jalan"
                             placeholder="Contoh: Jl. Merdeka No. 123"
                             value="{{ old('alamat_jalan') }}">
                         @error('alamat_jalan')
@@ -439,11 +545,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="rt" class="form-label">
                                 <i class="ri-community-line"></i>RT
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('rt') is-invalid @enderror" 
-                                id="rt" 
-                                name="rt" 
+                            <input
+                                type="text"
+                                class="form-control @error('rt') is-invalid @enderror"
+                                id="rt"
+                                name="rt"
                                 placeholder="001"
                                 value="{{ old('rt') }}">
                             @error('rt')
@@ -454,11 +560,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="rw" class="form-label">
                                 <i class="ri-community-line"></i>RW
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('rw') is-invalid @enderror" 
-                                id="rw" 
-                                name="rw" 
+                            <input
+                                type="text"
+                                class="form-control @error('rw') is-invalid @enderror"
+                                id="rw"
+                                name="rw"
                                 placeholder="001"
                                 value="{{ old('rw') }}">
                             @error('rw')
@@ -469,11 +575,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="kode_pos" class="form-label">
                                 <i class="ri-mail-line"></i>Kode Pos
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('kode_pos') is-invalid @enderror" 
-                                id="kode_pos" 
-                                name="kode_pos" 
+                            <input
+                                type="text"
+                                class="form-control @error('kode_pos') is-invalid @enderror"
+                                id="kode_pos"
+                                name="kode_pos"
                                 placeholder="12345"
                                 value="{{ old('kode_pos') }}">
                             @error('kode_pos')
@@ -488,11 +594,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="desa" class="form-label">
                                 <i class="ri-home-3-line"></i>Desa / Kelurahan
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('desa') is-invalid @enderror" 
-                                id="desa" 
-                                name="desa" 
+                            <input
+                                type="text"
+                                class="form-control @error('desa') is-invalid @enderror"
+                                id="desa"
+                                name="desa"
                                 placeholder="Nama desa atau kelurahan"
                                 value="{{ old('desa') }}">
                             @error('desa')
@@ -503,11 +609,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="kecamatan" class="form-label">
                                 <i class="ri-building-line"></i>Kecamatan
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('kecamatan') is-invalid @enderror" 
-                                id="kecamatan" 
-                                name="kecamatan" 
+                            <input
+                                type="text"
+                                class="form-control @error('kecamatan') is-invalid @enderror"
+                                id="kecamatan"
+                                name="kecamatan"
                                 placeholder="Nama kecamatan"
                                 value="{{ old('kecamatan') }}">
                             @error('kecamatan')
@@ -522,11 +628,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="kabupaten" class="form-label">
                                 <i class="ri-map-2-line"></i>Kabupaten / Kota
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('kabupaten') is-invalid @enderror" 
-                                id="kabupaten" 
-                                name="kabupaten" 
+                            <input
+                                type="text"
+                                class="form-control @error('kabupaten') is-invalid @enderror"
+                                id="kabupaten"
+                                name="kabupaten"
                                 placeholder="Nama kabupaten atau kota"
                                 value="{{ old('kabupaten') }}">
                             @error('kabupaten')
@@ -537,11 +643,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="provinsi" class="form-label">
                                 <i class="ri-global-line"></i>Provinsi
                             </label>
-                            <input 
-                                type="text" 
-                                class="form-control @error('provinsi') is-invalid @enderror" 
-                                id="provinsi" 
-                                name="provinsi" 
+                            <input
+                                type="text"
+                                class="form-control @error('provinsi') is-invalid @enderror"
+                                id="provinsi"
+                                name="provinsi"
                                 placeholder="Nama provinsi"
                                 value="{{ old('provinsi') }}">
                             @error('provinsi')
@@ -555,10 +661,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="deskripsi" class="form-label">
                             <i class="ri-file-text-line"></i>Deskripsi Tambahan (Opsional)
                         </label>
-                        <textarea 
-                            class="form-control @error('deskripsi') is-invalid @enderror" 
-                            id="deskripsi" 
-                            name="deskripsi" 
+                        <textarea
+                            class="form-control @error('deskripsi') is-invalid @enderror"
+                            id="deskripsi"
+                            name="deskripsi"
                             rows="3"
                             placeholder="Catatan atau deskripsi tambahan tentang pelanggan">{{ old('deskripsi') }}</textarea>
                         @error('deskripsi')
@@ -571,11 +677,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="foto_ktp" class="form-label">
                             <i class="ri-image-line"></i>Upload Foto KTP
                         </label>
-                        <input 
-                            type="file" 
-                            class="form-control @error('foto_ktp') is-invalid @enderror" 
-                            id="foto_ktp" 
-                            name="foto_ktp" 
+                        <input
+                            type="file"
+                            class="form-control @error('foto_ktp') is-invalid @enderror"
+                            id="foto_ktp"
+                            name="foto_ktp"
                             accept="image/*">
                         <small class="form-text-muted">
                             <i class="ri-information-line me-1"></i>Format: JPG, PNG. Maksimal ukuran: 2MB
@@ -604,11 +710,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="nomer_id" class="form-label">
                             <i class="ri-barcode-line"></i>Nomor ID Pelanggan
                         </label>
-                        <input 
-                            type="text" 
-                            class="form-control @error('nomer_id') is-invalid @enderror" 
-                            id="nomer_id" 
-                            name="nomer_id" 
+                        <input
+                            type="text"
+                            class="form-control @error('nomer_id') is-invalid @enderror"
+                            id="nomer_id"
+                            name="nomer_id"
                             placeholder="Contoh: PLG001"
                             value="{{ old('nomer_id') }}"
                             required>
@@ -625,10 +731,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <label for="paket_id" class="form-label">
                             <i class="ri-price-tag-3-line"></i>Pilih Paket Internet
                         </label>
-                        <select 
-                            class="form-select @error('paket_id') is-invalid @enderror" 
-                            id="paket_id" 
-                            name="paket_id" 
+                        <select
+                            class="form-select @error('paket_id') is-invalid @enderror"
+                            id="paket_id"
+                            name="paket_id"
                             required>
                             <option value="">-- Pilih Paket Internet --</option>
                             @foreach($paket as $p)
@@ -664,11 +770,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="tanggal_mulai" class="form-label">
                                 <i class="ri-calendar-line"></i>Tanggal Mulai Aktif
                             </label>
-                            <input 
-                                type="date" 
-                                class="form-control @error('tanggal_mulai') is-invalid @enderror" 
-                                id="tanggal_mulai" 
-                                name="tanggal_mulai" 
+                            <input
+                                type="date"
+                                class="form-control @error('tanggal_mulai') is-invalid @enderror"
+                                id="tanggal_mulai"
+                                name="tanggal_mulai"
                                 value="{{ old('tanggal_mulai') }}"
                                 required>
                             @error('tanggal_mulai')
@@ -679,11 +785,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <label for="tanggal_berakhir" class="form-label">
                                 <i class="ri-calendar-close-line"></i>Tanggal Berakhir
                             </label>
-                            <input 
-                                type="date" 
-                                class="form-control @error('tanggal_berakhir') is-invalid @enderror" 
-                                id="tanggal_berakhir" 
-                                name="tanggal_berakhir" 
+                            <input
+                                type="date"
+                                class="form-control @error('tanggal_berakhir') is-invalid @enderror"
+                                id="tanggal_berakhir"
+                                name="tanggal_berakhir"
                                 value="{{ old('tanggal_berakhir') }}"
                                 required>
                             <small class="form-text-muted">

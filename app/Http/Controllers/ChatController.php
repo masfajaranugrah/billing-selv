@@ -131,48 +131,38 @@ class ChatController extends Controller
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
-        // Cek apakah user adalah admin/CS
+        // Cek apakah user adalah admin
         $isAdmin = isset($user->role) && in_array($user->role, ['administrator', 'admin', 'customer_service']);
 
         if ($isAdmin && $userId) {
-            // Admin/CS melihat chat dengan user/pelanggan tertentu
-            // Filter berdasarkan chat_type sesuai role
-            $chatType = $user->role === 'customer_service' ? 'cs' : 'admin';
-
-            $messages = Message::where('chat_type', $chatType)
-                ->where(function ($query) use ($userId, $user) {
-                    $query->where(function ($q) use ($userId, $user) {
-                        // Pesan dari user/pelanggan ke admin/CS
-                        $q->where('sender_id', $userId)
-                            ->where('receiver_id', $user->id);
-                    })
-                        ->orWhere(function ($q) use ($userId, $user) {
-                            // Pesan dari admin/CS ke user/pelanggan
-                            $q->where('sender_id', $user->id)
-                                ->where('receiver_id', $userId);
-                        });
+            // Admin melihat chat dengan user/pelanggan tertentu
+            $messages = Message::where(function ($query) use ($userId, $user) {
+                // Pesan dari user/pelanggan ke admin
+                $query->where('sender_id', $userId)
+                    ->where('receiver_id', $user->id);
+            })
+                ->orWhere(function ($query) use ($userId, $user) {
+                    // Pesan dari admin ke user/pelanggan
+                    $query->where('sender_id', $user->id)
+                        ->where('receiver_id', $userId);
                 })
                 ->orderBy('created_at', 'asc')
                 ->get();
         } else {
-            // Pelanggan/User melihat chat dengan CS
-            // Chat CS: hanya dengan role customer_service
-            $cs = User::where('role', 'customer_service')->first();
+            // Pelanggan/User melihat chat dengan admin
+            $adminId = User::whereIn('role', ['administrator', 'admin', 'customer_service'])->first()->id ?? null;
 
-            if (!$cs) {
-                return response()->json(['error' => 'CS not found'], 404);
+            if (!$adminId) {
+                return response()->json(['error' => 'Admin not found'], 404);
             }
 
-            $messages = Message::where('chat_type', 'cs')
-                ->where(function ($query) use ($user, $cs) {
-                    $query->where(function ($q) use ($user, $cs) {
-                        $q->where('sender_id', $user->id)
-                            ->where('receiver_id', $cs->id);
-                    })
-                        ->orWhere(function ($q) use ($user, $cs) {
-                            $q->where('sender_id', $cs->id)
-                                ->where('receiver_id', $user->id);
-                        });
+            $messages = Message::where(function ($query) use ($user, $adminId) {
+                $query->where('sender_id', $user->id)
+                    ->where('receiver_id', $adminId);
+            })
+                ->orWhere(function ($query) use ($user, $adminId) {
+                    $query->where('sender_id', $adminId)
+                        ->where('receiver_id', $user->id);
                 })
                 ->orderBy('created_at', 'asc')
                 ->get();
@@ -228,11 +218,9 @@ class ChatController extends Controller
         // Validasi berbeda untuk admin dan user
         $isAdmin = in_array($user->role, ['administrator', 'admin', 'customer_service']);
 
-        // Base validation rules (size driven by env)
-        $maxKb = (int) env('CHAT_MEDIA_MAX_KB', 20480); // default 20MB
-        $allowedMimes = env('CHAT_MEDIA_MIMES', 'jpg,jpeg,png,gif,webp,mp4,webm,mov');
+        // Base validation rules
         $rules = [
-            'media' => 'nullable|file|mimes:' . $allowedMimes . '|max:' . $maxKb,
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,mp4,webm,mov|max:20480', // 20MB max
         ];
 
         if ($isAdmin) {
@@ -258,14 +246,14 @@ class ChatController extends Controller
                 return response()->json(['error' => 'Receiver not found'], 404);
             }
         } else {
-            // User/Pelanggan mengirim ke CS (bukan admin)
-            $cs = User::where('role', 'customer_service')->first();
+            // User/Pelanggan mengirim ke admin
+            $admin = User::whereIn('role', ['administrator', 'admin', 'customer_service'])->first();
 
-            if (!$cs) {
-                return response()->json(['error' => 'CS not found'], 404);
+            if (!$admin) {
+                return response()->json(['error' => 'Admin not found'], 404);
             }
 
-            $receiverId = $cs->id;
+            $receiverId = $admin->id;
         }
 
         // Handle media upload
@@ -289,21 +277,10 @@ class ChatController extends Controller
             $mediaPath = $file->store('chat-media', 'public');
         }
 
-        // Tentukan chat_type berdasarkan receiver role
-        $receiver = User::find($receiverId);
-        $chatType = 'cs'; // default CS
-        if ($receiver && in_array($receiver->role, ['administrator', 'admin'])) {
-            $chatType = 'admin';
-        } elseif ($isAdmin) {
-            // Admin/CS membalas, gunakan type sesuai sender
-            $chatType = $user->role === 'customer_service' ? 'cs' : 'admin';
-        }
-
         // Simpan message
         $message = Message::create([
             'sender_id' => $user->id,
             'receiver_id' => $receiverId,
-            'chat_type' => $chatType,
             'message' => $request->message ?? '',
             'media_path' => $mediaPath,
             'media_type' => $mediaType,
@@ -511,220 +488,6 @@ class ChatController extends Controller
                 ->count();
 
             return response()->json(['count' => $count]);
-        }
-    }
-
-    // =============================================
-    // CHAT ADMIN - Pelanggan chat dengan Admin saja
-    // =============================================
-
-    /**
-     * View untuk pelanggan chat dengan admin
-     */
-    public function chatAdmin()
-    {
-        $user = $this->getAuthUser();
-
-        if (!$user) {
-            return redirect()->route('login');
-        }
-
-        // Pastikan yang akses bukan admin
-        if (isset($user->role) && in_array($user->role, ['administrator', 'admin', 'customer_service'])) {
-            return redirect()->route('chat.admin')->with('error', 'Silakan gunakan chat admin');
-        }
-
-        return view('content.apps.Customer.chat.chat-admin');
-    }
-
-    /**
-     * Get messages untuk chat dengan admin (bukan CS)
-     */
-    public function getAdminMessages()
-    {
-        $user = $this->getAuthUser();
-
-        if (!$user) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
-
-        // Ambil admin (role: admin atau administrator, BUKAN customer_service)
-        $admin = User::whereIn('role', ['administrator', 'admin'])->first();
-
-        if (!$admin) {
-            return response()->json(['error' => 'Admin not found'], 404);
-        }
-
-        // Filter hanya chat_type = admin
-        $messages = Message::where('chat_type', 'admin')
-            ->where(function ($query) use ($user, $admin) {
-                $query->where(function ($q) use ($user, $admin) {
-                    $q->where('sender_id', $user->id)
-                        ->where('receiver_id', $admin->id);
-                })
-                    ->orWhere(function ($q) use ($user, $admin) {
-                        $q->where('sender_id', $admin->id)
-                            ->where('receiver_id', $user->id);
-                    });
-            })
-            ->orderBy('created_at', 'asc')
-            ->get();
-
-        return response()->json($messages);
-    }
-
-    /**
-     * Send message ke admin (bukan CS)
-     */
-    public function sendToAdmin(Request $request)
-    {
-        $user = $this->getAuthUser();
-
-        if (!$user) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
-
-        // Validasi
-        $maxKb = (int) env('CHAT_MEDIA_MAX_KB', 20480);
-        $allowedMimes = env('CHAT_MEDIA_MIMES', 'jpg,jpeg,png,gif,webp,mp4,webm,mov');
-
-        $request->validate([
-            'message' => 'nullable|string|max:5000',
-            'media' => 'nullable|file|mimes:' . $allowedMimes . '|max:' . $maxKb,
-        ]);
-
-        if (!$request->message && !$request->hasFile('media')) {
-            return response()->json(['error' => 'Message or media is required'], 422);
-        }
-
-        // Ambil admin (role: admin atau administrator, BUKAN customer_service)
-        $admin = User::whereIn('role', ['administrator', 'admin'])->first();
-
-        if (!$admin) {
-            return response()->json(['error' => 'Admin not found'], 404);
-        }
-
-        // Handle media upload
-        $mediaPath = null;
-        $mediaType = null;
-        $mediaOriginalName = null;
-
-        if ($request->hasFile('media')) {
-            $file = $request->file('media');
-            $mediaOriginalName = $file->getClientOriginalName();
-            $extension = strtolower($file->getClientOriginalExtension());
-
-            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                $mediaType = 'image';
-            } elseif (in_array($extension, ['mp4', 'webm', 'mov'])) {
-                $mediaType = 'video';
-            }
-
-            $mediaPath = $file->store('chat-media', 'public');
-        }
-
-        // Simpan message dengan chat_type = admin
-        $message = Message::create([
-            'sender_id' => $user->id,
-            'receiver_id' => $admin->id,
-            'chat_type' => 'admin',
-            'message' => $request->message ?? '',
-            'media_path' => $mediaPath,
-            'media_type' => $mediaType,
-            'media_original_name' => $mediaOriginalName,
-            'is_read' => false,
-        ]);
-
-        // Push notification ke admin
-        if ($admin->webpushr_sid) {
-            $end_point = 'https://api.webpushr.com/v1/notification/send/sid';
-
-            $http_header = [
-                'Content-Type: application/json',
-                'webpushrKey: 2ee12b373a17d9ba5f44683cb42d4279',
-                'webpushrAuthToken: 116294',
-            ];
-
-            $senderName = $user->nama_lengkap ?? $user->name ?? 'Pelanggan';
-
-            $req_data = [
-                'title' => 'Pesan Baru dari ' . $senderName,
-                'message' => substr($request->message, 0, 50) . (strlen($request->message) > 50 ? '...' : ''),
-                'target_url' => url('/dashboard/admin/chat'),
-                'sid' => $admin->webpushr_sid,
-            ];
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
-            curl_setopt($ch, CURLOPT_URL, $end_point);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($req_data));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_close($ch);
-        }
-
-        $message = $message->fresh();
-        $message->sender;
-
-        // Broadcast event ke admin
-        broadcast(new MessageSent($message));
-
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-        ], 201);
-    }
-
-    /**
-     * Mark messages as read untuk chat admin
-     */
-    public function markReadAdmin($userId)
-    {
-        try {
-            $user = $this->getAuthUser();
-
-            if (!$user) {
-                return response()->json(['error' => 'Unauthenticated'], 401);
-            }
-
-            // Pelanggan membaca pesan dari admin
-            $admin = User::whereIn('role', ['administrator', 'admin'])->first();
-
-            if (!$admin) {
-                return response()->json(['error' => 'Admin not found'], 404);
-            }
-
-            $messages = Message::where('sender_id', $admin->id)
-                ->where('receiver_id', $user->id)
-                ->where('is_read', false)
-                ->get();
-
-            $messageIds = $messages->pluck('id')->toArray();
-
-            if (!empty($messageIds)) {
-                Message::whereIn('id', $messageIds)->update(['is_read' => true]);
-
-                // Broadcast read receipt ke admin
-                broadcast(new MessageRead($messageIds, $admin->id));
-            }
-
-            return response()->json([
-                'success' => true,
-                'marked_count' => count($messageIds),
-                'message_ids' => $messageIds
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Error in markReadAdmin', [
-                'error' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ]);
-
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
         }
     }
 }

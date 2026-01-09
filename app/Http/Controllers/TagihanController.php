@@ -265,16 +265,15 @@ public function index(Request $request)
 
     $paket = Paket::all();
 
-    // ? BUILD QUERY
-    $query = Tagihan::with(['pelanggan', 'paket']);
+    // ? BUILD QUERY - HANYA STATUS "BELUM BAYAR"
+    $query = Tagihan::with(['pelanggan', 'paket'])
+        ->where('status_pembayaran', 'belum bayar');
 
     // ? SEARCH FILTER - HANYA DI STATUS "BELUM BAYAR"
     if ($request->filled('search')) {
         $search = trim($request->search);
-        
-        // ? HARDCODE: Hanya cari di status "belum bayar"
-        $query->where('status_pembayaran', 'belum bayar')
-              ->whereHas('pelanggan', function($q) use ($search) {
+
+        $query->whereHas('pelanggan', function($q) use ($search) {
                   $q->where('nama_lengkap', 'like', "%{$search}%")
                     ->orWhere('nomer_id', 'like', "%{$search}%")          // Cari di No. ID
                     ->orWhere('no_whatsapp', 'like', "%{$search}%")       // Cari di WhatsApp
@@ -287,17 +286,12 @@ public function index(Request $request)
                     ->orWhere('kabupaten', 'like', "%{$search}%")         // Cari di Kabupaten
                     ->orWhere('kode_pos', 'like', "%{$search}%");         // Cari di Kode Pos
               });
-    } else {
-        // ? JIKA TIDAK ADA SEARCH, TAMPILKAN SEMUA (DENGAN FILTER STATUS JIKA ADA)
-        if ($request->filled('status')) {
-            $query->where('status_pembayaran', $request->status);
-        }
     }
 
     // ? FILTER KABUPATEN & KECAMATAN DIHAPUS
 
     // ? PAGINATION
-    $tagihans = $query->where('status_pembayaran', 'belum bayar')
+    $tagihans = $query
         ->orderBy('created_at', 'desc')
         ->paginate(40)
         ->withQueryString()
@@ -342,7 +336,9 @@ public function index(Request $request)
 
     // Statistik
     $totalCustomer = Pelanggan::where('status', 'approve')->count();
-    $lunas = Tagihan::where('status_pembayaran', 'lunas')->count();
+    // Gunakan total tagihan lunas (bukan distinct pelanggan) agar angka konsisten dengan daftar
+    $customerLunas = Tagihan::where('status_pembayaran', 'lunas')->count();
+    $lunas = $customerLunas; // Jumlah tagihan lunas
     $belumLunas = Tagihan::where('status_pembayaran', 'belum bayar')->count();
     $totalPaket = $paket->count();
 
@@ -352,6 +348,7 @@ public function index(Request $request)
         'pelanggan' => $pelanggan,
         'paket' => $paket,
         'totalCustomer' => $totalCustomer,
+        'customerLunas' => $customerLunas,
         'lunas' => $lunas,
         'belumLunas' => $belumLunas,
         'totalPaket' => $totalPaket,
@@ -360,7 +357,7 @@ public function index(Request $request)
 }
 
 
- 
+
     public function proses(Request $request)
     {
         // Ambil semua pelanggan & paket untuk dropdown modal
@@ -416,7 +413,153 @@ public function index(Request $request)
             'kecamatanList'
         ));
     }
- 
+
+    /**
+     * Update status tagihan dari proses_verifikasi kembali ke belum bayar
+     * dan hapus bukti pembayaran yang salah
+     */
+    public function updateStatusToBelumBayar($id)
+    {
+        DB::beginTransaction();
+        try {
+            $tagihan = Tagihan::with('pelanggan', 'paket')->findOrFail($id);
+
+            // Validasi: hanya bisa update jika statusnya proses_verifikasi
+            if ($tagihan->status_pembayaran !== 'proses_verifikasi') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hanya tagihan dengan status "Proses Verifikasi" yang bisa diubah ke "Belum Bayar".',
+                ], 400);
+            }
+
+            // Hapus bukti pembayaran jika ada
+            if ($tagihan->bukti_pembayaran && Storage::disk('public')->exists($tagihan->bukti_pembayaran)) {
+                Storage::disk('public')->delete($tagihan->bukti_pembayaran);
+            }
+
+            // Update status ke belum bayar dan hapus bukti pembayaran
+            $tagihan->status_pembayaran = 'belum bayar';
+            $tagihan->bukti_pembayaran = null;
+            $tagihan->tanggal_pembayaran = null;
+            $tagihan->save();
+
+            // ===== Kirim push notification sebelum return =====
+            $pelanggan = $tagihan->pelanggan;
+            if ($pelanggan && $pelanggan->webpushr_sid) {
+                $end_point = 'https://api.webpushr.com/v1/notification/send/sid';
+
+                $http_header = [
+                    'Content-Type: Application/Json',
+                    'webpushrKey: 2ee12b373a17d9ba5f44683cb42d4279', // ganti dengan API key Webpushr
+                    'webpushrAuthToken: 116294', // ganti dengan Auth Token Webpushr
+                ];
+
+                $req_data = [
+                   'title' => 'Pembayaran Ditolak',
+                    'message' => "Mohon maaf {$pelanggan->nama_lengkap}, pembayaran Anda kami tolak karena kami cek pembayaran tidak sesuai. Silakan upload bukti pembayaran yang benar.",
+                    'target_url' => url('https://layanan.jernih.net.id/dashboard/customer/tagihan'), // link ke halaman tagihan
+                    'sid' => $pelanggan->webpushr_sid,
+                ];
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $http_header);
+                curl_setopt($ch, CURLOPT_URL, $end_point);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($req_data));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                // Optional: log response untuk debug
+            }
+            // ===================================================
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status tagihan berhasil diubah ke "Belum Bayar" dan bukti pembayaran telah dihapus. Notifikasi telah dikirim ke pelanggan.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating tagihan status to belum bayar', [
+                'tagihan_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Update paket tagihan (untuk mengubah nominal jika tidak sesuai)
+     * dan tanggal mulai/berakhir
+     */
+    public function updatePaket(Request $request, $id)
+    {
+        $request->validate([
+            'paket_id' => 'required|exists:pakets,id',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_mulai',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $tagihan = Tagihan::with('pelanggan', 'paket')->findOrFail($id);
+            $paket = Paket::findOrFail($request->paket_id);
+
+            // Store old values for logging
+            $oldPaketId = $tagihan->paket_id;
+            $oldTanggalMulai = $tagihan->tanggal_mulai;
+            $oldTanggalBerakhir = $tagihan->tanggal_berakhir;
+
+            // Update paket_id, harga, dan tanggal
+            $tagihan->paket_id = $paket->id;
+            $tagihan->harga = $paket->harga;
+            $tagihan->tanggal_mulai = $request->tanggal_mulai;
+            $tagihan->tanggal_berakhir = $request->tanggal_berakhir;
+            $tagihan->save();
+
+            // Log perubahan
+            Log::info('Tagihan updated', [
+                'tagihan_id' => $id,
+                'old_paket_id' => $oldPaketId,
+                'new_paket_id' => $paket->id,
+                'new_harga' => $paket->harga,
+                'old_tanggal_mulai' => $oldTanggalMulai,
+                'new_tanggal_mulai' => $request->tanggal_mulai,
+                'old_tanggal_berakhir' => $oldTanggalBerakhir,
+                'new_tanggal_berakhir' => $request->tanggal_berakhir,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tagihan berhasil diperbarui.',
+                'data' => [
+                    'paket_nama' => $paket->nama_paket,
+                    'harga' => $paket->harga,
+                    'tanggal_mulai' => $request->tanggal_mulai,
+                    'tanggal_berakhir' => $request->tanggal_berakhir,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating tagihan', [
+                'tagihan_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 
 
 public function lunas(Request $request)
@@ -450,9 +593,9 @@ public function lunas(Request $request)
             });
         }
 
-        // PAGINATION 20 DATA PER PAGE dengan through()
+        // PAGINATION 40 DATA PER PAGE dengan through()
         $tagihans = $query->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->paginate(40)
             ->withQueryString()
             ->through(function ($item) {
                 $pelanggan = $item->pelanggan;
@@ -500,29 +643,39 @@ public function lunas(Request $request)
         $kecamatanList = $pelanggan->pluck('kecamatan')->unique();
 
         // Statistik
-        $totalCustomer = Tagihan::where('status_pembayaran', 'lunas')
-    ->distinct('pelanggan_id')
-    ->count('pelanggan_id');         $lunas = Tagihan::where('status_pembayaran', 'lunas')->count();
-        $belumLunas = Tagihan::where('status_pembayaran', '!=', 'lunas')->count();
+        // Jumlah customer unik yang sudah lunas
+        $totalCustomerLunas = Tagihan::where('status_pembayaran', 'lunas')->distinct('pelanggan_id')->count('pelanggan_id');
+        $lunas = Tagihan::where('status_pembayaran', 'lunas')->count(); // Jumlah tagihan lunas
+        $belumLunas = Tagihan::where('status_pembayaran', 'belum bayar')->count();
         $totalPaket = $paket->count();
+
+        // Rekap total pembayaran per bank untuk kartu ringkasan
+        $bankTotals = Tagihan::leftJoin('rekenings', 'rekenings.id', '=', 'tagihans.type_pembayaran')
+            ->leftJoin('pakets', 'pakets.id', '=', 'tagihans.paket_id')
+            ->where('tagihans.status_pembayaran', 'lunas')
+            ->selectRaw('COALESCE(rekenings.nama_bank, tagihans.type_pembayaran, "Lainnya") as nama_bank, SUM(COALESCE(tagihans.harga, pakets.harga, 0)) as total')
+            ->groupByRaw('COALESCE(rekenings.nama_bank, tagihans.type_pembayaran, "Lainnya")')
+            ->orderByDesc('total')
+            ->get();
 
         return view('content.apps.Tagihan.tagihan-lunas', compact(
             'tagihans',
             'pelanggan',
             'paket',
-            'totalCustomer',
+            'totalCustomerLunas',
             'lunas',
             'belumLunas',
             'totalPaket',
             'kabupatenList',
-            'kecamatanList'
+            'kecamatanList',
+            'bankTotals'
         ));
     }
 
 
 
 
- 
+
 
 
     /**
@@ -636,12 +789,12 @@ public function lunas(Request $request)
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $curlError = curl_error($ch);
-            
+
             curl_close($ch);
 
             // Decode response
             $responseData = json_decode($response, true);
-            
+
             // Log semua detail response
             Log::info('Webpushr Response', [
                 'pelanggan_id' => $pelanggan->id,
@@ -682,7 +835,7 @@ public function lunas(Request $request)
             }
         } else {
             $message = 'Tagihan berhasil ditambahkan (tanpa notifikasi - SID tidak tersedia).';
-            
+
             Log::info('Tagihan dibuat tanpa notifikasi', [
                 'pelanggan_id' => $request->pelanggan_id,
                 'reason' => $pelanggan ? 'SID tidak tersedia' : 'Pelanggan tidak ditemukan'
@@ -776,7 +929,29 @@ public function lunas(Request $request)
         $tagihan = Tagihan::findOrFail($id);
         $tagihan->delete();
 
-        return redirect()->back()->with('success', '??? Tagihan berhasil dihapus!');
+        return redirect()->route('tagihan.get')->with('success', 'Tagihan berhasil dihapus!');
+    }
+
+    // Hapus tagihan hanya jika status lunas
+    public function destroyLunas($id)
+    {
+        $tagihan = Tagihan::findOrFail($id);
+        if ($tagihan->status_pembayaran !== 'lunas') {
+            return redirect()->back()->with('error', 'Tagihan yang dihapus harus berstatus lunas!');
+        }
+
+        // Hapus file bukti pembayaran jika ada
+        if ($tagihan->bukti_pembayaran && \Storage::disk('public')->exists($tagihan->bukti_pembayaran)) {
+            \Storage::disk('public')->delete($tagihan->bukti_pembayaran);
+        }
+        // Hapus file kwitansi jika ada
+        if ($tagihan->kwitansi && \Storage::disk('public')->exists($tagihan->kwitansi)) {
+            \Storage::disk('public')->delete($tagihan->kwitansi);
+        }
+
+        $tagihan->delete();
+
+        return redirect()->route('tagihan.lunas')->with('success', 'Tagihan lunas berhasil dihapus!');
     }
 
  public function massStore(Request $request)
@@ -784,26 +959,38 @@ public function lunas(Request $request)
     $request->validate([
         'tanggal_mulai' => 'required|date',
         'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_mulai',
+        'pelanggan_ids' => 'required|array|min:1',
+        'pelanggan_ids.*' => 'exists:pelanggans,id',
     ]);
 
-    // Ambil MAX 100 pelanggan yang BELUM PUNYA TAGIHAN BELUM BAYAR
+    $pelangganIds = $request->pelanggan_ids;
+
+    // Ambil pelanggan yang dipilih
     $pelanggan = Pelanggan::with('paket')
         ->where('status', 'approve')
+        ->whereIn('id', $pelangganIds)
         ->whereNotIn('id', function ($query) {
             $query->select('pelanggan_id')
                   ->from('tagihans')
                   ->where('status_pembayaran', 'belum bayar');
         })
-        ->limit(100)
         ->get();
 
     if ($pelanggan->isEmpty()) {
-        return back()->with('error', 'Tidak ada pelanggan yang bisa dibuatkan tagihan.');
+        return back()->with('error', 'Tidak ada pelanggan yang bisa dibuatkan tagihan. Mungkin semua sudah memiliki tagihan belum bayar.');
     }
+
+    $successCount = 0;
+    $failedCount = 0;
 
     DB::beginTransaction();
     try {
         foreach ($pelanggan as $p) {
+            if (!$p->paket_id || !$p->paket) {
+                $failedCount++;
+                continue;
+            }
+
             Tagihan::create([
                 'pelanggan_id' => $p->id,
                 'paket_id' => $p->paket_id,
@@ -812,13 +999,51 @@ public function lunas(Request $request)
                 'tanggal_berakhir' => $request->tanggal_berakhir,
                 'status_pembayaran' => 'belum bayar',
             ]);
+
+            $successCount++;
+
+            // Kirim push notification jika SID tersedia
+            if ($p->webpushr_sid) {
+                $ch = curl_init('https://api.webpushr.com/v1/notification/send/sid');
+
+                $payload = [
+                    'title' => 'Pemberitahuan untuk Anda',
+                    'message' => "Halo {$p->nama_lengkap}, kami baru saja menerbitkan tagihan untuk Anda. Silakan cek detailnya.",
+                    'target_url' => url('https://layanan.jernih.net.id/dashboard/customer/tagihan'),
+                    'sid' => $p->webpushr_sid,
+                ];
+
+                $headers = [
+                    'Content-Type: application/json',
+                    'webpushrKey: 2ee12b373a17d9ba5f44683cb42d4279',
+                    'webpushrAuthToken: 116294',
+                ];
+
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                curl_exec($ch);
+                curl_close($ch);
+            }
         }
 
         DB::commit();
-        return back()->with('success', 'Berhasil membuat tagihan untuk 100 pelanggan berikutnya.');
+
+        $message = "Berhasil membuat tagihan untuk {$successCount} pelanggan.";
+        if ($failedCount > 0) {
+            $message .= " {$failedCount} pelanggan gagal (tidak memiliki paket atau sudah memiliki tagihan).";
+        }
+
+        return back()->with('success', $message);
     } catch (\Throwable $e) {
         DB::rollBack();
-        return back()->with('error', $e->getMessage());
+        Log::error('Error mass store tagihan', [
+            'error' => $e->getMessage(),
+            'pelanggan_ids' => $pelangganIds,
+        ]);
+        return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
 }
 
@@ -829,10 +1054,10 @@ public function lunas(Request $request)
 public function export(Request $request)
     {
         $search = $request->input('search');
-        
+
         // HANYA EXPORT YANG LUNAS
         $filename = 'Tagihan_Lunas_' . now()->format('Y-m-d_His') . '.xlsx';
-        
+
         return Excel::download(
             new BayarExport($search, 'lunas'), // Status: lunas
             $filename
@@ -847,8 +1072,9 @@ public function export(Request $request)
  */
 public function outstanding(Request $request)
 {
-    // ? Base query dengan eager loading
-    $query = Tagihan::with(['pelanggan', 'paket']);
+    // ? Base query dengan eager loading, default hanya yang belum lunas
+    $query = Tagihan::with(['pelanggan', 'paket'])
+        ->where('status_pembayaran', 'belum bayar');
 
     // ? Filter berdasarkan bulan/tahun (opsional)
     if ($request->filled('bulan')) {
@@ -859,10 +1085,11 @@ public function outstanding(Request $request)
         $query->whereYear('tanggal_mulai', $request->tahun);
     }
 
-    // ? Filter berdasarkan status (opsional, tapi tetap bisa semua)
+    // ? Filter berdasarkan status (opsional, jika dipilih selain 'semua', override default)
     if ($request->filled('status_filter') && $request->status_filter !== 'semua') {
-        $query->where('status_pembayaran', $request->status_filter);
+        $query->where('status_pembayaran', $request->status_filter); // Filter sesuai status
     }
+    // Jika status_filter == 'semua', jangan override filter default (hanya 'belum bayar')
 
     // ? Search functionality
     if ($request->filled('search')) {

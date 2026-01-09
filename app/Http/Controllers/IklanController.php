@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Jobs\SendIklanJob;
 
 class IklanController extends Controller
 {
@@ -222,58 +223,26 @@ public function update(Request $request, $id)
     public function send($id)
     {
         try {
-            $iklan = Iklan::findOrFail($id);
+            $iklan = Iklan::find($id);
 
-            $pelanggan = Pelanggan::whereNotNull('player_id')
-                ->where('player_id', '!=', '')
-                ->get();
-
-            $sent = 0;
-            $playerIds = [];
-
-            foreach ($pelanggan as $p) {
-                if (!empty($p->player_id)) {
-                    $playerIds[] = $p->player_id;
-                }
+            if (!$iklan) {
+                return response()->json([
+                    'success' => false,
+                    'queued' => false,
+                    'message' => 'Iklan tidak ditemukan'
+                ], 404);
             }
 
-            if (!empty($playerIds)) {
-                $notificationData = [
-                    'app_id' => env('ONESIGNAL_APP_ID'),
-                    'include_player_ids' => $playerIds,
-                    'headings' => ['en' => $iklan->title],
-                    'contents' => ['en' => $iklan->message],
-                    'data' => [
-                        'type' => 'iklan',
-                        'iklan_id' => $iklan->id
-                    ]
-                ];
+            // Tandai status sebagai queued (opsional, abaikan jika kolom tidak ada)
+            $iklan->update(['status' => 'queued']);
 
-                if ($iklan->image) {
-                    $notificationData['big_picture'] = asset('storage/' . $iklan->image);
-                    $notificationData['ios_attachments'] = ['id' => asset('storage/' . $iklan->image)];
-                }
-
-                $response = Http::withHeaders([
-                    'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
-                    'Content-Type' => 'application/json'
-                ])->post('https://onesignal.com/api/v1/notifications', $notificationData);
-
-                if ($response->successful()) {
-                    $sent = count($playerIds);
-                }
-            }
-
-            $iklan->update([
-                'status' => 'sent',
-                'sent_at' => now(),
-                'total_sent' => $sent
-            ]);
+            // Dorong ke queue agar berjalan di background
+            SendIklanJob::dispatch($iklan->id);
 
             return response()->json([
                 'success' => true,
-                'sent' => $sent,
-                'message' => 'Iklan berhasil dikirim!'
+                'queued' => true,
+                'message' => 'Iklan sedang dikirim di background melalui queue'
             ]);
 
         } catch (\Exception $e) {
@@ -281,6 +250,7 @@ public function update(Request $request, $id)
 
             return response()->json([
                 'success' => false,
+                'queued' => false,
                 'message' => 'Gagal mengirim iklan: ' . $e->getMessage()
             ], 500);
         }

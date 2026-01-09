@@ -5,21 +5,72 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Models\LedgerDaily;
+use App\Exports\ExpenseMonthlyExport;
+use App\Exports\ExpenseDateRangeExport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExpenseController extends Controller
 {
     public function index()
     {
+        $today = Carbon::today();
         $expenses = Expense::all();
+        
+        // Kategori untuk cards
+        $kategori_list = [
+            'BEBAN GAJI' => '202',
+            'ALAT KANTOR HABIS PAKAI' => '203',
+            'ALAT LOGISTIK' => '203',
+            'ALAT TULIS KANTOR' => '203',
+            'KONSUMSI' => '204',
+            'BEBAN TRANSPORTASI' => '205',
+            'BEBAN PERAWATAN' => '205',
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => '205',
+            'BEBAN KEPERLUAN RUMAH TANGGA' => '205',
+            'BEBAN TAGIHAN INTERNET' => '205',
+            'BEBAN LAIN-LAIN' => '205',
+            'BEBAN KOMITMEN / FEE' => '205',
+            'BEBAN PRIVE' => '205',
+            'BEBAN SRAGEN' => '205',
+            'BEBAN GUNUNGKIDUL' => '205',
+        ];
+        
+        // Hitung total per kategori untuk hari ini
+        $todayTotals = [];
+        foreach ($kategori_list as $nama => $kode) {
+            $todayTotals[$nama] = Expense::whereDate('tanggal_keluar', $today)
+                ->where('kategori', $nama)
+                ->sum('jumlah');
+        }
+        
+        // Total keseluruhan hari ini
+        $totalHariIni = Expense::whereDate('tanggal_keluar', $today)->sum('jumlah');
 
-        return view('content.apps.Laba.keluar.keluar', compact('expenses'));
+        return view('content.apps.Laba.keluar.keluar', compact('expenses', 'kategori_list', 'todayTotals', 'totalHariIni', 'today'));
     }
 
     public function create()
     {
-        $kategori_default = ['Gaji', 'Transportasi', 'Internet', 'DLL'];
+        $kategori_default = [
+            'BEBAN GAJI' => '202',
+            'ALAT KANTOR HABIS PAKAI' => '203',
+            'ALAT LOGISTIK' => '203',
+            'ALAT TULIS KANTOR' => '203',
+            'KONSUMSI' => '204',
+            'BEBAN TRANSPORTASI' => '205',
+            'BEBAN PERAWATAN' => '205',
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => '205',
+            'BEBAN KEPERLUAN RUMAH TANGGA' => '205',
+            'BEBAN TAGIHAN INTERNET' => '205',
+            'BEBAN LAIN-LAIN' => '205',
+            'BEBAN KOMITMEN / FEE' => '205',
+            'BEBAN PRIVE' => '205',
+            'BEBAN SRAGEN' => '205',
+            'BEBAN GUNUNGKIDUL' => '205',
+            'DLL (Lainnya)' => '206',
+        ];
 
         return view('content.apps.Laba.keluar.add-keluar', compact('kategori_default'));
     }
@@ -35,7 +86,7 @@ class ExpenseController extends Controller
         ]);
 
         // Tentukan kategori final
-        $kategori = $request->kategori === 'DLL' && $request->kategori_dll
+        $kategori = str_contains($request->kategori, 'DLL') && $request->kategori_dll
             ? $request->kategori_dll
             : $request->kategori;
 
@@ -67,7 +118,24 @@ class ExpenseController extends Controller
     public function edit($id)
     {
         $expense = Expense::findOrFail($id);
-        $kategori_default = ['Gaji', 'Transportasi', 'Internet', 'DLL'];
+        $kategori_default = [
+            'BEBAN GAJI' => '202',
+            'ALAT KANTOR HABIS PAKAI' => '203',
+            'ALAT LOGISTIK' => '203',
+            'ALAT TULIS KANTOR' => '203',
+            'KONSUMSI' => '204',
+            'BEBAN TRANSPORTASI' => '205',
+            'BEBAN PERAWATAN' => '205',
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => '205',
+            'BEBAN KEPERLUAN RUMAH TANGGA' => '205',
+            'BEBAN TAGIHAN INTERNET' => '205',
+            'BEBAN LAIN-LAIN' => '205',
+            'BEBAN KOMITMEN / FEE' => '205',
+            'BEBAN PRIVE' => '205',
+            'BEBAN SRAGEN' => '205',
+            'BEBAN GUNUNGKIDUL' => '205',
+            'DLL (Lainnya)' => '206',
+        ];
 
         return view('content.apps.Laba.keluar.edit-keluar', compact('expense', 'kategori_default'));
     }
@@ -84,7 +152,7 @@ class ExpenseController extends Controller
 
         $expense = Expense::findOrFail($id);
 
-        $kategori = $request->kategori === 'DLL' && $request->kategori_dll
+        $kategori = str_contains($request->kategori, 'DLL') && $request->kategori_dll
             ? $request->kategori_dll
             : $request->kategori;
 
@@ -139,13 +207,55 @@ class ExpenseController extends Controller
 
     private function getKode($kategori)
     {
-        return match (strtolower($kategori)) {
-            'pembelian' => '01',
-            'jasa' => '02',
-            'gaji' => '03',
-            'internet' => '04',
-            'transportasi' => '05',
-            default => '06',
+        return match ($kategori) {
+            'BEBAN GAJI' => '202',
+            'ALAT KANTOR HABIS PAKAI' => '203',
+            'ALAT LOGISTIK' => '203',
+            'ALAT TULIS KANTOR' => '203',
+            'KONSUMSI' => '204',
+            'BEBAN TRANSPORTASI' => '205',
+            'BEBAN PERAWATAN' => '205',
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => '205',
+            'BEBAN KEPERLUAN RUMAH TANGGA' => '205',
+            'BEBAN TAGIHAN INTERNET' => '205',
+            'BEBAN LAIN-LAIN' => '205',
+            'BEBAN KOMITMEN / FEE' => '205',
+            'BEBAN PRIVE' => '205',
+            'BEBAN SRAGEN' => '205',
+            'BEBAN GUNUNGKIDUL' => '205',
+            default => '206',
         };
+    }
+
+    /**
+     * Export laporan bulanan ke Excel
+     */
+    public function exportMonthly(Request $request)
+    {
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+        
+        $monthName = Carbon::createFromDate($year, $month, 1)->locale('id')->translatedFormat('F');
+        $filename = 'Laporan_Pengeluaran_' . $monthName . '_' . $year . '.xlsx';
+        
+        return Excel::download(new ExpenseMonthlyExport($month, $year), $filename);
+    }
+
+    /**
+     * Export laporan per rentang tanggal ke Excel
+     */
+    public function exportDateRange(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+        
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        
+        $filename = 'Detail_Pengeluaran_' . Carbon::parse($startDate)->format('d-m-Y') . '_sd_' . Carbon::parse($endDate)->format('d-m-Y') . '.xlsx';
+        
+        return Excel::download(new ExpenseDateRangeExport($startDate, $endDate), $filename);
     }
 }

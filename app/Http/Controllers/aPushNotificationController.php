@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Tagihan;
 use App\Models\Pelanggan;
-use App\Jobs\SendTagihanPushJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -50,30 +49,75 @@ class PushNotificationController extends Controller
     {
         try {
             $tagihanIds = $request->input('tagihan_ids', []);
+            $sentCount = 0;
+            $ignoredCount = 0;
+            $failedCount = 0;
+
+            Log::info('Starting broadcast notification', ['tagihan_ids' => $tagihanIds]);
 
             if (empty($tagihanIds)) {
                 return response()->json([
                     'success' => false,
-                    'queued' => false,
+                    'sent' => 0,
+                    'ignored' => 0,
+                    'failed' => 0,
                     'message' => 'Tidak ada tagihan yang dipilih'
                 ]);
             }
 
-            // Dorong ke queue supaya berjalan di background
-            SendTagihanPushJob::dispatch($tagihanIds);
+            $tagihans = Tagihan::with('pelanggan')
+                ->whereIn('id', $tagihanIds)
+                ->where('status_pembayaran', 'belum bayar')
+                ->get();
+
+            foreach ($tagihans as $tagihan) {
+                try {
+                    $pelanggan = $tagihan->pelanggan;
+
+                    if (!$pelanggan || empty($pelanggan->webpushr_sid)) {
+                        $ignoredCount++;
+                        continue;
+                    }
+
+                    $result = $this->sendWebpushrNotification([
+                        'title' => 'Tagihan Belum Dibayar',
+                        'message' => "Halo {$pelanggan->nama_lengkap}, tagihan Anda akan jatuh tempo pada " . 
+                                    ($tagihan->tanggal_berakhir ?? 'segera') . ". Mohon segera lakukan pembayaran.",
+                        'target_url' => url('/dashboard/customer/tagihan'),
+                        'sid' => $pelanggan->webpushr_sid,
+                    ]);
+
+                    if ($result['success']) {
+                        $sentCount++;
+                    } else {
+                        $failedCount++;
+                    }
+
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    Log::error('Error sending notification', ['error' => $e->getMessage()]);
+                    continue;
+                }
+            }
 
             return response()->json([
                 'success' => true,
-                'queued' => true,
-                'message' => 'Notifikasi sedang dikirim di background melalui queue',
+                'sent' => $sentCount,
+                'ignored' => $ignoredCount,
+                'failed' => $failedCount,
                 'total' => count($tagihanIds),
+                'message' => $sentCount > 0 
+                    ? "Berhasil mengirim {$sentCount} notifikasi" 
+                    : 'Tidak ada notifikasi yang terkirim'
             ]);
 
         } catch (\Exception $e) {
             Log::error('Broadcast error: ' . $e->getMessage());
             return response()->json([
-                'success' => false,
-                'queued' => false,
+                'success' => true,
+                'sent' => 0,
+                'ignored' => 0,
+                'failed' => 0,
                 'message' => 'Terjadi kesalahan saat mengirim notifikasi'
             ]);
         }

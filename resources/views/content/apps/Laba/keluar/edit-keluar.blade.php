@@ -16,92 +16,73 @@
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     transition: all 0.3s;
   }
-  .form-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-  }
+  .form-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
   .card-header-custom {
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
+    background: #18181b;
     border-radius: 12px 12px 0 0;
     padding: 1.25rem 1.5rem;
     border: none;
   }
   .card-title-custom {
-    color: white;
+    color: #fafafa;
     font-weight: 600;
     font-size: 1.125rem;
     margin: 0;
     display: flex;
     align-items: center;
   }
-  .card-title-custom i {
-    margin-right: 0.75rem;
-    font-size: 1.5rem;
-  }
+  .card-title-custom i { margin-right: 0.75rem; font-size: 1.5rem; color: #fafafa; }
   .form-label {
     font-weight: 600;
-    color: #5a5f7d;
+    color: #18181b;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
     display: flex;
     align-items: center;
   }
-  .form-label i {
-    margin-right: 0.5rem;
-    color: #696cff;
-    font-size: 1.1rem;
-  }
+  .form-label i { margin-right: 0.5rem; color: #18181b; font-size: 1.1rem; }
   .form-control, .form-select {
     border-radius: 8px;
-    border: 1.5px solid #e8e8e8;
+    border: 1.5px solid #e4e4e7;
     padding: 0.75rem 1rem;
     transition: all 0.3s;
     font-size: 0.9375rem;
   }
   .form-control:focus, .form-select:focus {
-    border-color: #696cff;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15);
+    border-color: #18181b;
+    box-shadow: 0 0 0 0.2rem rgba(24,24,27,0.1);
   }
-  .form-control::placeholder {
-    color: #a8afc7;
-    font-size: 0.875rem;
-  }
+  .form-control::placeholder { color: #a1a1aa; font-size: 0.875rem; }
   .input-group-text {
     border-radius: 8px 0 0 8px;
-    border: 1.5px solid #e8e8e8;
+    border: 1.5px solid #e4e4e7;
     border-right: none;
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-    color: white;
+    background: #18181b;
+    color: #fafafa;
     font-weight: 700;
     padding: 0.75rem 1rem;
   }
-  .input-group .form-control {
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-  }
-  .input-group .form-control:focus {
-    border-color: #e8e8e8;
-    box-shadow: none;
-  }
-  .input-group:focus-within .input-group-text {
-    border-color: #696cff;
-  }
+  .input-group .form-control { border-left: none; border-radius: 0 8px 8px 0; }
+  .input-group .form-control:focus { border-color: #e4e4e7; box-shadow: none; }
+  .input-group:focus-within .input-group-text { border-color: #18181b; }
   .input-group:focus-within .form-control {
-    border-color: #696cff;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15);
+    border-color: #18181b;
+    box-shadow: 0 0 0 0.2rem rgba(24,24,27,0.1);
   }
-  .btn-save {
+  .btn-save, .btn-primary {
     padding: 0.625rem 2rem;
     border-radius: 8px;
     font-weight: 600;
     transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(105, 108, 255, 0.3);
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
+    background: #18181b !important;
+    color: #fafafa !important;
     border: none;
+    box-shadow: 0 4px 12px rgba(24,24,27,0.2);
   }
-  .btn-save:hover {
+  .btn-save:hover, .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(105, 108, 255, 0.4);
-    background: linear-gradient(135deg, #5a5dc9 0%, #696cff 100%);
+    background: #27272a !important;
+    box-shadow: 0 6px 20px rgba(24,24,27,0.3);
   }
   .btn-cancel {
     padding: 0.625rem 2rem;
@@ -109,35 +90,20 @@
     font-weight: 600;
     transition: all 0.3s;
   }
-  .btn-cancel:hover {
-    transform: translateY(-2px);
-  }
+  .btn-cancel:hover { transform: translateY(-2px); }
   .page-header {
-    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    background: #f4f4f5;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border: 1px solid #e8e8e8;
+    border: 1px solid #e4e4e7;
   }
-  .page-header h4 {
-    color: #2c3e50;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-  .page-header p {
-    color: #6c757d;
-    margin: 0;
-    font-size: 0.875rem;
-  }
-  .form-text-muted {
-    color: #a8afc7;
-    font-size: 0.8125rem;
-    margin-top: 0.25rem;
-    display: block;
-  }
+  .page-header h4 { color: #18181b; font-weight: 700; margin-bottom: 0.25rem; }
+  .page-header p { color: #71717a; margin: 0; font-size: 0.875rem; }
+  .form-text-muted { color: #a1a1aa; font-size: 0.8125rem; margin-top: 0.25rem; display: block; }
   /* Select2 Custom Styling */
   .select2-container--default .select2-selection--single {
-    border: 1.5px solid #e8e8e8 !important;
+    border: 1.5px solid #e4e4e7 !important;
     border-radius: 8px !important;
     height: auto !important;
     padding: 0.625rem 1rem !important;
@@ -145,18 +111,18 @@
   }
   .select2-container--default .select2-selection--single:focus,
   .select2-container--default.select2-container--focus .select2-selection--single {
-    border-color: #696cff !important;
-    box-shadow: 0 0 0 0.2rem rgba(105, 108, 255, 0.15) !important;
+    border-color: #18181b !important;
+    box-shadow: 0 0 0 0.2rem rgba(24,24,27,0.1) !important;
     outline: none !important;
   }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: 1.5 !important;
     padding: 0 !important;
-    color: #5a5f7d;
+    color: #18181b;
     font-size: 0.9375rem;
   }
   .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #a8afc7 !important;
+    color: #a1a1aa !important;
     font-size: 0.875rem;
   }
   .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -164,29 +130,21 @@
     right: 1rem !important;
   }
   .select2-container--default .select2-selection--single .select2-selection__arrow b {
-    border-color: #696cff transparent transparent transparent !important;
+    border-color: #18181b transparent transparent transparent !important;
     border-width: 6px 5px 0 5px !important;
   }
   .select2-dropdown {
-    border: 1.5px solid #e8e8e8 !important;
+    border: 1.5px solid #e4e4e7 !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
   }
   .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
-    background-color: #696cff !important;
+    background-color: #18181b !important;
   }
-  .kategori-dll-wrapper {
-    animation: slideDown 0.3s ease-out;
-  }
+  .kategori-dll-wrapper { animation: slideDown 0.3s ease-out; }
   @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 @endsection
@@ -221,14 +179,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const jumlahInput = document.getElementById('jumlah');
 
     // Cek apakah kategori sudah DLL saat load
-    if(kategoriSelect.value === 'DLL') {
+    if(kategoriSelect.value.includes('DLL')) {
         dllInputWrapper.style.display = 'block';
         dllInput.required = true;
     }
 
     // Tampilkan input kategori DLL jika dipilih
     kategoriSelect.addEventListener('change', () => {
-        if(kategoriSelect.value === 'DLL') {
+        if(kategoriSelect.value.includes('DLL')) {
             dllInputWrapper.style.display = 'block';
             dllInputWrapper.classList.add('kategori-dll-wrapper');
             dllInput.required = true;
@@ -332,8 +290,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         </label>
                         <select class="form-select @error('kategori') is-invalid @enderror" id="kategori" name="kategori" required>
                             <option value="">-- Pilih Kategori --</option>
-                            @foreach($kategori_default as $k)
-                                <option value="{{ $k }}" {{ old('kategori', $expense->kategori) == $k ? 'selected' : '' }}>{{ $k }}</option>
+                            @foreach($kategori_default as $nama => $kode)
+                                <option value="{{ $nama }}" {{ old('kategori', $expense->kategori) == $nama ? 'selected' : '' }}>{{ $kode }} - {{ $nama }}</option>
                             @endforeach
                         </select>
                         <small class="form-text-muted">
@@ -345,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
 
                     <!-- Kategori DLL (Conditional) -->
-                    <div class="mb-4" id="kategori_dll_wrapper" style="display:{{ old('kategori', $expense->kategori) == 'DLL' ? 'block' : 'none' }};">
+                    <div class="mb-4" id="kategori_dll_wrapper" style="display:{{ str_contains(old('kategori', $expense->kategori), 'DLL') ? 'block' : 'none' }};">
                         <label for="kategori_dll" class="form-label">
                             <i class="ri-edit-line"></i>Nama Kategori Lainnya
                         </label>

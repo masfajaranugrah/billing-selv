@@ -12,15 +12,15 @@
 ])
 <style>
 /* ========================================= */
-/* MODERN CLEAN STYLES */
+/* SHADCN UI STYLE - BLACK & WHITE */
 /* ========================================= */
 :root {
   --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
   --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
   --border-radius: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --primary-color: #696cff;
-  --success-color: #28c76f;
+  --primary-color: #18181b;
+  --success-color: #18181b;
 }
 
 /* Card Design */
@@ -34,7 +34,6 @@
 
 .card:hover {
   box-shadow: var(--card-hover-shadow);
-  transform: translateY(-2px);
 }
 
 /* Dashboard Cards with Border Accent */
@@ -51,19 +50,19 @@
 }
 
 .card-border-shadow-primary::before {
-  background: linear-gradient(180deg, #696cff 0%, #5a5dc9 100%);
+  background: #18181b;
 }
 
 .card-border-shadow-success::before {
-  background: linear-gradient(180deg, #71dd37 0%, #5cb82e 100%);
+  background: #18181b;
 }
 
 .card-border-shadow-warning::before {
-  background: linear-gradient(180deg, #ffab00 0%, #e09900 100%);
+  background: #f59e0b;
 }
 
 .card-border-shadow-info::before {
-  background: linear-gradient(180deg, #03c3ec 0%, #02a8cc 100%);
+  background: #18181b;
 }
 
 /* Stats Card */
@@ -71,7 +70,7 @@
   border-radius: var(--border-radius);
   padding: 1.5rem;
   background: #fff;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #e4e4e7;
   transition: var(--transition);
 }
 
@@ -94,87 +93,222 @@
 .avatar-initial {
   border-radius: 12px;
   transition: var(--transition);
+  background: #18181b !important;
+  color: #fafafa !important;
 }
 
 .card:hover .avatar-initial {
   transform: scale(1.05);
 }
 
-/* Buttons */
+/* Neutralize accent labels - shadcn style (gray background) */
+.bg-label-primary,
+.bg-label-success,
+.bg-label-warning,
+.bg-label-dark,
+.bg-label-secondary {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+}
+
+/* Badge Paket - Black background, white text */
+.bg-label-info {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
+}
+
+/* Stats icon - gray background */
+.stats-icon.bg-label-primary,
+.stats-icon.bg-label-success,
+.stats-icon.bg-label-warning,
+.stats-icon.bg-label-info {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+.bg-label-danger {
+  background: #dc2626 !important;
+  color: #fafafa !important;
+}
+
+.bg-label-warning {
+  background: #f59e0b !important;
+  color: #fafafa !important;
+}
+
+/* ========================================= */
+/* BUTTONS - ALL BLACK */
+/* ========================================= */
 .btn {
-  border-radius: 8px;
-  padding: 0.625rem 1.25rem;
-  font-weight: 600;
-  transition: var(--transition);
-  border: none;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-  box-shadow: 0 2px 8px rgba(105, 108, 255, 0.3);
+.btn-primary,
+.btn.btn-primary {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  box-shadow: none !important;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #5a5dc9 0%, #4a4db9 100%);
-  box-shadow: 0 4px 12px rgba(105, 108, 255, 0.4);
-  transform: translateY(-1px);
+.btn-primary:hover,
+.btn.btn-primary:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+  transform: none !important;
 }
 
-.btn-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%);
-  box-shadow: 0 2px 8px rgba(255, 171, 0, 0.3);
+.btn-success,
+.btn.btn-success {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  box-shadow: none !important;
 }
 
-.btn-warning:hover {
-  background: linear-gradient(135deg, #e09900 0%, #c78800 100%);
-  box-shadow: 0 4px 12px rgba(255, 171, 0, 0.4);
-  transform: translateY(-1px);
+.btn-success:hover,
+.btn.btn-success:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
-.btn-success {
-  background: linear-gradient(135deg, #71dd37 0%, #5cb82e 100%);
-  box-shadow: 0 2px 8px rgba(113, 221, 55, 0.3);
+.btn-warning,
+.btn.btn-warning {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  box-shadow: none !important;
 }
 
-.btn-secondary {
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  color: #6c757d;
+.btn-warning:hover,
+.btn.btn-warning:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
-.btn-secondary:hover {
-  background: #e9ecef;
-  border-color: #ccc;
+.btn-secondary,
+.btn.btn-secondary {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn-secondary:hover,
+.btn.btn-secondary:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
 .btn-sm {
-  padding: 0.375rem 0.875rem;
-  font-size: 0.875rem;
+  padding: 0.375rem 0.75rem !important;
+  font-size: 0.8125rem !important;
 }
 
-/* Badges */
+/* Outline Buttons */
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn.btn-outline-primary,
+.btn.btn-outline-secondary,
+.btn.btn-outline-success {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn.btn-outline-primary:hover,
+.btn.btn-outline-secondary:hover,
+.btn.btn-outline-success:hover {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #18181b !important;
+  color: #18181b !important;
+}
+
+/* ========================================= */
+/* BADGES - SHADCN STYLE */
+/* ========================================= */
 .badge {
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 0.75rem;
-  letter-spacing: 0.3px;
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+}
+
+.badge.bg-success,
+.bg-success {
+  background: #22c55e !important;
+  color: #fafafa !important;
+}
+
+.badge.bg-warning,
+.bg-warning {
+  background: #f59e0b !important;
+  color: #fafafa !important;
+}
+
+.badge.bg-danger,
+.bg-danger {
+  background: #dc2626 !important;
+  color: #fafafa !important;
+}
+
+.badge.bg-primary,
+.bg-primary:not(.btn):not(.modal-header) {
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+.badge.bg-info,
+.bg-info:not(.btn) {
+  background: #18181b !important;
+  color: #fafafa !important;
 }
 
 /* Form Controls */
 .form-select, .form-control {
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e4e4e7;
   padding: 0.625rem 1rem;
   transition: var(--transition);
 }
 
 .form-select:focus, .form-control:focus {
-  border-color: #696cff;
-  box-shadow: 0 0 0 3px rgba(105, 108, 255, 0.1);
+  border-color: #18181b;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b;
 }
 
-/* Modal */
+/* Modal - Black Header */
 .modal-content {
   border-radius: 16px;
   border: none;
@@ -185,14 +319,26 @@
   border-radius: 16px 16px 0 0;
   padding: 1.5rem;
   border-bottom: none;
+  background: #18181b !important;
+  color: #fafafa !important;
 }
 
-.modal-header.bg-primary {
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%) !important;
+.modal-header.bg-primary,
+.modal-header.bg-warning,
+.modal-header.bg-success,
+.modal-header.bg-info {
+  background: #18181b !important;
+  color: #fafafa !important;
 }
 
-.modal-header.bg-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%) !important;
+.modal-header .modal-title,
+.modal-header h5,
+.modal-header .btn-close {
+  color: #fafafa !important;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1) !important;
 }
 
 .modal-body {
@@ -203,12 +349,23 @@
 
 .modal-footer {
   padding: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #e4e4e7;
   background: #fafafa;
 }
 
 .btn-close-white {
   filter: brightness(0) invert(1);
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-backdrop.show {
+  opacity: 0.4;
+  background-color: #18181b;
 }
 
 /* Table */
@@ -218,11 +375,11 @@
 }
 
 .table thead th {
-  background: #f8f9fa;
+  background: #f8fafc;
   border: none;
   padding: 1rem;
   font-weight: 600;
-  color: #5a5f7d;
+  color: #18181b;
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -234,14 +391,14 @@
 }
 
 .table tbody tr:not(.empty-state-row):hover {
-  background: #f8f9ff;
-  transform: scale(1.001);
+  background: #f4f4f5;
 }
 
 .table tbody td {
   padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e4e4e7;
   vertical-align: middle;
+  color: #18181b;
 }
 
 /* Empty State */
@@ -261,11 +418,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(24, 24, 27, 0.5);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  backdrop-filter: blur(4px);
 }
 
 /* ========================================= */
@@ -274,32 +432,32 @@
 .customer-header-info {
   text-align: center;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  background: #f4f4f5;
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #e4e4e7;
 }
 
 .customer-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
+  background: #18181b !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #fafafa !important;
   font-weight: 700;
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  box-shadow: 0 4px 16px rgba(105, 108, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(24, 24, 27, 0.3);
   border: 4px solid white;
 }
 
 .customer-name {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #18181b;
   margin-bottom: 0.5rem;
 }
 
@@ -314,7 +472,7 @@
 
 .detail-section {
   background: #ffffff;
-  border: 1px solid #e8e8e8;
+  border: 1px solid #e4e4e7;
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
@@ -323,11 +481,11 @@
 
 .detail-section:hover {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-color: #696cff;
+  border-color: #18181b;
 }
 
 .detail-section h6 {
-  color: #696cff;
+  color: #18181b;
   font-weight: 700;
   margin-bottom: 1.25rem;
   font-size: 0.9rem;
@@ -336,7 +494,7 @@
   display: flex;
   align-items: center;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #696cff;
+  border-bottom: 2px solid #18181b;
 }
 
 .detail-section h6 i {
@@ -347,7 +505,7 @@
 .detail-item {
   display: flex;
   padding: 0.875rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e4e4e7;
   align-items: flex-start;
 }
 
@@ -357,7 +515,7 @@
 }
 
 .detail-label {
-  color: #5a5f7d;
+  color: #71717a;
   font-weight: 600;
   min-width: 150px;
   font-size: 0.875rem;
@@ -367,12 +525,12 @@
 
 .detail-label i {
   margin-right: 0.5rem;
-  color: #a8afc7;
+  color: #a1a1aa;
   font-size: 1rem;
 }
 
 .detail-value {
-  color: #2c3e50;
+  color: #18181b;
   font-size: 0.875rem;
   flex: 1;
   word-break: break-word;
@@ -382,22 +540,35 @@
 .card-header {
   background: transparent;
   padding: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e4e4e7;
 }
 
 .card-header-custom {
-  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  background: #ffffff !important;
+  color: #18181b !important;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   padding: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.card-header-custom h4,
+.card-header-custom h5,
+.card-header-custom p,
+.card-header-custom i,
+.card-header-custom small {
+  color: #18181b !important;
+}
+
+.card-header-custom .opacity-75 {
+  color: #71717a !important;
 }
 
 /* Input Groups */
 .input-group-text {
   border-radius: 8px 0 0 8px;
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  color: #5a5f7d;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  color: #18181b;
   font-weight: 500;
 }
 
@@ -409,7 +580,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #e4e4e7;
   background: #fafafa;
   border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
@@ -427,8 +598,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e0e0e0;
-  color: #6c757d;
+  border: 1px solid #e4e4e7;
+  color: #18181b;
   font-weight: 600;
   background-color: #fff;
   margin: 0 2px;
@@ -436,29 +607,29 @@
 }
 
 .pagination .page-item .page-link:hover {
-  background-color: #f3f2ff;
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+  background-color: #18181b;
+  border-color: #18181b;
+  color: #fafafa;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(105, 108, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(24, 24, 27, 0.2);
 }
 
 .pagination .page-item.active .page-link {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(105, 108, 255, 0.4);
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+  box-shadow: 0 4px 12px rgba(24, 24, 27, 0.4);
 }
 
 .pagination .page-item.disabled .page-link {
-  background-color: #f8f9fa;
-  border-color: #e0e0e0;
-  color: #adb5bd;
+  background-color: #f4f4f5;
+  border-color: #e4e4e7;
+  color: #a1a1aa;
   cursor: not-allowed;
 }
 
 .pagination-info {
-  color: #6c757d;
+  color: #71717a;
   font-size: 0.875rem;
   font-weight: 500;
 }
@@ -469,6 +640,31 @@
 .dataTables_length,
 .dataTables_filter {
   display: none !important;
+}
+
+/* Text colors */
+.text-primary {
+  color: #18181b !important;
+}
+
+.text-success {
+  color: #18181b !important;
+}
+
+.text-info {
+  color: #18181b !important;
+}
+
+.text-danger {
+  color: #dc2626 !important;
+}
+
+.text-warning {
+  color: #f59e0b !important;
+}
+
+.text-muted {
+  color: #71717a !important;
 }
 
 /* Animations */
@@ -993,14 +1189,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div class="d-flex align-items-center gap-2">
           @if($tagihans->total() > 0)
-            <span class="badge bg-label-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+            <span class="badge" style="padding: 10px 20px; font-size: 14px; background: rgba(24, 24, 27, 0.1); color: #18181b; border: 1px solid rgba(24, 24, 27, 0.2);">
               <i class="ri-database-2-line me-1"></i>
-              {{ $tagihans->total() }} Data Total
+              {{ $tagihans->total() }} Tagihan
             </span>
           @endif
 
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTagihan">
-            <i class="ri-add-line me-1"></i>Tagihan Outstanding
+            <span style="color: #fafafa; font-weight: bold;">+</span> Tambah Outstanding
           </button>
         </div>
       </div>
@@ -1027,6 +1223,7 @@ document.addEventListener("DOMContentLoaded", function () {
               $status = strtolower($item['status_pembayaran'] ?? '');
               $badgeClass = match($status) {
                 'lunas' => 'badge bg-success',
+                'proses verifikasi' => 'badge bg-warning',
                 'belum bayar' => 'badge bg-danger',
                 default => 'badge bg-secondary',
               };
@@ -1062,7 +1259,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <td><strong>{{ $item['nama_lengkap'] }}</strong></td>
               <td>
                 <a href="https://wa.me/{{ $item['no_whatsapp'] }}" target="_blank" class="text-decoration-none">
-                  <code style="background: #f8f9fa; padding: 6px 12px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; color: #25D366;">
+                  <code style="background: #18181b; padding: 6px 12px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; color: #fafafa;">
                     <i class="ri-whatsapp-line me-1"></i>{{ $item['no_whatsapp'] }}
                   </code>
                 </a>
@@ -1162,20 +1359,16 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="modal fade" id="detailModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
+      <div class="modal-header bg-primary py-4">
         <h5 class="modal-title text-white fw-bold">
           <i class="ri-information-line me-2"></i>Detail Pelanggan
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1); opacity: 1;"></button>
       </div>
       <div class="modal-body">
         <!-- Content will be inserted via JavaScript -->
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          <i class="ri-close-line me-1"></i>Tutup
-        </button>
-      </div>
+
     </div>
   </div>
 </div>
@@ -1390,11 +1583,11 @@ document.addEventListener("DOMContentLoaded", function () {
         @csrf
         @method('PUT')
 
-        <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title fw-bold">
+        <div class="modal-header bg-warning py-4">
+          <h5 class="modal-title text-white fw-bold">
             <i class="ri-edit-2-line me-2"></i>Edit Tagihan
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1); opacity: 1;"></button>
         </div>
 
         <div class="modal-body">
@@ -1430,9 +1623,8 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-warning">
+        <div class="modal-footer py-4">
+           <button type="submit" class="btn btn-warning">
             <i class="ri-save-line me-1"></i>Simpan Perubahan
           </button>
         </div>

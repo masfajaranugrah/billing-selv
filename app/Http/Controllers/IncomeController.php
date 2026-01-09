@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Models\LedgerDaily;
+use App\Models\Rekening;
+use App\Models\Tagihan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -12,9 +14,18 @@ class IncomeController extends Controller
 {
     public function index()
     {
-        $incomes = Income::all(); // ambil semua data
+        $incomes = Income::latest()->get();
 
-        return view('content.apps.Laba.masuk.masuk', compact('incomes'));
+        // Rekap bank: support records yang menyimpan nama_bank langsung (tanpa relasi) dan hanya hitung yang sudah lunas
+        $bankTotals = Tagihan::leftJoin('rekenings', 'rekenings.id', '=', 'tagihans.type_pembayaran')
+            ->leftJoin('pakets', 'pakets.id', '=', 'tagihans.paket_id')
+            ->where('tagihans.status_pembayaran', 'lunas')
+            ->selectRaw('COALESCE(rekenings.nama_bank, tagihans.type_pembayaran, "Lainnya") as nama_bank, SUM(COALESCE(tagihans.harga, pakets.harga, 0)) as total')
+            ->groupByRaw('COALESCE(rekenings.nama_bank, tagihans.type_pembayaran, "Lainnya")')
+            ->orderByDesc('total')
+            ->get();
+
+        return view('content.apps.Laba.masuk.masuk', compact('incomes', 'bankTotals'));
     }
 
     public function create()
@@ -123,8 +134,8 @@ class IncomeController extends Controller
     $tanggalSebelumnya = Carbon::parse($income->tanggal_masuk)->toDateString();
 
     // Parse tanggal masuk baru
-    $tanggalMasukBaru = $request->tanggal_masuk 
-        ? Carbon::parse($request->tanggal_masuk) 
+    $tanggalMasukBaru = $request->tanggal_masuk
+        ? Carbon::parse($request->tanggal_masuk)
         : Carbon::parse($income->tanggal_masuk);
 
     $income->update([
@@ -144,10 +155,10 @@ class IncomeController extends Controller
  public function destroy($id)
 {
     $income = Income::findOrFail($id);
-    
+
     // Perbaiki: Parse tanggal_masuk ke Carbon terlebih dahulu
     $tanggal = Carbon::parse($income->tanggal_masuk)->toDateString();
-    
+
     $income->delete();
 
     $this->updateLedger($tanggal);

@@ -33,23 +33,23 @@ document.addEventListener('DOMContentLoaded', function () {
         @csrf
         @method('PUT')
 
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6" style="background: #f4f4f5; padding: 1.5rem; border-radius: 12px; border: 1px solid #e4e4e7;">
             <div>
-                <h4 class="mb-1">Edit Data Karyawan</h4>
-                <p class="text-muted mb-0">Perbarui informasi karyawan di bawah ini.</p>
+                <h4 class="mb-1" style="color: #18181b; font-weight: 700;">Edit Data Karyawan</h4>
+                <p class="text-muted mb-0" style="color: #71717a !important;">Perbarui informasi karyawan di bawah ini.</p>
             </div>
             <div class="d-flex gap-3">
-                <a href="{{ route('karyawan.index') }}" class="btn btn-label-secondary">Batal</a>
-                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <a href="{{ route('karyawan.index') }}" class="btn" style="background: transparent; border: 1px solid #e4e4e7; color: #18181b; border-radius: 8px; padding: 0.625rem 1.5rem; font-weight: 600;">Batal</a>
+                <button type="submit" class="btn" style="background: #18181b; color: #fafafa; border: none; padding: 0.625rem 1.5rem; border-radius: 8px; font-weight: 600;">Simpan Perubahan</button>
             </div>
         </div>
 
         <div class="row">
             <div class="col-12">
                 <!-- Informasi Karyawan -->
-                <div class="card mb-6 shadow-sm">
-                    <div class="card-header bg-light mb-4">
-                        <h5 class="card-title mb-0 fw-semibold text-dark">Informasi Karyawan</h5>
+                <div class="card mb-6" style="border-radius: 12px; border: none; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                    <div class="card-header mb-4" style="background: #18181b; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem;">
+                        <h5 class="card-title mb-0 fw-semibold" style="color: #fafafa;">Informasi Karyawan</h5>
                     </div>
                     <div class="card-body">
 

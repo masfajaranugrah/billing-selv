@@ -43,9 +43,33 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
 
 
 <style>
-@keyframes spin {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
+@keyframes pulse-glow {
+  0% { opacity: 0.4; letter-spacing: 0.1rem; }
+  50% { opacity: 1; letter-spacing: 0.2rem; }
+  100% { opacity: 0.4; letter-spacing: 0.1rem; }
+}
+
+.loading-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  text-transform: uppercase;
+}
+
+.loading-text {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #18181b;
+  animation: pulse-glow 1.4s ease-in-out infinite;
+}
+
+.loading-sub {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #7980ff;
+  letter-spacing: 0.12rem;
 }
 </style>
 </head>
@@ -65,26 +89,21 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
     align-items: center;
     justify-content: center;
 ">
-    <div class="spinner" style="
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-    "></div>
+    <div class="loading-brand">
+      <span class="loading-text">JMK</span>
+     </div>
 </div>
 
   <!-- Layout Content -->
   @yield('layoutContent')
   <!--/ Layout Content -->
 
-  
+
 
   <!-- Include Scripts -->
   <!-- $isFront is used to append the front layout scripts only on the front layout otherwise the variable will be blank -->
   @include('layouts/sections/scripts' . $isFront)
-  
+
   <!-- Chat Notification System for Admin -->
   @auth('web')
     @if(in_array(\Illuminate\Support\Facades\Auth::user()->role, ['administrator', 'admin']))
@@ -97,7 +116,7 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
       @vite(['resources/js/bootstrap.js', 'resources/js/echo.js', 'resources/js/chat-notification.js'])
     @endif
   @endauth
-  
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const loadingOverlay = document.getElementById('loading-overlay');
@@ -116,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
-  
+
 
 </body>
 

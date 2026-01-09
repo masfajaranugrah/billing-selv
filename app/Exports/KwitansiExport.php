@@ -2,36 +2,61 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Tagihan;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class KwitansiExport implements FromCollection, WithHeadings
+class KwitansiExport implements FromQuery, WithMapping, WithHeadings, WithChunkReading, ShouldQueue
 {
-    protected $tagihans;
+    use Exportable;
 
-    public function __construct($tagihans)
+    protected $status;
+    protected $kabupaten;
+    protected $kecamatan;
+
+    public function __construct($status = null, $kabupaten = null, $kecamatan = null)
     {
-        $this->tagihans = $tagihans;
+        $this->status = $status;
+        $this->kabupaten = $kabupaten;
+        $this->kecamatan = $kecamatan;
     }
 
-    public function collection()
+    public function query()
     {
-        return $this->tagihans->map(function ($tagihan) {
-            return [
-                'Nomor ID' => $tagihan->pelanggan->nomer_id ?? '',
-                'Nama Lengkap' => $tagihan->pelanggan->nama_lengkap ?? '',
-                'Paket' => $tagihan->paket->nama_paket ?? '',
-                'Harga' => $tagihan->paket->harga ?? '',
-                'Tanggal Mulai' => $tagihan->tanggal_mulai,
-                'Tanggal Berakhir' => $tagihan->tanggal_berakhir,
-                'Status Pembayaran' => $tagihan->status_pembayaran,
-                'Catatan' => $tagihan->catatan,
-                // Gunakan URL/public path agar bisa diakses sebagai link
-                'Kwitansi' => $tagihan->kwitansi_path
-                    ? asset('storage/'.$tagihan->kwitansi_path)
-                    : '',
-            ];
-        });
+        return Tagihan::with(['pelanggan', 'paket'])
+            ->when($this->status, function ($query, $status) {
+                $query->where('status_pembayaran', $status);
+            })
+            ->when($this->kabupaten, function ($query, $kabupaten) {
+                $query->whereHas('pelanggan', function ($q) use ($kabupaten) {
+                    $q->where('kabupaten', $kabupaten);
+                });
+            })
+            ->when($this->kecamatan, function ($query, $kecamatan) {
+                $query->whereHas('pelanggan', function ($q) use ($kecamatan) {
+                    $q->where('kecamatan', $kecamatan);
+                });
+            })
+            ->orderBy('tanggal_mulai', 'desc');
+    }
+
+    public function map($tagihan): array
+    {
+        return [
+            $tagihan->pelanggan->nomer_id ?? '-',
+            $tagihan->pelanggan->nama_lengkap ?? '-',
+            $tagihan->paket->nama_paket ?? '-',
+            $tagihan->paket->harga ? number_format($tagihan->paket->harga, 0, ',', '.') : '-',
+            $tagihan->tanggal_mulai ?: '-',
+            $tagihan->tanggal_berakhir ?: '-',
+            ucfirst($tagihan->status_pembayaran ?? '-'),
+            $tagihan->catatan ?? '-',
+            $tagihan->kwitansi ? asset('storage/'.$tagihan->kwitansi) : '-',
+        ];
     }
 
     public function headings(): array
@@ -41,5 +66,10 @@ class KwitansiExport implements FromCollection, WithHeadings
             'Tanggal Mulai', 'Tanggal Berakhir',
             'Status Pembayaran', 'Catatan', 'Kwitansi',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
     }
 }

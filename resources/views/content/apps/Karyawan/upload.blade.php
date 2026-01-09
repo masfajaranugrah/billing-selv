@@ -59,7 +59,7 @@
         </form>
     {{-- Tombol upload manual (di luar form agar tetap di bawah) --}}
         <div class="mt-3 text-center">
-          <button type="button" id="submit-all" class="btn btn-primary">
+          <button type="button" id="submit-all" class="btn btn-dark">
             <i class="ti ti-upload"></i> Import Sekarang
           </button>
 

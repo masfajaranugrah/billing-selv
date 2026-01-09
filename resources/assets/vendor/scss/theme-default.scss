@@ -3,7 +3,7 @@
 @import './_theme/libs';
 @import './_theme/pages';
 
-$primary-color: #666cff;
+$primary-color: #000000;
 $body-bg: #f7f7f9;
 
 body {
@@ -25,6 +25,7 @@ body {
 .layout-horizontal .layout-navbar {
   box-shadow: 0 1px 0 $border-color;
 }
+
 .layout-navbar-fixed .layout-page:not(.window-scrolled) .layout-navbar.navbar-detached {
   background: $body-bg;
 }
@@ -32,23 +33,24 @@ body {
 // Menu
 // ---------------------------------------------------------------------------
 
-@include template-menu-style(
-  '.bg-menu-theme',
+@include template-menu-style('.bg-menu-theme',
   $body-bg,
   $color: $headings-color,
   $active-color: $headings-color,
   $border: transparent,
-  $active-bg: $primary-color
-);
+  $active-bg: $primary-color);
+
 @include media-breakpoint-up($menu-collapsed-layout-breakpoint) {
   .layout-menu-collapsed.layout-menu-hover .bg-menu-theme {
     box-shadow: $box-shadow-lg;
   }
 }
+
 .bg-menu-theme {
   &.menu-horizontal {
     background-color: $card-bg !important;
-    .menu-inner .menu-item:not(.menu-item-closing) > .menu-sub {
+
+    .menu-inner .menu-item:not(.menu-item-closing)>.menu-sub {
       background: $card-bg;
     }
   }

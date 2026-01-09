@@ -11,76 +11,127 @@
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss'
 ])
 <style>
-  .card-header-custom {
-    color: black;
-    border-radius: 12px 12px 0 0 !important;
-    padding: 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .btn-add {
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  .btn-add:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-  }
-  .btn-add i {
-    margin-right: 8px;
-  }
-  .table-modern {
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .table-modern thead th {
-    background: #f8f9fa;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    border: none;
-    padding: 16px;
-  }
-  .table-modern tbody tr {
-    transition: all 0.2s;
-    border-bottom: 1px solid #f1f1f1;
-  }
-  .table-modern tbody tr:hover {
-    background-color: #f8f9ff !important;
-    transform: scale(1.001);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-  .spinner-border-custom {
-    width: 3rem;
-    height: 3rem;
-    border-width: 0.3rem;
-  }
-  .badge.bg-label-primary {
-    background: rgba(105, 108, 255, 0.12) !important;
-    color: #696cff !important;
-    font-weight: 600;
-  }
-  .badge.bg-label-info {
-    background: rgba(3, 195, 236, 0.12) !important;
-    color: #03c3ec !important;
-    font-weight: 600;
-  }
+/* ========================================= */
+/* SHADCN UI STYLE - BLACK & WHITE */
+/* ========================================= */
+:root {
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-color: #18181b;
+  --gray-border: #e4e4e7;
+}
+
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  background: white;
+  transition: var(--transition);
+}
+.card:hover { box-shadow: var(--card-hover-shadow); }
+
+.card-header-custom {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--gray-border);
+  padding: 1.5rem;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  color: #18181b;
+}
+.card-header-custom h4 { color: #18181b !important; }
+.card-header-custom p { color: #71717a !important; }
+.card-header-custom i { color: #18181b !important; }
+
+.btn-primary, .btn.btn-primary, .btn-add {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(24,24,27,0.2);
+}
+.btn-primary:hover, .btn-add:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24,24,27,0.3);
+}
+.btn-add i { margin-right: 8px; }
+
+.table-modern { border-radius: 8px; overflow: hidden; }
+.table-modern thead th {
+  background: #f8fafc;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #18181b;
+  border: none;
+  padding: 1rem;
+}
+.table-modern tbody tr {
+  transition: all 0.2s;
+  border-bottom: 1px solid #e4e4e7;
+}
+.table-modern tbody tr:hover { background-color: #f4f4f5 !important; }
+.table-modern tbody td { padding: 1rem; color: #18181b; vertical-align: middle; }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 24, 27, 0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.spinner-border-custom { width: 3rem; height: 3rem; border-width: 0.3rem; }
+
+.badge.bg-label-primary { background: #18181b !important; color: #fafafa !important; font-weight: 600; }
+.badge.bg-label-info { background: #18181b !important; color: #fafafa !important; font-weight: 600; }
+
+.icon-wrapper.bg-label-primary { background: #18181b !important; }
+.icon-wrapper.bg-label-primary i { color: #fafafa !important; }
+
+.btn-outline-primary, .btn-outline-danger {
+  background: transparent !important;
+  border: 1px solid #18181b !important;
+  color: #18181b !important;
+}
+.btn-outline-primary:hover, .btn-outline-danger:hover {
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+code {
+  background: #18181b !important;
+  color: #fafafa !important;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+  border-radius: 50% !important;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e4e4e7;
+  color: #18181b;
+  font-weight: 600;
+  background-color: #fff;
+}
+.pagination .page-item .page-link:hover { background-color: #f4f4f5; border-color: #18181b; }
+.pagination .page-item.active .page-link { background-color: #18181b !important; border-color: #18181b !important; color: #fafafa !important; }
 </style>
 @endsection
 

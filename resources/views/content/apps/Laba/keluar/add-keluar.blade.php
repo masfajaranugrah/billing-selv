@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Tampilkan input kategori DLL jika dipilih
     kategoriSelect.addEventListener('change', () => {
-        if(kategoriSelect.value === 'DLL') {
+        if(kategoriSelect.value.includes('DLL')) {
             dllInputWrapper.style.display = 'block';
             dllInput.required = true;
         } else {
@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
 @endsection
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Tambah Pengeluaran</h5>
-        <a href="{{ route('keluar.index') }}" class="btn btn-secondary">Batal</a>
+<div class="card" style="border-radius: 12px; border: none; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+    <div class="card-header d-flex justify-content-between align-items-center" style="background: #18181b; border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem;">
+        <h5 class="mb-0" style="color: #fafafa; font-weight: 600;">Tambah Pengeluaran</h5>
+        <a href="{{ route('keluar.index') }}" class="btn" style="background: transparent; border: 1px solid #fafafa; color: #fafafa; border-radius: 8px;">Batal</a>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="padding: 2rem;">
         <form action="{{ route('keluar.store') }}" method="POST">
             @csrf
 
@@ -75,8 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 <label for="kategori" class="form-label">Kategori</label>
                 <select class="form-select" id="kategori" name="kategori" required>
                     <option value="">-- Pilih Kategori --</option>
-                    @foreach($kategori_default as $k)
-                        <option value="{{ $k }}">{{ $k }}</option>
+                    @foreach($kategori_default as $nama => $kode)
+                        <option value="{{ $nama }}">{{ $kode }} - {{ $nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -109,8 +109,8 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
 
             <div class="d-flex justify-content-end gap-2">
-                <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="{{ route('keluar.index') }}" class="btn btn-secondary">Batal</a>
+                <button type="submit" class="btn" style="background: #18181b; color: #fafafa; border: none; padding: 0.625rem 2rem; border-radius: 8px; font-weight: 600;">Simpan</button>
+                <a href="{{ route('keluar.index') }}" class="btn" style="background: transparent; border: 1px solid #e4e4e7; color: #18181b; border-radius: 8px; padding: 0.625rem 2rem;">Batal</a>
             </div>
         </form>
     </div>

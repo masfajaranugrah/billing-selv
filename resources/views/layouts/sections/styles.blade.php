@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <!-- PWA -->
-<meta name="theme-color" content="#6777ef">
+<meta name="theme-color" content="#000">
 <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
  
 <link rel="manifest" href="{{ asset('manifest.json') }}?v={{ filemtime(public_path('manifest.json')) }}">

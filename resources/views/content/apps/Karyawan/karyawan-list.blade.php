@@ -15,213 +15,586 @@ use Illuminate\Support\Str;
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss'
 ])
 <style>
-  .stats-card {
-    border-radius: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .stats-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  }
-  .badge-status {
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-  }
-  .action-buttons {
-    gap: 12px;
-  }
+/* ========================================= */
+/* SHADCN UI STYLE - BLACK & WHITE */
+/* ========================================= */
+:root {
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  --border-radius: 12px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-color: #18181b;
+  --gray-bg: #fafafa;
+  --gray-border: #e4e4e7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f5f5f9;
+}
+
+/* ========== CARD ========== */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  background: white;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* ========== HEADER SECTION ========== */
+.card-header-custom {
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--gray-border);
+  padding: 1.5rem;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-header-custom h4 {
+  color: #18181b !important;
+  font-size: 1.5rem;
+}
+
+.card-header-custom p {
+  color: #71717a !important;
+}
+
+.card-header-custom i {
+  color: #18181b !important;
+}
+
+/* ========== BUTTONS - ALL BLACK ========== */
+.btn {
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+
+.btn-primary,
+.btn.btn-primary {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+  box-shadow: none !important;
+}
+
+.btn-primary:hover,
+.btn.btn-primary:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.btn-add {
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(24, 24, 27, 0.25) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(24, 24, 27, 0.35) !important;
+}
+
+.btn-add i {
+  color: #fafafa !important;
+}
+
+.btn-secondary,
+.btn.btn-secondary {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn-secondary:hover,
+.btn.btn-secondary:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.btn-danger,
+.btn.btn-danger {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn-danger:hover,
+.btn.btn-danger:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+/* Outline Buttons */
+.btn-outline-primary,
+.btn.btn-outline-primary {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn-outline-primary:hover,
+.btn.btn-outline-primary:hover {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.btn-outline-danger,
+.btn.btn-outline-danger {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn-outline-danger:hover,
+.btn.btn-outline-danger:hover {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ========== TABLE STYLES ========== */
+.table-modern {
+  margin-bottom: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-modern thead th {
+  background: #f8fafc;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #18181b;
+  padding: 1rem;
+  border: none;
+  white-space: nowrap;
+}
+
+.table-modern tbody tr {
+  transition: var(--transition);
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.table-modern tbody tr:hover {
+  background-color: #f4f4f5 !important;
+}
+
+.table-modern tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #e4e4e7;
+  color: #18181b;
+}
+
+.table-modern thead th:first-child,
+.table-modern tbody td:first-child {
+  text-align: center;
+  width: 60px;
+}
+
+/* ========== BADGES - SHADCN STYLE ========== */
+.badge {
+  border-radius: 9999px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  padding: 0.35rem 0.75rem !important;
+}
+
+.bg-label-dark {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+}
+
+.bg-label-info {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+}
+
+/* ========== PAGINATION STYLES ========== */
+/* Wrapper for info and pagination - flexbox layout */
+.dataTables_wrapper > div:last-child,
+.card-datatable .dataTables_wrapper::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.dataTables_wrapper {
+  position: relative;
+}
+
+/* Create flex container for info + pagination row */
+.dataTables_wrapper .row:last-child,
+.dataTables_wrapper > .dataTables_info,
+.dataTables_wrapper > .dataTables_paginate {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Info text - left side */
+.dataTables_wrapper .dataTables_info {
+  float: left !important;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+  color: #71717a;
+  font-size: 0.875rem;
+}
+
+/* Pagination - right side */
+.dataTables_wrapper .dataTables_paginate {
+  float: right !important;
+  text-align: right !important;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+  justify-content: flex-end !important;
+  margin: 0 !important;
+  flex-wrap: wrap;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_paginate .page-item .page-link,
+.page-item .page-link {
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 4px !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+.dataTables_wrapper .dataTables_paginate .page-item .page-link:hover,
+.page-item .page-link:hover {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #18181b !important;
+  color: #18181b !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link,
+.page-item.active .page-link {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link,
+.page-item.disabled .page-link {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #e4e4e7 !important;
+  color: #a1a1aa !important;
+  cursor: not-allowed !important;
+}
+
+/* Override any purple/primary colors from theme */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:not(.disabled),
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link:hover {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+  box-shadow: none !important;
+}
+
+/* Clear floats */
+.dataTables_wrapper::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* ========== LOADING OVERLAY ========== */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(24, 24, 27, 0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner-border-custom {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+}
+
+/* ========== MODAL STYLING ========== */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-backdrop.show {
+  opacity: 1 !important;
+}
+
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+  background: #18181b !important;
+  border-radius: 16px 16px 0 0;
+  color: white;
+  padding: 1.75rem 2rem;
+  border: none;
+}
+
+.modal-title {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #fafafa !important;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+  opacity: 1;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e4e4e7;
+  background: #fafafa;
+  border-radius: 0 0 16px 16px;
+}
+
+.employee-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #18181b !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 16px rgba(24, 24, 27, 0.4);
+  border: 4px solid white;
+}
+
+.detail-section {
+  background: white;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.detail-section:hover {
+  border-color: #18181b;
+  box-shadow: 0 2px 8px rgba(24, 24, 27, 0.1);
+}
+
+.detail-section h6 {
+  color: #18181b !important;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #18181b;
+  display: flex;
+  align-items: center;
+}
+
+.detail-section h6 i {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  color: #18181b !important;
+}
+
+.detail-item {
+  display: flex;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detail-label {
+  color: #71717a;
+  font-weight: 600;
+  min-width: 150px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+.detail-label i {
+  margin-right: 0.5rem;
+  color: #18181b !important;
+  font-size: 1rem;
+}
+
+.detail-value {
+  color: #18181b;
+  font-size: 0.875rem;
+  flex: 1;
+  word-break: break-word;
+}
+
+.employee-header-info {
+  text-align: center;
+  padding: 1.5rem;
+  background: #fafafa;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e4e4e7;
+}
+
+.employee-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #18181b;
+  margin-bottom: 0.5rem;
+}
+
+.employee-position {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: #18181b !important;
+  color: white;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 8px rgba(24, 24, 27, 0.3);
+}
+
+/* ========== TEXT COLORS ========== */
+.text-primary {
+  color: #18181b !important;
+}
+
+.text-muted {
+  color: #71717a !important;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
   .card-header-custom {
-    color: black;
-    border-radius: 12px 12px 0 0 !important;
-    padding: 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem 1.25rem;
   }
+
   .btn-add {
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  .btn-add:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-  }
-  .btn-add i {
-    margin-right: 8px;
-  }
-  .table-modern {
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .table-modern thead th {
-    background: #f8f9fa;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    border: none;
-    padding: 16px;
-  }
-  .table-modern tbody tr {
-    transition: all 0.2s;
-    border-bottom: 1px solid #f1f1f1;
-  }
-  .table-modern tbody tr:hover {
-    background-color: #f8f9ff !important;
-    transform: scale(1.001);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
   }
-  .spinner-border-custom {
-    width: 3rem;
-    height: 3rem;
-    border-width: 0.3rem;
-  }
-  .modal-content {
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-  }
-  .modal-header {
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-    border-radius: 16px 16px 0 0;
-    padding: 1.5rem;
-    border-bottom: none;
-  }
-  .modal-title {
-    font-weight: 600;
-    font-size: 1.125rem;
-    color: #ffffff;
-  }
-  .modal-body {
-    padding: 2rem;
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-  .modal-footer {
-    padding: 1.5rem;
-    border-top: 1px solid #f0f0f0;
-    background: #fafafa;
-  }
-  .btn-close-white {
-    filter: brightness(0) invert(1);
-  }
-  .employee-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 16px rgba(105, 108, 255, 0.4);
-    border: 4px solid white;
-  }
-  .detail-section {
-    background: #ffffff;
-    border: 1px solid #e8e8e8;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-    transition: all 0.2s;
-  }
-  .detail-section:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border-color: #696cff;
-  }
-  .detail-section h6 {
-    color: #696cff;
-    font-weight: 700;
-    margin-bottom: 1.25rem;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    display: flex;
-    align-items: center;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #696cff;
-  }
-  .detail-section h6 i {
-    margin-right: 0.5rem;
-    font-size: 1.1rem;
-  }
-  .detail-item {
-    display: flex;
-    padding: 0.875rem 0;
-    border-bottom: 1px solid #f0f0f0;
-    align-items: flex-start;
-  }
-  .detail-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
+
   .detail-label {
-    color: #5a5f7d;
-    font-weight: 600;
-    min-width: 150px;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
+    min-width: 120px;
+    font-size: 0.8rem;
   }
-  .detail-label i {
-    margin-right: 0.5rem;
-    color: #a8afc7;
-    font-size: 1rem;
-  }
+
   .detail-value {
-    color: #2c3e50;
-    font-size: 0.875rem;
-    flex: 1;
-    word-break: break-word;
+    font-size: 0.8rem;
   }
-  .badge.bg-label-info {
-    background: rgba(3, 195, 236, 0.12) !important;
-    color: #03c3ec !important;
-    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .table-modern {
+    font-size: 0.85rem;
   }
-  .employee-header-info {
-    text-align: center;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    border: 1px solid #e8e8e8;
+
+  .table-modern thead th,
+  .table-modern tbody td {
+    padding: 0.75rem 0.5rem;
   }
-  .employee-name {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
-  }
-  .employee-position {
-    display: inline-block;
-    padding: 0.5rem 1.5rem;
-    background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-    color: white;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    box-shadow: 0 2px 8px rgba(105, 108, 255, 0.3);
-  }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+  animation: fadeIn 0.3s ease-out;
+}
 </style>
 @endsection
 
@@ -241,7 +614,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function showLoading() {
         $('.loading-overlay').css('display', 'flex');
     }
-    
+
     function hideLoading() {
         $('.loading-overlay').fadeOut(300);
     }
@@ -255,9 +628,9 @@ document.addEventListener("DOMContentLoaded", function() {
         ordering: true,
         info: true,
         responsive: false,
-        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f><rtip',
         columnDefs: [
-            { orderable: false, targets: [0, -1] }
+            { orderable: false, targets: [0, 1, -1] }
         ],
         language: {
             paginate: {
@@ -278,9 +651,9 @@ document.addEventListener("DOMContentLoaded", function() {
     $(document).on('click', '.btn-detail', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const tr = $(this).closest('tr');
-        
+
         // Get data from tr attributes
         const nik = tr.data('nik') || '-';
         const fullName = tr.data('nama') || '-';
@@ -384,7 +757,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <span class="detail-label">
                         <i class="ri-bank-card-line"></i>Nomor Rekening
                     </span>
-                    <span class="detail-value"><code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem;">${accountNumber}</code></span>
+                    <span class="detail-value"><code style="background: #f4f4f5; padding: 4px 8px; border-radius: 4px; font-size: 0.875rem; color: #18181b;">${accountNumber}</code></span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">
@@ -394,7 +767,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </div>
             </div>
         `;
-        
+
         $('#detailModal .modal-body').html(html);
         $('#detailModal').modal('show');
     });
@@ -414,8 +787,8 @@ document.addEventListener("DOMContentLoaded", function() {
             showCloseButton: false,
             confirmButtonText: 'Ya, Hapus!',
             cancelButtonText: 'Batal',
-            confirmButtonColor: '#f5365c',
-            cancelButtonColor: '#8898aa',
+            confirmButtonColor: '#18181b',
+            cancelButtonColor: '#71717a',
             reverseButtons: false,
             allowOutsideClick: false,
             customClass: {
@@ -428,7 +801,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const btn = $(form).find('.btn-delete');
                 btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Menghapus...');
                 showLoading();
-                
+
                 setTimeout(() => {
                     hideLoading();
                     Swal.fire({
@@ -474,12 +847,13 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
         </div>
     </div>
-    
+
     <div class="card-body p-0">
         <div class="card-datatable table-responsive p-3">
             <table class="datatables-users table table-modern table-hover">
                 <thead>
                     <tr>
+                        <th><i class="ri-hashtag me-1"></i>No</th>
                         <th><i class="ri-eye-line me-1"></i>Detail</th>
                         <th><i class="ri-id-card-line me-1"></i>NIK</th>
                         <th><i class="ri-user-3-line me-1"></i>Nama Lengkap</th>
@@ -506,16 +880,17 @@ document.addEventListener("DOMContentLoaded", function() {
                         data-no-rekening="{{ $employee->no_rekening }}"
                         data-atas-nama="{{ $employee->atas_nama }}"
                     >
+                        <td class="text-muted fw-semibold">{{ $loop->iteration }}</td>
                         <td>
                             <button class="btn btn-sm btn-icon btn-outline-primary btn-detail" title="Lihat Detail">
                                 <i class="ri-eye-line"></i>
                             </button>
                         </td>
-                        
+
                         <td>
                             <span class="badge bg-label-dark">{{ $employee->nik }}</span>
                         </td>
-                        
+
                         <td>
                             <div class="d-flex align-items-center">
                                 <div>
@@ -523,26 +898,26 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </div>
                             </div>
                         </td>
-                        
+
                         <td>{{ Str::limit($employee->full_address, 30) }}</td>
-                        
+
                         <td>
-                            {{ $employee->place_of_birth }}, 
+                            {{ $employee->place_of_birth }},
                             <br>
                             {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('d M Y') }}
                         </td>
-                        
+
                         <td>{{ $employee->no_hp }}</td>
-                        
+
                         <td>{{ \Carbon\Carbon::parse($employee->tanggal_masuk)->format('d M Y') }}</td>
-                        
+
                         <td>
                             <span class="badge bg-label-info">{{ $employee->jabatan }}</span>
                         </td>
-                        
+
                         <td>
                             <div class="d-flex gap-2 justify-content-center">
-                                <a href="{{ route('employees.edit', $employee->id) }}" 
+                                <a href="{{ route('employees.edit', $employee->id) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="Edit">
                                     <i class="ri-edit-2-line"></i>
@@ -575,11 +950,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            
+
             <div class="modal-body">
                 <!-- Custom content will be inserted via JavaScript -->
             </div>
-            
+
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="ri-close-line me-1"></i>Tutup

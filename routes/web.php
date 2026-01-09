@@ -137,7 +137,7 @@ Route::middleware(['auth', 'role:administrator,admin'])->group(function () {
         Route::delete('/{id}', [PaketController::class, 'destroy'])->name('paket.destroy');
     });
 
-    Route::prefix('/dashboard/admin/tagihan')->group(function () {
+  Route::prefix('/dashboard/admin/tagihan')->group(function () {
         Route::get('/', [TagihanController::class, 'index'])->name('tagihan.get');
         Route::get('/lunas', [TagihanController::class, 'lunas'])->name('tagihan.lunas');
         Route::get('/proses', [TagihanController::class, 'proses'])->name('tagihan.proses');
@@ -148,7 +148,10 @@ Route::middleware(['auth', 'role:administrator,admin'])->group(function () {
         Route::post('/tagihan/store', [TagihanController::class, 'store'])->name('tagihan.store');
         Route::post('/{id}/bayar', [TagihanController::class, 'updateStatus'])->name('tagihan.bayar');
         Route::delete('/tagihan/{id}', [TagihanController::class, 'destroy'])->name('tagihan.destroy');
+        Route::delete('/tagihan-lunas/{id}', [TagihanController::class, 'destroyLunas'])->name('tagihan.destroyLunas');
         Route::post('/{id}/bayar', [TagihanController::class, 'konfirmasiBayar'])->name('tagihan.konfirmasi');
+        Route::post('/{id}/kembalikan-belum-bayar', [TagihanController::class, 'updateStatusToBelumBayar'])->name('tagihan.kembalikan.belum.bayar');
+        Route::post('/{id}/update-paket', [TagihanController::class, 'updatePaket'])->name('tagihan.update.paket');
         Route::get('/ostanding', [OutstandingController::class, 'index'])->name('tagihan.outstanding');
         Route::get('/pdf', [TagihanController::class, 'lihat']);
     });
@@ -274,12 +277,18 @@ Route::prefix('dashboard/admin/expenses')->group(function () {
     Route::get('/{id}/edit', [ExpenseController::class, 'edit'])->name('keluar.edit');  // Form edit
     Route::put('/{id}', [ExpenseController::class, 'update'])->name('keluar.update');   // Update pengeluaran
     Route::delete('/{id}', [ExpenseController::class, 'destroy'])->name('keluar.destroy');  // Hapus
+    Route::get('/export/monthly', [ExpenseController::class, 'exportMonthly'])->name('keluar.export.monthly');
+    Route::get('/export/date-range', [ExpenseController::class, 'exportDateRange'])->name('keluar.export.daterange');
 });
-
 Route::prefix('dashboard/admin/pembukuan')->group(function () {
     Route::get('/masuk', [LedgerController::class, 'index'])->name('pembukuan.index');
     Route::get('/keluar', [LedgerController::class, 'keluar'])->name('pembukuan.keluar');
     Route::get('/total', [LedgerController::class, 'total'])->name('pembukuan.total');
+
+ // Saldo Awal Routes
+    Route::get('/saldo-awal', [\App\Http\Controllers\SaldoAwalController::class, 'index'])->name('saldo-awal.index');
+    Route::post('/saldo-awal/store', [\App\Http\Controllers\SaldoAwalController::class, 'store'])->name('saldo-awal.store');
+    Route::put('/saldo-awal/{id}', [\App\Http\Controllers\SaldoAwalController::class, 'update'])->name('saldo-awal.update');
 });
 
 Route::middleware(['auth', 'role:karyawan'])->group(function () {

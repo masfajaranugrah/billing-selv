@@ -229,19 +229,19 @@ body {
     letter-spacing: 0.02em;
 }
 
-.status-lunas { 
+.status-lunas {
     background: #f0fdf4;
     color: #166534;
     border: 1px solid #bbf7d0;
 }
 
-.status-verifikasi { 
+.status-verifikasi {
     background: #fffbeb;
     color: #92400e;
     border: 1px solid #fef3c7;
 }
 
-.status-belum { 
+.status-belum {
     background: #fef2f2;
     color: #991b1b;
     border: 1px solid #fecaca;
@@ -320,8 +320,8 @@ body {
 /* Bottom Navbar */
 .bottom-nav {
     position: fixed;
-    bottom: 0; 
-    left: 0; 
+    bottom: 0;
+    left: 0;
     right: 0;
     height: 72px;
     background: #ffffff;
@@ -367,15 +367,15 @@ body {
     .header-section h4 {
         font-size: 1.5rem;
     }
-    
+
     .price-amount {
         font-size: 1.75rem;
     }
-    
+
     .card-body {
         padding: 20px 16px;
     }
-    
+
     .info-section {
         padding: 16px;
     }
@@ -383,6 +383,171 @@ body {
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+/* Bank selector */
+.bank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bank-card {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bank-card:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+}
+
+.bank-card.active {
+    border-color: #0f172a;
+    background: #f1f5f9;
+}
+
+.bank-radio {
+    display: none;
+}
+
+.bank-indicator {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    color: #fff;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.bank-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.bank-name {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bank-number {
+    font-weight: 700;
+    color: #334155;
+    font-size: 0.95rem;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    letter-spacing: 0.03em;
+}
+
+.bank-owner {
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+@media (max-width: 480px) {
+    .bank-card {
+        padding: 12px;
+        gap: 10px;
+    }
+    .bank-indicator {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+    .bank-name {
+        font-size: 0.85rem;
+    }
+    .bank-number {
+        font-size: 0.88rem;
+    }
+    .bank-owner {
+        font-size: 0.75rem;
+    }
+}
+
+/* File Upload Styling */
+.upload-area {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+}
+
+.upload-area:hover {
+    border-color: #0f172a;
+    background: #f1f5f9;
+}
+
+.upload-area.has-file {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.upload-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.upload-area.has-file .upload-icon {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.upload-title {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.upload-subtitle {
+    color: #64748b;
+    font-size: 0.8rem;
+}
+
+.upload-filename {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #334155;
+    font-weight: 500;
+    display: none;
+    word-break: break-all;
+}
+
+.upload-area.has-file .upload-filename {
+    display: block;
 }
 
 /* SweetAlert Custom Styling */
@@ -423,7 +588,7 @@ body {
     gap: 6px;
     white-space: nowrap;
     z-index: 1;
-    
+
     /* Gabungan animasi shake dan pulse */
     animation: shake 0.8s ease-in-out infinite, pulse-badge 2s ease-in-out infinite;
 }
@@ -512,7 +677,7 @@ body {
         padding: 6px 12px;
         font-size: 0.75rem;
     }
-    
+
     .badge-tunggakan::before,
     .badge-tunggakan::after {
         inset: -3px;
@@ -545,13 +710,13 @@ body {
 @php
     $jatuhTempo = \Carbon\Carbon::parse($tagihan->tanggal_berakhir);
     $sekarang = \Carbon\Carbon::now();
-    
+
     // Cek apakah sudah lewat bulan (bukan hanya tanggal)
     // Tunggakan = jatuh tempo di bulan sebelumnya atau lebih lama
     $isPastMonth = $jatuhTempo->format('Y-m') < $sekarang->format('Y-m');
-    
+
     $isUnpaid = $tagihan->status_pembayaran !== 'lunas' && $tagihan->status_pembayaran !== 'proses_verifikasi';
-    
+
     // Tunggakan muncul hanya jika: belum bayar DAN sudah lewat bulan
     $isTunggakan = $isUnpaid && $isPastMonth;
 @endphp
@@ -561,7 +726,7 @@ body {
         <h5>Invoice Tagihan</h5>
         <small>PT. Jernih Multi Komunikasi</small>
     </div>
-    
+
     @if($isTunggakan)
         <span class="badge-tunggakan">
             <i class="bi bi-exclamation-triangle-fill"></i> Tunggakan
@@ -590,10 +755,7 @@ body {
             </div>
           </div>
 
-          <div class="ppn-notice">
-              <i class="bi bi-info-circle-fill"></i>
-              <p>Harga sudah termasuk PPN</p>
-          </div>
+         
 
           <div class="price-section">
    <!-- <p class="period-label">
@@ -660,43 +822,98 @@ axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[nam
 /* ================================
    FUNGSI KOMPRES GAMBAR (iOS/Android)
 ================================== */
-function compressImage(file, maxWidth = 1280, quality = 0.6) {
+function compressImage(file, maxWidth = 1280, quality = 0.7) {
     return new Promise((resolve, reject) => {
+        // Skip PDF files
         if (file.type === "application/pdf") {
             resolve(file);
             return;
         }
 
+        // Check if file is an image
+        if (!file.type.startsWith("image/")) {
+            resolve(file);
+            return;
+        }
+
         const reader = new FileReader();
+
         reader.onload = (event) => {
             const img = new Image();
+
             img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
+                try {
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
 
-                let ratio = img.width / img.height;
-                if (img.width > maxWidth) {
-                    canvas.width = maxWidth;
-                    canvas.height = maxWidth / ratio;
-                } else {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+                    // Calculate new dimensions
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Fill white background for JPG (handles transparency)
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, width, height);
+
+                    // Draw image
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Determine output type - keep original format or use JPEG
+                    let outputType = "image/jpeg";
+                    let outputQuality = quality;
+
+                    // For PNG with transparency, keep as PNG
+                    if (file.type === "image/png") {
+                        outputType = "image/jpeg"; // Convert PNG to JPEG for smaller size
+                    }
+
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) {
+                                console.warn("Blob creation failed, using original file");
+                                resolve(file);
+                                return;
+                            }
+
+                            // Create new filename with jpg extension
+                            let newName = file.name.replace(/\.[^/.]+$/, "") + ".jpg";
+                            const compressedFile = new File([blob], newName, {
+                                type: outputType,
+                                lastModified: Date.now()
+                            });
+
+                            console.log(`Compressed: ${file.size} -> ${compressedFile.size} bytes`);
+                            resolve(compressedFile);
+                        },
+                        outputType,
+                        outputQuality
+                    );
+                } catch (err) {
+                    console.error("Canvas error:", err);
+                    resolve(file); // Return original on error
                 }
-
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                canvas.toBlob(
-                    (blob) => {
-                        if (!blob) reject("Gagal mengonversi gambar.");
-                        else resolve(new File([blob], file.name, { type: "image/jpeg" }));
-                    },
-                    "image/jpeg",
-                    quality
-                );
             };
+
+            img.onerror = () => {
+                console.warn("Image load failed, using original file");
+                resolve(file);
+            };
+
             img.src = event.target.result;
         };
-        reader.onerror = () => reject("Gagal membaca file.");
+
+        reader.onerror = () => {
+            console.warn("FileReader error, using original file");
+            resolve(file);
+        };
+
         reader.readAsDataURL(file);
     });
 }
@@ -709,12 +926,17 @@ document.querySelectorAll('.bayar-btn').forEach(btn => {
         const tagihanId = btn.dataset.id;
         const rekenings = @json($rekenings);
 
-        let htmlRekening = '<div class="d-flex flex-column gap-2" style="text-align: left;">';
+        let htmlRekening = '<div class="bank-list">';
         rekenings.forEach(r => {
             htmlRekening += `
-            <label class="card p-3 border cursor-pointer" style="cursor: pointer; transition: all 0.2s ease; border-radius: 8px;">
-                <input type="radio" name="type_pembayaran" value="${r.id}" style="margin-right:10px;">
-                <strong style="color: #0f172a;">${r.nama_bank}</strong> - <span style="color: #64748b;">${r.nomor_rekening}</span>
+            <label class="bank-card">
+                <input type="radio" class="bank-radio" name="type_pembayaran" value="${r.id}">
+                <div class="bank-indicator"><i class="bi bi-bank"></i></div>
+                <div class="bank-content">
+                    <div class="bank-name">${r.nama_bank}</div>
+                    <div class="bank-number">${r.nomor_rekening}</div>
+                    <div class="bank-owner">a.n ${r.nama_pemilik}</div>
+                </div>
             </label>`;
         });
         htmlRekening += '</div>';
@@ -739,13 +961,60 @@ document.querySelectorAll('.bayar-btn').forEach(btn => {
             Swal.fire({
                 title: 'Upload Bukti Pembayaran',
                 html: `
-                    <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: left; border: 1px solid #e2e8f0;">
-                        <p style="margin: 0; color: #0f172a; font-weight: 600; font-size: 0.9375rem;">${selectedRekening.nama_bank}</p>
-                        <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.875rem;">${selectedRekening.nomor_rekening}</p>
-                        <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.875rem;">A.N ${selectedRekening.nama_pemilik}</p>
+                    <div style="background: #f8fafc; padding: 14px 16px; border-radius: 10px; margin-bottom: 16px; text-align: left; border: 1px solid #e2e8f0;">
+                        <p style="margin: 0; color: #0f172a; font-weight: 600; font-size: 0.9rem;">${selectedRekening.nama_bank}</p>
+                        <p style="margin: 3px 0 0 0; color: #334155; font-size: 0.85rem; font-family: 'SF Mono', monospace; font-weight: 600;">${selectedRekening.nomor_rekening}</p>
+                        <p style="margin: 3px 0 0 0; color: #64748b; font-size: 0.8rem;">a.n ${selectedRekening.nama_pemilik}</p>
                     </div>
-                    <input type="file" id="bukti-pembayaran" class="swal2-file" accept="image/*,application/pdf" style="width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                        <div class="upload-title">Pilih atau drop file di sini</div>
+                        <div class="upload-subtitle">JPG, PNG atau PDF (maks 5MB)</div>
+                        <div class="upload-filename" id="upload-filename"></div>
+                        <input type="file" id="bukti-pembayaran" accept="image/*,application/pdf" style="display: none;">
+                    </div>
                 `,
+                didOpen: () => {
+                    const uploadArea = document.getElementById('upload-area');
+                    const fileInput = document.getElementById('bukti-pembayaran');
+                    const filenameEl = document.getElementById('upload-filename');
+
+                    uploadArea.addEventListener('click', () => fileInput.click());
+
+                    uploadArea.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        uploadArea.style.borderColor = '#0f172a';
+                        uploadArea.style.background = '#f1f5f9';
+                    });
+
+                    uploadArea.addEventListener('dragleave', () => {
+                        if (!uploadArea.classList.contains('has-file')) {
+                            uploadArea.style.borderColor = '#cbd5e1';
+                            uploadArea.style.background = '#f8fafc';
+                        }
+                    });
+
+                    uploadArea.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        if (e.dataTransfer.files.length) {
+                            fileInput.files = e.dataTransfer.files;
+                            updateFileDisplay(e.dataTransfer.files[0]);
+                        }
+                    });
+
+                    fileInput.addEventListener('change', () => {
+                        if (fileInput.files.length) {
+                            updateFileDisplay(fileInput.files[0]);
+                        }
+                    });
+
+                    function updateFileDisplay(file) {
+                        uploadArea.classList.add('has-file');
+                        filenameEl.textContent = file.name;
+                        uploadArea.querySelector('.upload-title').textContent = 'File terpilih';
+                        uploadArea.querySelector('.upload-icon i').className = 'bi bi-check-lg';
+                    }
+                },
                 showCancelButton: true,
                 confirmButtonText: 'Kirim',
                 cancelButtonText: 'Batal',
@@ -790,37 +1059,14 @@ document.querySelectorAll('.bayar-btn').forEach(btn => {
     });
 });
 
-// Hover effect untuk rekening cards
+// Hover & active effect untuk rekening cards
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('change', function(e) {
-        if (e.target.name === 'type_pembayaran') {
-            document.querySelectorAll('label.card.cursor-pointer').forEach(label => {
-                if (label.querySelector('input:checked')) {
-                    label.style.borderColor = '#0f172a';
-                    label.style.backgroundColor = '#f8fafc';
-                } else {
-                    label.style.borderColor = '#e2e8f0';
-                    label.style.backgroundColor = '#fff';
-                }
+        if (e.target.classList.contains('bank-radio')) {
+            document.querySelectorAll('.bank-card').forEach(card => {
+                const radio = card.querySelector('.bank-radio');
+                card.classList.toggle('active', radio && radio.checked);
             });
-        }
-    });
-    
-    document.addEventListener('mouseover', function(e) {
-        if (e.target.closest('label.card.cursor-pointer')) {
-            const label = e.target.closest('label.card.cursor-pointer');
-            if (!label.querySelector('input:checked')) {
-                label.style.borderColor = '#cbd5e1';
-            }
-        }
-    });
-    
-    document.addEventListener('mouseout', function(e) {
-        if (e.target.closest('label.card.cursor-pointer')) {
-            const label = e.target.closest('label.card.cursor-pointer');
-            if (!label.querySelector('input:checked')) {
-                label.style.borderColor = '#e2e8f0';
-            }
         }
     });
 });

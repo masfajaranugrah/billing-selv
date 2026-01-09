@@ -1,365 +1,482 @@
-@extends('layouts/layoutMaster')
+@extends('layouts.layoutMaster')
 
 @section('title', 'Buku Besar Pembukuan')
 
 @section('vendor-style')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+    'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
 ])
 <style>
-/* ... (CSS tetap sama) ... */
+.card {
+    border-radius: 12px;
+}
+.table-bordered th, .table-bordered td {
+    border-color: #e9ecef;
+}
+.table-light {
+    background-color: #f8f9fa;
+}
+.table-secondary {
+    background-color: #e9ecef;
+}
+.btn-xs {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    border-radius: 0.2rem;
+}
+.spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 @endsection
 
 @section('content')
-
-<!-- Table Card -->
-<div class="card shadow-sm border-0">
-    <div class="card-header card-header-modern d-flex justify-content-between align-items-center flex-wrap">
-        <div class="mb-2 mb-md-0">
-            <h5 class="mb-0 fw-bold">
-                <i class="ri-book-line me-2"></i>Laporan Debit & Credit
-            </h5>
-            <small class="opacity-75">Periode: 
-                <span class="fw-bold">
-                    {{ \Carbon\Carbon::createFromDate($tahun ?? date('Y'), $bulan ?? date('m'), 1)->locale('id')->isoFormat('MMMM YYYY') }}
-                </span>
-            </small>
-        </div>
-        
-        <!-- Filter Periode Bulanan -->
-        <div class="filter-container">
-            <select name="bulan" class="filter-select" id="filterBulan">
-                <option value="01" {{ ($bulan ?? date('m')) == '01' ? 'selected' : '' }}>Januari</option>
-                <option value="02" {{ ($bulan ?? date('m')) == '02' ? 'selected' : '' }}>Februari</option>
-                <option value="03" {{ ($bulan ?? date('m')) == '03' ? 'selected' : '' }}>Maret</option>
-                <option value="04" {{ ($bulan ?? date('m')) == '04' ? 'selected' : '' }}>April</option>
-                <option value="05" {{ ($bulan ?? date('m')) == '05' ? 'selected' : '' }}>Mei</option>
-                <option value="06" {{ ($bulan ?? date('m')) == '06' ? 'selected' : '' }}>Juni</option>
-                <option value="07" {{ ($bulan ?? date('m')) == '07' ? 'selected' : '' }}>Juli</option>
-                <option value="08" {{ ($bulan ?? date('m')) == '08' ? 'selected' : '' }}>Agustus</option>
-                <option value="09" {{ ($bulan ?? date('m')) == '09' ? 'selected' : '' }}>September</option>
-                <option value="10" {{ ($bulan ?? date('m')) == '10' ? 'selected' : '' }}>Oktober</option>
-                <option value="11" {{ ($bulan ?? date('m')) == '11' ? 'selected' : '' }}>November</option>
-                <option value="12" {{ ($bulan ?? date('m')) == '12' ? 'selected' : '' }}>Desember</option>
-            </select>
-            
-            <select name="tahun" class="filter-select" id="filterTahun">
-                @for($i = date('Y'); $i >= date('Y') - 10; $i--)
-                    <option value="{{ $i }}" {{ ($tahun ?? date('Y')) == $i ? 'selected' : '' }}>
-                        {{ $i }}
-                    </option>
-                @endfor
-            </select>
-            
-            <!-- Loading indicator -->
-            <div id="filterLoading" class="d-none">
-                <div class="spinner-border spinner-border-sm text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+<!-- Filter Bulan/Tahun -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h5 class="fw-bold mb-0"><i class="ri-calendar-line me-2"></i>Periode: {{ $firstMonth['label'] ?? '-' }}</h5>
+            </div>
+            <div class="col-md-6">
+                <form method="GET" action="{{ route('pembukuan.total') }}" class="d-flex gap-2 justify-content-end">
+                    <select name="bulan" class="form-select form-select-sm" style="width: auto;">
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}" {{ $bulan == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($i)->locale('id')->isoFormat('MMMM') }}
+                            </option>
+                        @endfor
+                    </select>
+                    <select name="tahun" class="form-select form-select-sm" style="width: auto;">
+                        @for ($y = date('Y') - 3; $y <= date('Y') + 1; $y++)
+                            <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-dark"><i class="ri-filter-line me-1"></i>Filter</button>
+                </form>
             </div>
         </div>
     </div>
-    
-    <div class="card-body p-0">
-        <div class="table-responsive p-3">
-            <table class="table table-modern table-hover align-middle mb-0" id="ledgerTable">
-                <thead>
+</div>
+
+<!-- Saldo Awal Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0"><i class="ri-wallet-3-line me-1"></i>Saldo Awal</h6>
+            @if(auth()->check())
+                <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#modalSaldoAwal">
+                    <i class="ri-edit-2-line me-1"></i>Isi Manual
+                </button>
+            @endif
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
                     <tr>
-                        <th style="width: 20%;"><i class="ri-calendar-line me-2"></i>Tanggal</th>
-                        <th style="width: 15%;"><i class="ri-text me-2"></i>Keterangan</th>
-                        <th style="width: 32%;" class="text-start">
-                            <i class="ri-arrow-down-circle-line me-2 text-success"></i>Debit
-                        </th>
-                        <th style="width: 32%;" class="text-start">
-                            <i class="ri-arrow-up-circle-line me-2 text-danger"></i>Credit
-                        </th>
+                        <th>Kategori</th>
+                        <th class="text-end">Nominal</th>
+                        <th class="text-center" style="width: 100px;">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="ledgerTableBody">
-                    @forelse($ledgerData as $item)
-                    
-                    <!-- Baris Pemasukan -->
-                    <tr class="row-pemasukan">
-                        <td>
-                            <span class="badge bg-label-primary">
-                                {{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y') }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge bg-success px-3 py-2">
-                                <i class="ri-arrow-down-line me-1"></i>Pemasukan
-                            </span>
-                        </td>
-                        <td class="text-start">
-                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 fw-bold">
-                                <i class="ri-add-line me-1"></i>Rp {{ number_format($item['total_masuk'],0,',','.') }}
-                            </span>
-                        </td>
-                        <td class="text-start">
-                            <span class="text-muted">-</span>
-                        </td>
-                    </tr>
-                    
-                    <!-- Baris Pengeluaran -->
-                    <tr class="row-pengeluaran">
-                        <td>
-                            <span class="badge bg-label-primary">
-                                {{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y') }}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge bg-danger px-3 py-2">
-                                <i class="ri-arrow-up-line me-1"></i>Pengeluaran
-                            </span>
-                        </td>
-                        <td class="text-start">
-                            <span class="text-muted">-</span>
-                        </td>
-                        <td class="text-start">
-                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 fw-bold">
-                                <i class="ri-subtract-line me-1"></i>Rp {{ number_format($item['total_keluar'],0,',','.') }}
-                            </span>
-                        </td>
-                    </tr>
-                    
-                    @empty
+                <tbody>
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-5">
-                            <div class="mb-3">
-                                <i class="ri-inbox-line fs-1 text-muted opacity-50"></i>
-                            </div>
-                            <p class="mb-0">Tidak ada transaksi untuk periode ini.</p>
+                        <td>Total Omset Internet Dedicated</td>
+                        <td class="text-end">Rp {{ number_format($saldoAwal->omset_dedicated ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-xs btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalSaldoAwal">
+                                <i class="ri-pencil-line"></i>
+                            </button>
                         </td>
                     </tr>
-                    @endforelse
-                    
-                    <!-- Baris Total -->
-                    @if(count($ledgerData) > 0)
-                    <tr class="row-total">
-                        <td>
-                            <span class="badge bg-primary px-4 py-2 fw-bold">
-                                <i class="ri-calculator-line me-1"></i>TOTAL
-                            </span>
-                        </td>
-                        <td>
-                            <small class="text-muted fw-bold">
-                                <i class="ri-calendar-check-line me-1"></i>
-                                Periode: {{ $bulan ?? date('m') }}/{{ $tahun ?? date('Y') }}
-                            </small>
-                        </td>
-                        <td class="text-start" id="totalDebitCell">
-                            <div class="d-flex flex-column">
-                                <small class="text-muted mb-1">Total Debit</small>
-                                <span class="text-success fw-bold fs-6">
-                                    Rp {{ number_format($monthTotalMasuk ?? 0,0,',','.') }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="text-start" id="totalCreditCell">
-                            <div class="d-flex flex-column">
-                                <small class="text-muted mb-1">Total Credit</small>
-                                <span class="text-danger fw-bold fs-6">
-                                    Rp {{ number_format($monthTotalKeluar ?? 0,0,',','.') }}
-                                </span>
-                            </div>
+                    <tr>
+                        <td>Total Omset Home Net Kotor</td>
+                        <td class="text-end">Rp {{ number_format($saldoAwal->omset_homenet_kotor ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-xs btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalSaldoAwal">
+                                <i class="ri-pencil-line"></i>
+                            </button>
                         </td>
                     </tr>
-                    @endif
+                    <tr>
+                        <td>Total Home Net Bersih</td>
+                        <td class="text-end">Rp {{ number_format($saldoAwal->omset_homenet_bersih ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-xs btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modalSaldoAwal">
+                                <i class="ri-pencil-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <td class="fw-bold">Total Saldo Awal</td>
+                        <td class="text-end fw-bold">Rp {{ number_format(($saldoAwal->omset_dedicated ?? 0) + ($saldoAwal->omset_homenet_bersih ?? 0), 0, ',', '.') }}</td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
+<!-- Recap Pemasukan Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="ri-arrow-down-line me-1"></i>Pemasukan</h6>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Kategori</th>
+                        <th class="text-end">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Registrasi</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['pemasukan']['registrasi'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="2" class="fw-bold text-muted">Dedicated (dari Tagihan)</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">Pemasukan Dedicated Kotor</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['pemasukan']['dedicatedKotor'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">Potongan / Pengembalian</td>
+                        <td class="text-end text-danger">- Rp {{ number_format($firstMonth['pemasukan']['potonganDedicated'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-semibold">Pemasukan Dedicated Bersih</td>
+                        <td class="text-end fw-semibold">Rp {{ number_format($firstMonth['pemasukan']['dedicatedBersih'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">
+                            <small class="text-muted">
+                                <i class="ri-information-line me-1"></i>
+                                Tagihan Lunas: {{ $firstMonth['pemasukan']['jumlahDedicatedLunas'] ?? 0 }} / {{ $firstMonth['pemasukan']['jumlahDedicatedTotal'] ?? 0 }}
+                            </small>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="table-light">
+                        <td colspan="2" class="fw-bold text-muted">Home Net</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">Pemasukan Home Net Kotor</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['pemasukan']['homeNetKotor'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">Potongan / Pengembalian</td>
+                        <td class="text-end text-danger">- Rp {{ number_format($firstMonth['pemasukan']['potonganHomeNet'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-semibold">Pemasukan Home Net Bersih</td>
+                        <td class="text-end fw-semibold">Rp {{ number_format($firstMonth['pemasukan']['homeNetBersih'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <td class="fw-bold">Total Pemasukan</td>
+                        <td class="text-end fw-bold">Rp {{ number_format($firstMonth['totalPemasukan'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recap Pengeluaran Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="ri-arrow-up-line me-1"></i>Pengeluaran</h6>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:60px">Kode</th>
+                        <th>Kategori</th>
+                        <th class="text-end">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(isset($firstMonth['pengeluaran']) && is_array($firstMonth['pengeluaran']))
+                        @foreach($firstMonth['pengeluaran'] as $item)
+                        <tr>
+                            <td>{{ $item['kode'] }}</td>
+                            <td>{{ $item['kategori'] }}</td>
+                            <td class="text-end">Rp {{ number_format($item['jumlah'] ?? 0, 0, ',', '.') }}</td>
+                        </tr>
+                        @endforeach
+                    @endif
+                    <tr class="table-secondary">
+                        <td colspan="2" class="fw-bold">Total Pengeluaran</td>
+                        <td class="text-end fw-bold">Rp {{ number_format($firstMonth['totalPengeluaran'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recap Piutang Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="ri-money-dollar-circle-line me-1"></i>Piutang</h6>
+        <div class="table-responsive mb-3">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Bulan/Tahun</th>
+                        <th>Internet Dedicated</th>
+                        <th>Home Net</th>
+                        <th>Total Piutang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $firstMonth['label'] ?? '-' }}</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['piutang']['dedicated'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['piutang']['homeNet'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-end fw-bold">Rp {{ number_format($firstMonth['totalPiutang'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recap Omset Table -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <h6 class="fw-bold mb-3"><i class="ri-bar-chart-2-line me-1"></i>Omset</h6>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Kategori</th>
+                        <th class="text-end">Nominal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Internet Dedicated</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['omset']['dedicated'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Home Net Kotor</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['omset']['kotor'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Home Net Bersih</td>
+                        <td class="text-end">Rp {{ number_format($firstMonth['omset']['homeNetBersih'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr class="table-secondary">
+                        <td class="fw-bold">Total Omset</td>
+                        <td class="text-end fw-bold">Rp {{ number_format($firstMonth['totalOmset'] ?? 0, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Saldo Awal -->
+<div class="modal fade" id="modalSaldoAwal" tabindex="-1" aria-labelledby="modalSaldoAwalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSaldoAwalLabel">
+                    <i class="ri-edit-2-line me-2"></i>Edit Saldo Awal - {{ $firstMonth['label'] ?? '-' }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formSaldoAwal" method="POST" action="{{ route('saldo-awal.store') }}">
+                @csrf
+                <input type="hidden" name="bulan" value="{{ $bulan }}">
+                <input type="hidden" name="tahun" value="{{ $tahun }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="omset_dedicated" class="form-label">Total Omset Internet Dedicated</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="text" class="form-control currency-input" id="omset_dedicated" 
+                                   name="omset_dedicated" 
+                                   value="{{ old('omset_dedicated', number_format($saldoAwal->omset_dedicated ?? 0, 0, ',', '.')) }}" 
+                                   placeholder="0">
+                        </div>
+                        @error('omset_dedicated')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="omset_homenet_kotor" class="form-label">Total Omset Home Net Kotor</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="text" class="form-control currency-input" id="omset_homenet_kotor" 
+                                   name="omset_homenet_kotor" 
+                                   value="{{ old('omset_homenet_kotor', number_format($saldoAwal->omset_homenet_kotor ?? 0, 0, ',', '.')) }}" 
+                                   placeholder="0">
+                        </div>
+                        @error('omset_homenet_kotor')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="omset_homenet_bersih" class="form-label">Total Home Net Bersih</label>
+                        <div class="input-group">
+                            <span class="input-group-text">Rp</span>
+                            <input type="text" class="form-control currency-input" id="omset_homenet_bersih" 
+                                   name="omset_homenet_bersih" 
+                                   value="{{ old('omset_homenet_bersih', number_format($saldoAwal->omset_homenet_bersih ?? 0, 0, ',', '.')) }}" 
+                                   placeholder="0">
+                        </div>
+                        @error('omset_homenet_bersih')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="ri-save-line me-1"></i>Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('vendor-script')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+    'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
 ])
 @endsection
 
 @section('page-script')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    // Initialize DataTable
-    let table = $('#ledgerTable').DataTable({
-        paging: true,
-        pageLength: 50,
-        lengthMenu: [25, 50, 100],
-        searching: false,
-        ordering: true,
-        info: true,
-        responsive: false,
-        order: [[0, 'desc']], // Sort by date descending
-        columnDefs: [
-            { orderable: false, targets: [1, 2, 3] } // Hanya tanggal yang bisa di-sort
-        ],
-        language: {
-            paginate: {
-                previous: '<i class="ri-arrow-left-s-line"></i>',
-                next: '<i class="ri-arrow-right-s-line"></i>'
-            },
-            info: "Menampilkan _START_ - _END_ dari _TOTAL_ transaksi",
-            infoEmpty: "Tidak ada data",
-            infoFiltered: "(difilter dari _MAX_ total)",
-            zeroRecords: "Tidak ada transaksi yang sesuai",
-            emptyTable: "Tidak ada transaksi untuk periode ini"
-        },
-        drawCallback: function(settings) {
-            // Ensure total row is always at the bottom
-            const totalRow = $('#ledgerTable tbody tr.row-total');
-            if (totalRow.length > 0) {
-                totalRow.appendTo('#ledgerTable tbody');
-            }
+    console.log('Script loaded');
+    
+    // Currency input formatting
+    $(document).on('input', '.currency-input', function() {
+        let value = $(this).val().replace(/[^\d]/g, '');
+        if (value) {
+            value = parseInt(value).toLocaleString('id-ID');
         }
+        $(this).val(value);
     });
 
-    // ==========================================
-    // AUTO-FILTER: Dropdown berubah = otomatis filter
-    // ==========================================
-    $('#filterBulan, #filterTahun').on('change', function() {
-        applyFilter();
+    // Reset form when modal opens
+    $('#modalSaldoAwal').on('shown.bs.modal', function () {
+        $('.currency-input').each(function() {
+            let rawValue = $(this).data('raw-value') || '0';
+            $(this).val(parseInt(rawValue).toLocaleString('id-ID'));
+        });
     });
 
-    // Fungsi apply filter
-    function applyFilter() {
-        const bulan = $('#filterBulan').val();
-        const tahun = $('#filterTahun').val();
+    // Store raw values when modal opens
+    $('#modalSaldoAwal').on('show.bs.modal', function () {
+        $('.currency-input').each(function() {
+            let rawValue = $(this).val().replace(/[^\d]/g, '') || '0';
+            $(this).data('raw-value', rawValue);
+        });
+    });
+
+    // Form submission with AJAX
+    $('#formSaldoAwal').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted');
         
-        // Show loading state
-        $('#filterBulan, #filterTahun').prop('disabled', true);
-        $('#filterLoading').removeClass('d-none');
+        // Convert currency format to number
+        let omset_dedicated = $('#omset_dedicated').val().replace(/[^\d]/g, '') || '0';
+        let omset_homenet_kotor = $('#omset_homenet_kotor').val().replace(/[^\d]/g, '') || '0';
+        let omset_homenet_bersih = $('#omset_homenet_bersih').val().replace(/[^\d]/g, '') || '0';
         
-        // Redirect dengan parameter
-        window.location.href = `{{ route('pembukuan.index') }}?bulan=${bulan}&tahun=${tahun}`;
-    }
-
-    // Format number dengan separator
-    function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-
-    // Optional: Auto refresh setiap 5 menit (bukan 30 detik, lebih efisien)
-    let refreshInterval = setInterval(function() {
-        refreshData();
-    }, 300000); // 5 menit
-
-    function refreshData() {
-        const bulan = $('#filterBulan').val();
-        const tahun = $('#filterTahun').val();
+        let formData = new FormData(this);
+        formData.set('omset_dedicated', omset_dedicated);
+        formData.set('omset_homenet_kotor', omset_homenet_kotor);
+        formData.set('omset_homenet_bersih', omset_homenet_bersih);
+        
+        console.log('Form data:', Object.fromEntries(formData));
+        
+        let submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true).html('<i class="ri-loader-4-line me-1 spin"></i>Menyimpan...');
         
         $.ajax({
-            url: '{{ route("pembukuan.index") }}',
-            type: 'GET',
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
             dataType: 'json',
-            data: {
-                bulan: bulan,
-                tahun: tahun
-            },
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
             success: function(response) {
-                // Destroy existing DataTable
-                table.destroy();
+                console.log('Success:', response);
                 
-                // Update table body
-                let tableBody = '';
+                $('#modalSaldoAwal').modal('hide');
                 
-                if(response.ledgerData && response.ledgerData.length > 0) {
-                    response.ledgerData.forEach(function(item) {
-                        const date = new Date(item.tanggal);
-                        const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-                                          "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-                        const formattedDate = ("0" + date.getDate()).slice(-2) + ' ' + 
-                                            monthNames[date.getMonth()] + ' ' + 
-                                            date.getFullYear();
-                        
-                        // Baris Pemasukan
-                        tableBody += '<tr class="row-pemasukan">';
-                        tableBody += '<td><span class="badge bg-label-primary">' + formattedDate + '</span></td>';
-                        tableBody += '<td><span class="badge bg-success px-3 py-2">';
-                        tableBody += '<i class="ri-arrow-down-line me-1"></i>Pemasukan</span></td>';
-                        tableBody += '<td class="text-start">';
-                        tableBody += '<span class="badge bg-success bg-opacity-10 text-success px-3 py-2 fw-bold">';
-                        tableBody += '<i class="ri-add-line me-1"></i>Rp ' + formatNumber(item.total_masuk);
-                        tableBody += '</span></td>';
-                        tableBody += '<td class="text-start"><span class="text-muted">-</span></td>';
-                        tableBody += '</tr>';
-                        
-                        // Baris Pengeluaran
-                        tableBody += '<tr class="row-pengeluaran">';
-                        tableBody += '<td><span class="badge bg-label-primary">' + formattedDate + '</span></td>';
-                        tableBody += '<td><span class="badge bg-danger px-3 py-2">';
-                        tableBody += '<i class="ri-arrow-up-line me-1"></i>Pengeluaran</span></td>';
-                        tableBody += '<td class="text-start"><span class="text-muted">-</span></td>';
-                        tableBody += '<td class="text-start">';
-                        tableBody += '<span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 fw-bold">';
-                        tableBody += '<i class="ri-subtract-line me-1"></i>Rp ' + formatNumber(item.total_keluar);
-                        tableBody += '</span></td>';
-                        tableBody += '</tr>';
-                    });
-                    
-                    // Total row
-                    tableBody += '<tr class="row-total">';
-                    tableBody += '<td><span class="badge bg-primary px-4 py-2 fw-bold">';
-                    tableBody += '<i class="ri-calculator-line me-1"></i>TOTAL</span></td>';
-                    tableBody += '<td><small class="text-muted fw-bold">';
-                    tableBody += '<i class="ri-calendar-check-line me-1"></i>Periode: ' + bulan + '/' + tahun;
-                    tableBody += '</small></td>';
-                    tableBody += '<td class="text-start"><div class="d-flex flex-column">';
-                    tableBody += '<small class="text-muted mb-1">Total Debit</small>';
-                    tableBody += '<span class="text-success fw-bold fs-6">Rp ' + formatNumber(response.todayTotalMasuk) + '</span>';
-                    tableBody += '</div></td>';
-                    tableBody += '<td class="text-start"><div class="d-flex flex-column">';
-                    tableBody += '<small class="text-muted mb-1">Total Credit</small>';
-                    tableBody += '<span class="text-danger fw-bold fs-6">Rp ' + formatNumber(response.todayTotalKeluar) + '</span>';
-                    tableBody += '</div></td>';
-                    tableBody += '</tr>';
-                } else {
-                    tableBody = '<tr><td colspan="4" class="text-center text-muted py-5">';
-                    tableBody += '<div class="mb-3"><i class="ri-inbox-line fs-1 text-muted opacity-50"></i></div>';
-                    tableBody += '<p class="mb-0">Tidak ada transaksi untuk periode ini.</p>';
-                    tableBody += '</td></tr>';
-                }
-                
-                $('#ledgerTableBody').html(tableBody);
-                
-                // Reinitialize DataTable
-                table = $('#ledgerTable').DataTable({
-                    paging: true,
-                    pageLength: 50,
-                    searching: false,
-                    ordering: true,
-                    info: true,
-                    order: [[0, 'desc']],
-                    columnDefs: [{ orderable: false, targets: [1, 2, 3] }],
-                    language: {
-                        paginate: {
-                            previous: '<i class="ri-arrow-left-s-line"></i>',
-                            next: '<i class="ri-arrow-right-s-line"></i>'
-                        },
-                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ transaksi"
-                    },
-                    drawCallback: function(settings) {
-                        const totalRow = $('#ledgerTable tbody tr.row-total');
-                        if (totalRow.length > 0) {
-                            totalRow.appendTo('#ledgerTable tbody');
-                        }
-                    }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: response.message || 'Data berhasil disimpan',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
                 });
             },
-            error: function(xhr, status, error) {
-                console.error('Error refreshing data:', error);
-                // Re-enable dropdowns on error
-                $('#filterBulan, #filterTahun').prop('disabled', false);
-                $('#filterLoading').addClass('d-none');
+            error: function(xhr) {
+                console.error('Error:', xhr);
+                
+                let errorMessage = 'Terjadi kesalahan';
+                
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    let errors = [];
+                    $.each(xhr.responseJSON.errors, function(field, messages) {
+                        errors.push(messages[0]);
+                    });
+                    errorMessage = errors.join('<br>');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    html: errorMessage
+                });
+                
+                submitBtn.prop('disabled', false).html('<i class="ri-save-line me-1"></i>Simpan');
             }
         });
-    }
+    });
+
+    // Show session messages
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            html: '{!! implode("<br>", $errors->all()) !!}'
+        });
+    @endif
 });
 </script>
 @endsection

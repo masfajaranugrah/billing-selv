@@ -4,22 +4,20 @@
 
 @section('vendor-style')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
   'resources/assets/vendor/libs/select2/select2.scss',
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss',
   'resources/assets/vendor/libs/flatpickr/flatpickr.scss',
 ])
 <style>
 /* ========================================= */
-/* MODERN CLEAN UI STYLES 2025 */
+/* SHADCN UI STYLE - MODERN CLEAN 2025 */
 /* ========================================= */
 :root {
   --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
   --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
   --border-radius: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-color: #18181b;
 }
 
 .card {
@@ -36,91 +34,180 @@
 }
 
 .card-header-custom {
-  color: black;
+  color: #18181b;
   border-radius: 12px 12px 0 0 !important;
   padding: 1.5rem;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #e4e4e7;
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
 }
 
-/* Modern Buttons */
+/* ========================================= */
+/* SHADCN UI STYLE BUTTONS - ALL BLACK */
+/* ========================================= */
 .btn {
-  border-radius: 8px;
-  padding: 0.5rem 1.25rem;
-  font-weight: 500;
-  transition: var(--transition);
-  border: none;
-  font-size: 0.875rem;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
 }
 
+/* Primary Button - Black */
+.btn.btn-primary,
 .btn-primary {
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-  box-shadow: 0 2px 8px rgba(105, 108, 255, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-primary:hover,
 .btn-primary:hover {
-  background: linear-gradient(135deg, #5a5dc9 0%, #4a4db9 100%);
-  transform: translateY(-1px);
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
+.btn.btn-primary:focus,
+.btn-primary:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+}
+
+/* Success Button - Black */
+.btn.btn-success,
 .btn-success {
-  background: linear-gradient(135deg, #71dd37 0%, #5cb82e 100%);
-  box-shadow: 0 2px 8px rgba(113, 221, 55, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-success:hover,
+.btn-success:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+/* Warning Button - Black */
+.btn.btn-warning,
 .btn-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%);
-  box-shadow: 0 2px 8px rgba(255, 171, 0, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn.btn-warning:hover,
+.btn-warning:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+/* Secondary Button - Black */
+.btn.btn-secondary,
+.btn-secondary {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn.btn-secondary:hover,
+.btn-secondary:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+/* Outline Buttons */
+.btn.btn-outline-primary,
+.btn.btn-outline-secondary,
+.btn.btn-outline-danger,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn.btn-outline-primary:hover,
+.btn.btn-outline-secondary:hover,
+.btn.btn-outline-danger:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #a1a1aa !important;
+  color: #18181b !important;
 }
 
 .btn-sm {
-  padding: 0.375rem 0.875rem;
-  font-size: 0.8125rem;
+  padding: 0.375rem 0.75rem !important;
+  font-size: 0.8125rem !important;
 }
 
-.btn-outline-primary {
-  border: 1.5px solid #696cff;
-  color: #696cff;
-  background: transparent;
-}
-
-.btn-outline-primary:hover {
-  background: #696cff;
-  color: #ffffff;
-}
-
-.btn-outline-danger {
-  border: 1.5px solid #ff3e1d;
-  color: #ff3e1d;
-  background: transparent;
-}
-
-.btn-outline-danger:hover {
-  background: #ff3e1d;
-  color: #ffffff;
-}
-
-.btn-secondary {
-  background: #e0e0e0;
-  color: #5a5f7d;
-}
-
-/* Modern Badges */
+/* ========================================= */
+/* SHADCN UI STYLE BADGES */
+/* ========================================= */
 .badge {
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
   font-weight: 500;
   font-size: 0.75rem;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
+/* Status Lunas - Black */
 .badge.bg-success {
-  background: linear-gradient(135deg, #71dd37 0%, #5cb82e 100%) !important;
-  color: #ffffff;
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
 }
 
-.badge.bg-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%) !important;
-  color: #ffffff;
+/* Status Belum Bayar - Red */
+.badge.bg-warning,
+.badge.bg-danger {
+  background: #dc2626 !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
+}
+
+/* Neutralize accent labels - shadcn style */
+.bg-label-primary,
+.bg-label-success,
+.bg-label-warning,
+.bg-label-dark {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+}
+
+/* Badge Paket - Black background */
+.bg-label-info {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
 }
 
 /* Clean Table Design */
@@ -130,32 +217,32 @@
 }
 
 .table-modern thead th {
-  background: #f8f9fa;
-  font-weight: 700;
+  background: #f8fafc;
+  font-weight: 600;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: #18181b;
   border: none;
-  padding: 16px;
+  padding: 1rem;
 }
 
 .table-modern tbody tr {
   transition: all 0.2s;
-  border-bottom: 1px solid #f1f1f1;
+  border-bottom: 1px solid #e4e4e7;
   cursor: pointer;
 }
 
 .table-modern tbody tr:hover {
-  background-color: #f8f9ff !important;
+  background-color: #f4f4f5 !important;
   transform: scale(1.001);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .table-modern tbody td {
   padding: 1rem;
   vertical-align: middle;
   font-size: 0.875rem;
+  color: #18181b;
 }
 
 .btn-icon-detail {
@@ -165,23 +252,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-  color: white;
-  border: none;
-  transition: all 0.3s;
+  border-radius: 6px;
+  background: transparent !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+  transition: all 0.15s;
 }
 
 .btn-icon-detail:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(105, 108, 255, 0.4);
+  background: #f4f4f5 !important;
+  border-color: #a1a1aa !important;
 }
 
-/* Modern Form Controls */
+/* Form Controls */
 .form-select,
 .form-control {
   border-radius: 8px;
-  border: 1.5px solid #e0e0e0;
+  border: 1px solid #e4e4e7;
   padding: 0.625rem 1rem;
   transition: var(--transition);
   font-size: 0.875rem;
@@ -189,65 +276,106 @@
 
 .form-select:focus,
 .form-control:focus {
-  border-color: #696cff;
-  box-shadow: 0 0 0 3px rgba(105, 108, 255, 0.1);
+  border-color: #18181b;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b;
 }
 
 .form-control[readonly] {
-  background-color: #f8f9fa;
+  background-color: #f4f4f5;
 }
 
-/* Modern Modal Design */
+/* ========================================= */
+/* SHADCN UI STYLE MODAL */
+/* ========================================= */
 .modal-content {
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  overflow: hidden;
 }
 
 .modal-header {
-  border-radius: 16px 16px 0 0;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e4e4e7;
+  background: #18181b !important;
+}
+
+.modal-header.bg-primary,
+.modal-header.bg-warning {
+  background: #18181b !important;
   border-bottom: none;
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%) !important;
+}
+
+.modal-header.bg-primary .modal-title,
+.modal-header.bg-warning .modal-title {
+  color: #fafafa;
 }
 
 .modal-title {
   font-weight: 600;
   font-size: 1.125rem;
-  color: #ffffff;
+  color: #fafafa;
 }
 
 .modal-body {
-  padding: 2rem;
-  max-height: 70vh;
+  padding: 1.5rem;
+  padding-top: 2rem;
+  max-height: 65vh;
   overflow-y: auto;
 }
 
 .modal-footer {
-  padding: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-top: 1px solid #e4e4e7;
   background: #fafafa;
-  border-radius: 0 0 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Modal backdrop with blur effect */
+.modal-backdrop.show {
+  opacity: 1;
+  background-color: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Detail Section in Modal */
 .detail-section {
   background: #ffffff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
+  transition: all 0.2s;
+}
+
+.detail-section:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-color: #18181b;
 }
 
 .detail-section h6 {
-  color: #696cff;
+  color: #18181b;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #696cff;
+  border-bottom: 2px solid #18181b;
+}
+
+.detail-section h6 i {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
 }
 
 .detail-item {
@@ -293,8 +421,15 @@
   z-index: 9999;
 }
 
-.btn-close-white {
-  filter: brightness(0) invert(1);
+.btn-close-white,
+.modal-header .btn-close {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.8 !important;
+}
+
+.btn-close-white:hover,
+.modal-header .btn-close:hover {
+  opacity: 1 !important;
 }
 
 /* Image Preview */
@@ -350,7 +485,6 @@
 
 @section('vendor-script')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
   'resources/assets/vendor/libs/select2/select2.js',
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.js',
   'resources/assets/vendor/libs/flatpickr/flatpickr.js',
@@ -383,9 +517,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let buktiSection = '<span class="text-muted">Belum ada bukti</span>';
         if (data.bukti && data.bukti !== '') {
             buktiSection = `
-                <a href="${data.bukti}" target="_blank" class="btn btn-sm btn-outline-primary">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-view-bukti" data-bukti="${data.bukti}">
                     <i class="ri-image-line me-1"></i>Lihat Bukti
-                </a>
+                </button>
             `;
         }
 
@@ -494,37 +628,32 @@ document.addEventListener("DOMContentLoaded", function () {
      * Build modal footer buttons
      */
     function buildModalFooter(data) {
-        const editButton = `
-            <button type="button" class="btn btn-outline-primary btn-edit-from-detail"
-                    data-tagihan-id="${data.id}">
-                <i class="ri-edit-2-line me-1"></i>Edit
-            </button>
-        `;
+      const deleteButton = `
+        <form class="d-inline form-delete-tagihan" method="POST" action="/dashboard/admin/tagihan-lunas/${data.id}" onsubmit="return confirm('Yakin ingin menghapus tagihan lunas ini?');">
+          <input type="hidden" name="_token" value="${$('meta[name=csrf-token]').attr('content')}">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-outline-danger">
+            <i class="ri-delete-bin-line me-1"></i>Hapus Tagihan Lunas
+          </button>
+        </form>
+      `;
 
-        const deleteButton = `
-            <button type="button" class="btn btn-outline-danger btn-delete-from-detail"
-                    data-tagihan-id="${data.id}" data-nama="${data.nama}">
-                <i class="ri-delete-bin-line me-1"></i>Hapus
-            </button>
-        `;
+      const konfirmasiButton = data.status === 'lunas'
+        ? `<button class="btn btn-secondary" disabled>
+             <i class="ri-check-circle-line me-1"></i>Sudah Lunas
+           </button>`
+        : `<button class="btn btn-success btn-konfirmasi-from-detail"
+               data-tagihan-id="${data.id}" data-nama="${data.nama}">
+             <i class="ri-check-circle-line me-1"></i>Konfirmasi Lunas
+           </button>`;
 
-        const konfirmasiButton = data.status === 'lunas'
-            ? `<button class="btn btn-secondary" disabled>
-                   <i class="ri-check-circle-line me-1"></i>Sudah Lunas
-               </button>`
-            : `<button class="btn btn-success btn-konfirmasi-from-detail"
-                       data-tagihan-id="${data.id}" data-nama="${data.nama}">
-                   <i class="ri-check-circle-line me-1"></i>Konfirmasi Lunas
-               </button>`;
-
-        return `
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="ri-close-line me-1"></i>Tutup
-            </button>
-            ${editButton}
-            ${deleteButton}
-            ${konfirmasiButton}
-        `;
+      return `
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="ri-close-line me-1"></i>Tutup
+        </button>
+        ${deleteButton}
+        ${konfirmasiButton}
+      `;
     }
 
     /**
@@ -574,73 +703,85 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ========================================
-    // MODAL FOOTER BUTTON HANDLERS
+    // BUKTI PEMBAYARAN MODAL HANDLER
     // ========================================
-
-    /**
-     * Edit button handler
-     */
-    $(document).on('click', '.btn-edit-from-detail', function(e) {
+    $(document).on('click', '.btn-view-bukti', function(e) {
         e.preventDefault();
-        const tagihanId = $(this).data('tagihan-id');
+        e.stopPropagation();
 
-        // Close detail modal
-        $('#detailModal').modal('hide');
+        const buktiUrl = $(this).data('bukti');
 
-        // Open edit modal setelah detail modal tertutup
+        // Set image source
+        $('#buktiImage').attr('src', buktiUrl);
+        $('#buktiDownloadLink').attr('href', buktiUrl);
+
+        // Hide detail modal first
+        const detailModalEl = document.getElementById('detailModal');
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) {
+            detailModal.hide();
+        }
+
+        // Show bukti modal after detail modal is hidden
         setTimeout(() => {
-            $(`#modalEditTagihan-${tagihanId}`).modal('show');
+            const buktiModal = new bootstrap.Modal(document.getElementById('buktiModal'));
+            buktiModal.show();
         }, 300);
     });
 
-    /**
-     * Delete button handler
-     */
-    $(document).on('click', '.btn-delete-from-detail', function(e) {
-        e.preventDefault();
-        const tagihanId = $(this).data('tagihan-id');
-        const nama = $(this).data('nama');
-
-        Swal.fire({
-            title: 'Konfirmasi Penghapusan',
-            html: `Yakin ingin menghapus tagihan <strong>${nama}</strong>?<br><small class="text-danger">Data tidak dapat dikembalikan!</small>`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '<i class="ri-delete-bin-line me-1"></i>Ya, Hapus!',
-            cancelButtonText: '<i class="ri-close-line me-1"></i>Batal',
-            confirmButtonColor: '#ff3e1d',
-            cancelButtonColor: '#8898aa',
-            customClass: {
-                confirmButton: 'btn btn-danger me-2',
-                cancelButton: 'btn btn-secondary'
-            },
-            buttonsStyling: false
-        }).then((result) => {
-            if (result.isConfirmed) {
-                showLoading();
-
-                const form = $('<form>', {
-                    'method': 'POST',
-                    'action': `/dashboard/admin/tagihan/${tagihanId}`
-                });
-
-                form.append($('<input>', {
-                    'type': 'hidden',
-                    'name': '_token',
-                    'value': $('meta[name="csrf-token"]').attr('content')
-                }));
-
-                form.append($('<input>', {
-                    'type': 'hidden',
-                    'name': '_method',
-                    'value': 'DELETE'
-                }));
-
-                $('body').append(form);
-                form.submit();
-            }
-        });
+    // When bukti modal is closed, reopen detail modal
+    $('#buktiModal').on('hidden.bs.modal', function () {
+        const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+        detailModal.show();
     });
+
+    // ========================================
+    // MODAL FOOTER BUTTON HANDLERS
+    // ========================================
+
+    // Hapus handler edit button (tidak ada tombol edit di lunas)
+
+    // Handler tombol hapus jika ingin pakai SweetAlert (opsional, default pakai form submit)
+    // $(document).on('click', '.btn-delete-from-detail', function(e) {
+    //     e.preventDefault();
+    //     const tagihanId = $(this).data('tagihan-id');
+    //     const nama = $(this).data('nama');
+    //     Swal.fire({
+    //         title: 'Konfirmasi Penghapusan',
+    //         html: `Yakin ingin menghapus tagihan <strong>${nama}</strong>?<br><small class="text-danger">Data tidak dapat dikembalikan!</small>`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonText: '<i class="ri-delete-bin-line me-1"></i>Ya, Hapus!',
+    //         cancelButtonText: '<i class="ri-close-line me-1"></i>Batal',
+    //         confirmButtonColor: '#ff3e1d',
+    //         cancelButtonColor: '#8898aa',
+    //         customClass: {
+    //             confirmButton: 'btn btn-danger me-2',
+    //             cancelButton: 'btn btn-secondary'
+    //         },
+    //         buttonsStyling: false
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             showLoading();
+    //             const form = $('<form>', {
+    //                 'method': 'POST',
+    //                 'action': `/dashboard/admin/tagihan-lunas/${tagihanId}`
+    //             });
+    //             form.append($('<input>', {
+    //                 'type': 'hidden',
+    //                 'name': '_token',
+    //                 'value': $('meta[name="csrf-token"]').attr('content')
+    //             }));
+    //             form.append($('<input>', {
+    //                 'type': 'hidden',
+    //                 'name': '_method',
+    //                 'value': 'DELETE'
+    //             }));
+    //             $('body').append(form);
+    //             form.submit();
+    //         }
+    //     });
+    // });
 
     /**
      * Konfirmasi lunas button handler
@@ -800,37 +941,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ========================================
-    // DATATABLES INITIALIZATION
-    // ========================================
-
-    const dtUserTable = $('.datatables-users').DataTable({
-        paging: true,
-        pageLength: 10,
-        lengthMenu: [5, 10, 25, 50, 100],
-        searching: true,
-        ordering: true,
-        info: true,
-        responsive: false,
-        dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-        columnDefs: [
-            { orderable: false, targets: [0] }
-        ],
-        language: {
-            paginate: {
-                previous: '<i class="ri-arrow-left-s-line"></i>',
-                next: '<i class="ri-arrow-right-s-line"></i>'
-            },
-            search: "_INPUT_",
-            searchPlaceholder: "Cari tagihan...",
-            lengthMenu: "Tampilkan _MENU_ data",
-            info: "Menampilkan _START_ - _END_ dari _TOTAL_ tagihan",
-            infoEmpty: "Tidak ada data",
-            infoFiltered: "(difilter dari _MAX_ total data)",
-            zeroRecords: "Tidak ada data yang sesuai"
-        }
-    });
-
-    // ========================================
     // FLATPICKR DATE PICKERS
     // ========================================
 
@@ -867,101 +977,138 @@ document.addEventListener("DOMContentLoaded", function () {
   <!-- Main Table Card -->
   <div class="card border-0 shadow-sm">
  <div class="card-header-custom">
-    <div class="d-flex flex-wrap justify-content-between align-items-center">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
             <h4 class="mb-1 fw-bold">
                 <i class="ri-bill-line me-2"></i>Daftar Tagihan Lunas
             </h4>
             <p class="mb-0 opacity-75 small">Kelola seluruh tagihan pelanggan yang sudah lunas</p>
         </div>
-        
+
         <!-- Button Actions -->
-        <div class="d-flex gap-2 flex-wrap">
-            <!-- Total Customer Badge -->
-            @if(isset($totalCustomer) && $totalCustomer > 0)
-            <span class="badge bg-label-primary" style="padding: 10px 20px; font-size: 0.9rem;">
-                <i class="ri-group-line me-1"></i>
-                {{ $totalCustomer }} Customer
-            </span>
-            @endif
-            
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <!-- Total Customer Lunas Badge -->
+          @if(($tagihans->total() ?? 0) > 0)
+          <span class="badge" style="padding: 10px 20px; font-size: 0.9rem; background: rgba(24, 24, 27, 0.1); color: #18181b; border: 1px solid rgba(24, 24, 27, 0.2);">
+            <i class="ri-group-line me-1"></i>
+            {{ number_format($tagihans->total()) }} Tagihan Lunas
+          </span>
+          @endif
+
+          <form class="d-flex" method="GET" action="{{ route('tagihan.lunas') }}">
+            <div class="input-group input-group-sm">
+              <input type="search" name="search" class="form-control" placeholder="Cari tagihan..." value="{{ request('search') }}" aria-label="Cari tagihan">
+              @if(request('search'))
+                <a class="btn btn-outline-secondary" href="{{ route('tagihan.lunas') }}" title="Reset pencarian">Reset</a>
+              @endif
+              <button class="btn btn-primary" type="submit" title="Cari">
+                <i class="ri-search-line"></i>
+              </button>
+            </div>
+          </form>
+
             <!-- Button Export Excel -->
-            <a href="{{ route('tagihan.bayar.export', ['search' => request('search')]) }}" 
-               class="btn btn-success" 
+            <a href="{{ route('tagihan.bayar.export', ['search' => request('search')]) }}"
+               class="btn btn-success"
                title="Export ke Excel">
                 <i class="ri-file-excel-2-line me-1"></i>Export Excel
             </a>
-         
+
         </div>
     </div>
 </div>
 
 
     <div class="card-body p-0">
-        <div class="card-datatable table-responsive p-3">
-            <table class="datatables-users table table-modern table-hover">
-                <thead>
-                    <tr>
-                        <th>Detail</th>
-                        <th>No. ID</th>
-                        <th>Nama</th>
-                        <th>WhatsApp</th>
-                        <th>Type Pembayaran</th>
-                        <th>Status</th>
-                        <th>Paket</th>
-                        <th>Harga</th>
-                        <th>Kecepatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($tagihans as $item)
-                    <tr
-                        data-tagihan-id="{{ $item['id'] }}"
-                        data-status="{{ strtolower($item['status_pembayaran'] ?? '') }}"
-                        data-nomor-id="{{ $item['nomer_id'] }}"
-                        data-nama="{{ $item['nama_lengkap'] }}"
-                        data-whatsapp="{{ $item['no_whatsapp'] }}"
-                        data-alamat="{{ collect([$item['alamat_jalan'], ($item['rt'] || $item['rw']) ? 'RT '.$item['rt'].' / RW '.$item['rw'] : null, $item['desa'] ? 'Desa '.$item['desa'] : null])->filter()->implode(', ') }}"
-                        data-kecamatan="{{ $item['kecamatan'] ?? '-' }}"
-                        data-kabupaten="{{ $item['kabupaten'] ?? '-' }}"
-                        data-provinsi="{{ $item['provinsi'] ?? '-' }}"
-                        data-paket="{{ $item['paket']['nama_paket'] ?? '-' }}"
-                        data-harga="Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}"
-                        data-kecepatan="{{ $item['paket']['kecepatan'] ?? '-' }} Mbps"
-                        data-tanggal-mulai="{{ $item['tanggal_mulai'] ? \Carbon\Carbon::parse($item['tanggal_mulai'])->format('d M Y') : '-' }}"
-                        data-jatuh-tempo="{{ $item['tanggal_berakhir'] ? \Carbon\Carbon::parse($item['tanggal_berakhir'])->format('d M Y') : '-' }}"
-                        data-bukti="{{ !empty($item['bukti_pembayaran']) ? asset('storage/' . $item['bukti_pembayaran']) : '' }}"
-                        data-kwitansi="{{ !empty($item['kwitansi']) ? asset('storage/'. $item['kwitansi']) : '' }}"
-                        data-catatan="{{ $item['catatan'] ?? '-' }}"
-                    >
-                        <td>
-                            <button class="btn btn-sm btn-icon btn-outline-primary btn-icon-detail" title="Lihat Detail">
-                                <i class="ri-eye-line"></i>
-                            </button>
-                        </td>
-                        <td><span class="badge bg-label-dark">{{ $item['nomer_id'] }}</span></td>
-                        <td><strong>{{ $item['nama_lengkap'] }}</strong></td>
-                        <td>{{ $item['no_whatsapp'] }}</td>
-                        <td>{{ $item['type_pembayaran'] }}</td>
-                        <td>
-                            @php
-                                $status = strtolower($item['status_pembayaran'] ?? '');
-                                $badgeClass = match($status) {
-                                    'lunas' => 'badge bg-success',
-                                    'belum bayar' => 'badge bg-warning',
-                                    default => 'badge bg-secondary',
-                                };
-                            @endphp
-                            <span class="{{ $badgeClass }}">{{ ucfirst($status ?: '-') }}</span>
-                        </td>
-                        <td><span class="badge bg-label-info">{{ $item['paket']['nama_paket'] ?? '-' }}</span></td>
-                        <td><strong>Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}</strong></td>
-                        <td>{{ $item['paket']['kecepatan'] ?? '-' }} Mbps</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+      @if(isset($bankTotals) && $bankTotals->count())
+      <div class="p-3 border-bottom">
+        <div class="row g-3">
+          @foreach($bankTotals as $bank)
+          <div class="col-md-3 col-sm-6">
+            <div class="p-3 h-100 rounded-3 shadow-sm" style="background: #18181b; color: #fafafa;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-semibold text-uppercase small" style="letter-spacing: 0.6px;">{{ $bank->nama_bank }}</span>
+                <i class="ri-bank-line"></i>
+              </div>
+              <div class="h5 mb-0" style="color: #fafafa;">Rp {{ number_format($bank->total, 0, ',', '.') }}</div>
+            </div>
+          </div>
+          @endforeach
         </div>
+      </div>
+      @endif
+
+      <div class="table-responsive p-3">
+        <table class="table table-modern table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Detail</th>
+              <th>No. ID</th>
+              <th>Nama</th>
+              <th>WhatsApp</th>
+              <th>Type Pembayaran</th>
+              <th>Status</th>
+              <th>Paket</th>
+              <th>Harga</th>
+              <th>Kecepatan</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($tagihans as $item)
+            <tr
+              data-tagihan-id="{{ $item['id'] }}"
+              data-status="{{ strtolower($item['status_pembayaran'] ?? '') }}"
+              data-nomor-id="{{ $item['nomer_id'] }}"
+              data-nama="{{ $item['nama_lengkap'] }}"
+              data-whatsapp="{{ $item['no_whatsapp'] }}"
+              data-alamat="{{ collect([$item['alamat_jalan'], ($item['rt'] || $item['rw']) ? 'RT '.$item['rt'].' / RW '.$item['rw'] : null, $item['desa'] ? 'Desa '.$item['desa'] : null])->filter()->implode(', ') }}"
+              data-kecamatan="{{ $item['kecamatan'] ?? '-' }}"
+              data-kabupaten="{{ $item['kabupaten'] ?? '-' }}"
+              data-provinsi="{{ $item['provinsi'] ?? '-' }}"
+              data-paket="{{ $item['paket']['nama_paket'] ?? '-' }}"
+              data-harga="Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}"
+              data-kecepatan="{{ $item['paket']['kecepatan'] ?? '-' }} Mbps"
+              data-tanggal-mulai="{{ $item['tanggal_mulai'] ? \Carbon\Carbon::parse($item['tanggal_mulai'])->format('d M Y') : '-' }}"
+              data-jatuh-tempo="{{ $item['tanggal_berakhir'] ? \Carbon\Carbon::parse($item['tanggal_berakhir'])->format('d M Y') : '-' }}"
+              data-bukti="{{ !empty($item['bukti_pembayaran']) ? asset('storage/' . $item['bukti_pembayaran']) : '' }}"
+              data-kwitansi="{{ !empty($item['kwitansi']) ? asset('storage/'. $item['kwitansi']) : '' }}"
+              data-catatan="{{ $item['catatan'] ?? '-' }}"
+            >
+              <td class="text-muted fw-semibold" style="width: 60px;">{{ ($tagihans->firstItem() ?? 1) + $loop->index }}</td>
+              <td>
+                <button class="btn btn-sm btn-icon btn-outline-primary btn-icon-detail" title="Lihat Detail">
+                  <i class="ri-eye-line"></i>
+                </button>
+              </td>
+              <td><span class="badge bg-label-dark">{{ $item['nomer_id'] }}</span></td>
+              <td><strong>{{ $item['nama_lengkap'] }}</strong></td>
+              <td>{{ $item['no_whatsapp'] }}</td>
+              <td>{{ $item['type_pembayaran'] }}</td>
+              <td>
+                @php
+                  $status = strtolower($item['status_pembayaran'] ?? '');
+                  $badgeClass = match($status) {
+                    'lunas' => 'badge bg-success',
+                    'belum bayar' => 'badge bg-warning',
+                    default => 'badge bg-secondary',
+                  };
+                @endphp
+                <span class="{{ $badgeClass }}">{{ ucfirst($status ?: '-') }}</span>
+              </td>
+              <td><span class="badge bg-label-info">{{ $item['paket']['nama_paket'] ?? '-' }}</span></td>
+              <td><strong>Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}</strong></td>
+              <td>{{ $item['paket']['kecepatan'] ?? '-' }} Mbps</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex flex-wrap justify-content-between align-items-center px-3 pb-3 gap-2">
+        <small class="text-muted">Menampilkan {{ $tagihans->firstItem() ?? 0 }} - {{ $tagihans->lastItem() ?? 0 }} dari {{ $tagihans->total() }} tagihan</small>
+        {{ $tagihans->onEachSide(1)->links('pagination::bootstrap-5') }}
+      </div>
     </div>
   </div>
 </div>
@@ -970,7 +1117,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header py-4">
         <h5 class="modal-title text-white" id="detailModalLabel">
           <i class="ri-information-line me-2"></i>Detail Tagihan Pelanggan
         </h5>
@@ -984,8 +1131,33 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer py-4">
         <!-- Footer buttons akan di-populate oleh JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BUKTI PEMBAYARAN -->
+<div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-4">
+        <h5 class="modal-title text-white" id="buktiModalLabel">
+          <i class="ri-image-line me-2"></i>Bukti Pembayaran
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <img id="buktiImage" src="" alt="Bukti Pembayaran" class="img-fluid rounded" style="max-height: 70vh; object-fit: contain;">
+      </div>
+      <div class="modal-footer py-4">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="ri-arrow-left-line me-1"></i>Kembali
+        </button>
+        <a id="buktiDownloadLink" href="" target="_blank" class="btn btn-primary">
+          <i class="ri-download-line me-1"></i>Download
+        </a>
       </div>
     </div>
   </div>

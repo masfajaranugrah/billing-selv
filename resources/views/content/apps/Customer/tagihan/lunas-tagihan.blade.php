@@ -327,7 +327,7 @@ body {
 
 <div class="top-header">
     <div class="container text-center">
-        <h4>Invoice Anda</h4>
+        <h4>Kwitansi Anda</h4>
         <p>Kelola dan pantau semua tagihan Anda</p>
     </div>
 </div>

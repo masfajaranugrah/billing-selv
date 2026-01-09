@@ -18,7 +18,7 @@ $navbarDetached = $navbarDetached ?? '';
           <span class="app-brand-logo demo">JMK</span>
           <span class="app-brand-text demo menu-text fw-semibold">JMK</span>
         </a>
-      
+
       </div>
     @endif
 
@@ -35,7 +35,7 @@ $navbarDetached = $navbarDetached ?? '';
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
       {{-- Search (desktop) --}}
-   
+
       <ul class="navbar-nav flex-row align-items-center ms-auto">
 
         {{-- Search (horizontal) --}}
@@ -83,8 +83,8 @@ $navbarDetached = $navbarDetached ?? '';
 @endphp
 
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
-          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-            <div class="avatar avatar-online bg-primary text-white d-flex justify-content-center align-items-center rounded-circle" style="width: 40px; height: 40px;">
+          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" style="outline: none; box-shadow: none;">
+            <div class="avatar avatar-online text-white d-flex justify-content-center align-items-center rounded-circle" style="width: 40px; height: 40px; background: #18181b;">
               <span class="fw-bold">{{ $roleInitials }}</span>
             </div>
           </a>
@@ -95,7 +95,7 @@ $navbarDetached = $navbarDetached ?? '';
               <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
                 <div class="d-flex">
                   <div class="flex-shrink-0 me-2">
-                    <div class="avatar avatar-online bg-primary text-white d-flex justify-content-center align-items-center rounded-circle" style="width: 40px; height: 40px;">
+                    <div class="avatar avatar-online text-white d-flex justify-content-center align-items-center rounded-circle" style="width: 40px; height: 40px; background: #18181b;">
                       <span class="fw-bold">{{ $roleInitials }} </span>
                     </div>
                   </div>
@@ -137,7 +137,7 @@ $navbarDetached = $navbarDetached ?? '';
 <li>
   <div class="d-grid px-4 pt-2 pb-1">
     @if($guard)
-      <a class="btn btn-sm btn-danger d-flex"
+      <a class="btn btn-sm d-flex" style="background: #18181b; color: #fafafa;"
          href="{{ $logoutRoute }}"
          onclick="event.preventDefault(); document.getElementById('logout-form-{{ $guard }}').submit();">
          Logout <i class="ri-logout-box-r-line ms-2 ri-16px"></i>
@@ -147,7 +147,7 @@ $navbarDetached = $navbarDetached ?? '';
         @csrf
       </form>
     @else
-      <a class="btn btn-sm btn-danger d-flex" href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
+      <a class="btn btn-sm d-flex" style="background: #18181b; color: #fafafa;" href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
         Login <i class="ri-login-box-line ms-2 ri-16px"></i>
       </a>
     @endif

@@ -2,42 +2,70 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
+use App\Models\Tagihan;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class TagihanExport implements FromCollection, WithHeadings
+class TagihanExport implements FromQuery, WithMapping, WithHeadings, WithChunkReading, ShouldQueue
 {
-    protected $tagihans;
+    use Exportable;
 
-    public function __construct($tagihans)
+    protected $status;
+    protected $kabupaten;
+    protected $kecamatan;
+
+    public function __construct($status = null, $kabupaten = null, $kecamatan = null)
     {
-        $this->tagihans = $tagihans;
+        $this->status = $status;
+        $this->kabupaten = $kabupaten;
+        $this->kecamatan = $kecamatan;
     }
 
-    public function collection()
+    public function query()
     {
-        return $this->tagihans->map(function ($tagihan) {
-            return [
-                'Nomor ID' => $tagihan->pelanggan->nomer_id ?? '-',
-                'Nama Lengkap' => $tagihan->pelanggan->nama_lengkap ?? '-',
-                'Alamat Jalan' => $tagihan->pelanggan->alamat_jalan ?? '-',
-                'RT' => $tagihan->pelanggan->rt ?? '-',
-                'RW' => $tagihan->pelanggan->rw ?? '-',
-                'Desa' => $tagihan->pelanggan->desa ?? '-',
-                'Kecamatan' => $tagihan->pelanggan->kecamatan ?? '-',
-                'Kabupaten' => $tagihan->pelanggan->kabupaten ?? '-',
-                'Provinsi' => $tagihan->pelanggan->provinsi ?? '-',
-                'Kode Pos' => $tagihan->pelanggan->kode_pos ?? '-',
-                'Paket' => $tagihan->paket->nama_paket ?? '-',
-                'Harga' => $tagihan->paket->harga ? number_format($tagihan->paket->harga, 0, ',', '.') : '-',
-                'Kecepatan' => $tagihan->paket->kecepatan ?? '-',
-                'Tanggal Mulai' => $tagihan->tanggal_mulai ? $tagihan->tanggal_mulai : '-',
-                'Tanggal Berakhir' => $tagihan->tanggal_berakhir ? $tagihan->tanggal_berakhir : '-',
-                'Status Pembayaran' => ucfirst($tagihan->status_pembayaran ?? '-'),
-                'Bukti Pembayaran' => $tagihan->bukti_pembayaran ? asset('storage/'.$tagihan->bukti_pembayaran) : '-',
-                'Catatan' => $tagihan->catatan ?? '-',
-            ];
-        });
+        return Tagihan::with(['pelanggan', 'paket'])
+            ->when($this->status, function ($query, $status) {
+                $query->where('status_pembayaran', $status);
+            })
+            ->when($this->kabupaten, function ($query, $kabupaten) {
+                $query->whereHas('pelanggan', function ($q) use ($kabupaten) {
+                    $q->where('kabupaten', $kabupaten);
+                });
+            })
+            ->when($this->kecamatan, function ($query, $kecamatan) {
+                $query->whereHas('pelanggan', function ($q) use ($kecamatan) {
+                    $q->where('kecamatan', $kecamatan);
+                });
+            })
+            ->orderBy('tanggal_mulai', 'desc');
+    }
+
+    public function map($tagihan): array
+    {
+        return [
+            $tagihan->pelanggan->nomer_id ?? '-',
+            $tagihan->pelanggan->nama_lengkap ?? '-',
+            $tagihan->pelanggan->alamat_jalan ?? '-',
+            $tagihan->pelanggan->rt ?? '-',
+            $tagihan->pelanggan->rw ?? '-',
+            $tagihan->pelanggan->desa ?? '-',
+            $tagihan->pelanggan->kecamatan ?? '-',
+            $tagihan->pelanggan->kabupaten ?? '-',
+            $tagihan->pelanggan->provinsi ?? '-',
+            $tagihan->pelanggan->kode_pos ?? '-',
+            $tagihan->paket->nama_paket ?? '-',
+            $tagihan->paket->harga ? number_format($tagihan->paket->harga, 0, ',', '.') : '-',
+            $tagihan->paket->kecepatan ?? '-',
+            $tagihan->tanggal_mulai ?: '-',
+            $tagihan->tanggal_berakhir ?: '-',
+            ucfirst($tagihan->status_pembayaran ?? '-'),
+            $tagihan->bukti_pembayaran ? asset('storage/'.$tagihan->bukti_pembayaran) : '-',
+            $tagihan->catatan ?? '-',
+        ];
     }
 
     public function headings(): array
@@ -49,5 +77,10 @@ class TagihanExport implements FromCollection, WithHeadings
             'Tanggal Mulai', 'Tanggal Berakhir',
             'Status Pembayaran', 'Bukti Pembayaran', 'Catatan',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
     }
 }

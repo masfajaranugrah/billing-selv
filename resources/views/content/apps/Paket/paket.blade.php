@@ -55,6 +55,62 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+        // Search filter client-side
+        const searchForm = document.getElementById('paketSearchForm');
+        const searchInput = document.getElementById('paketSearchInput');
+        const cards = Array.from(document.querySelectorAll('.paket-card'));
+        const searchMeta = document.getElementById('searchMeta');
+        const searchChip = document.getElementById('searchChip');
+        const searchCount = document.getElementById('searchCount');
+        const searchEmpty = document.getElementById('searchEmpty');
+        const clearBtn = document.getElementById('clearPaketSearch');
+
+        function applyFilter(query) {
+          const q = (query || '').toLowerCase().trim();
+          let visible = 0;
+
+          cards.forEach(card => {
+            const haystack = card.getAttribute('data-searchable') || '';
+            const match = !q || haystack.includes(q);
+            card.classList.toggle('d-none', !match);
+            if (match) visible++;
+          });
+
+          if (searchCount) searchCount.textContent = visible;
+
+          if (searchMeta) {
+            if (q) {
+              searchMeta.classList.remove('d-none');
+              if (searchChip) searchChip.innerHTML = `<i class="ri-filter-3-line me-1"></i>"${query}"`;
+            } else {
+              searchMeta.classList.add('d-none');
+            }
+          }
+
+          if (searchEmpty) {
+            searchEmpty.classList.toggle('d-none', visible > 0);
+          }
+        }
+
+        if (searchForm && searchInput) {
+          searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            applyFilter(searchInput.value);
+          });
+
+          // If landed with server-side search, apply once on load
+          if (searchInput.value) {
+            applyFilter(searchInput.value);
+          }
+        }
+
+        if (clearBtn && searchInput) {
+          clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            applyFilter('');
+          });
+        }
 });
 </script>
 @endsection
@@ -73,6 +129,41 @@ document.addEventListener('DOMContentLoaded', function() {
         <span class="fw-semibold">Tambah Paket</span>
       </a>
     </div>
+  </div>
+</div>
+
+{{-- Search Bar --}}
+<div class="card search-card mb-4">
+  <div class="card-body p-4">
+    <form action="{{ url()->current() }}" method="GET" class="w-100" id="paketSearchForm">
+      <div class="input-group">
+        <span class="input-group-text"><i class="ri-search-line"></i></span>
+        <input
+          type="text"
+          name="search"
+          class="form-control"
+          placeholder="Cari paket berdasarkan nama, harga, atau kecepatan..."
+          value="{{ request('search') }}"
+          autocomplete="off"
+          id="paketSearchInput"
+        >
+        <button class="btn btn-search" type="submit">
+          <i class="ri-search-2-line me-1"></i>Cari
+        </button>
+        @if(request('search'))
+        <a href="{{ url()->current() }}" class="btn btn-outline-secondary" style="border:none; padding:0 14px; font-weight:600;">
+          <i class="ri-close-line"></i>
+        </a>
+        @endif
+      </div>
+
+      @if(request('search'))
+      <div class="search-meta" id="searchMeta">
+        <span class="search-chip" id="searchChip"><i class="ri-filter-3-line me-1"></i>"{{ request('search') }}"</span>
+        <small class="text-muted">Ditemukan <span id="searchCount">{{ $pakets->count() }}</span> paket pada halaman ini</small>
+      </div>
+      @endif
+    </form>
   </div>
 </div>
 
@@ -96,11 +187,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   @else
     @foreach($pakets as $paket)
-      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 paket-card" data-searchable="{{ strtolower($paket->nama_paket.' '.($paket->harga ?? '').' '.($paket->kecepatan ?? '').' Mbps') }}">
         <div class="card h-100 border-0 shadow-sm hover-card position-relative overflow-hidden">
           {{-- Accent Border Top --}}
           <div class="card-accent"></div>
-          
+
           <div class="card-body p-4 d-flex flex-column">
             {{-- Header Card --}}
             <div class="d-flex align-items-start mb-4">
@@ -132,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             {{-- Action Buttons --}}
             <div class="d-flex gap-2 mt-auto">
-              <a href="{{ route('paket.edit', $paket->id) }}" 
+              <a href="{{ route('paket.edit', $paket->id) }}"
                  class="btn btn-warning btn-sm flex-fill d-flex align-items-center justify-content-center gap-1 py-2 shadow-sm hover-lift">
                 <i class="ri-edit-line ri-16px"></i>
                 <span class="fw-medium">Edit</span>
@@ -141,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <form action="{{ route('paket.destroy', $paket->id) }}" method="POST" class="flex-fill">
                 @csrf
                 @method('DELETE')
-                <button type="button" 
+                <button type="button"
                         class="btn btn-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-1 py-2 shadow-sm hover-lift btn-delete">
                   <i class="ri-delete-bin-line ri-16px"></i>
                   <span class="fw-medium">Hapus</span>
@@ -152,19 +243,45 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </div>
     @endforeach
+    <div class="col-12 d-none" id="searchEmpty">
+      <div class="card border-0 shadow-sm text-center py-5">
+        <div class="avatar avatar-xl mb-3 mx-auto">
+          <div class="avatar-initial bg-label-primary rounded-circle">
+            <i class="ri-inbox-line ri-36px"></i>
+          </div>
+        </div>
+        <h5 class="mb-2">Tidak ada paket yang sesuai</h5>
+        <p class="text-muted mb-3">Coba kata kunci lain atau hapus filter pencarian</p>
+        <button class="btn btn-outline-primary" type="button" id="clearPaketSearch">
+          <i class="ri-refresh-line me-1"></i>Reset Pencarian
+        </button>
+      </div>
+    </div>
   @endif
 </div>
 
 <style>
+/* ========================================= */
+/* SHADCN UI STYLE - BLACK & WHITE */
+/* ========================================= */
+:root {
+  --primary-color: #18181b;
+  --gray-bg: #fafafa;
+  --gray-border: #e4e4e7;
+  --text-muted: #71717a;
+}
+
 /* Card Hover Effects */
 .hover-card {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 12px;
+  border: 1px solid #e4e4e7;
 }
 
 .hover-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  border-color: #18181b;
 }
 
 /* Card Accent Border */
@@ -174,16 +291,17 @@ document.addEventListener('DOMContentLoaded', function() {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  background: #18181b;
   border-radius: 12px 12px 0 0;
 }
 
-/* Avatar Gradient */
+/* Avatar Gradient - Black */
 .avatar-initial.bg-gradient-primary {
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background: #18181b !important;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fafafa;
 }
 
 /* Button Hover Effects */
@@ -196,40 +314,146 @@ document.addEventListener('DOMContentLoaded', function() {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Warning Button Styling */
+/* Primary Button - Black */
+.btn-primary {
+  background: #18181b !important;
+  border: 1px solid #18181b !important;
+  color: #fafafa !important;
+}
+
+.btn-primary:hover {
+  background: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+/* Warning Button - Black */
 .btn-warning {
-  background: #ffc107;
-  border: none;
-  color: #000;
+  background: #18181b !important;
+  border: 1px solid #18181b !important;
+  color: #fafafa !important;
 }
 
 .btn-warning:hover {
-  background: #ffb300;
-  color: #000;
+  background: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
-/* Danger Button Styling */
+/* Danger Button - Black */
 .btn-danger {
-  background: #dc3545;
-  border: none;
+  background: #18181b !important;
+  border: 1px solid #18181b !important;
+  color: #fafafa !important;
 }
 
 .btn-danger:hover {
-  background: #c82333;
+  background: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
-/* Badge Styling */
+/* Outline Button */
+.btn-outline-primary {
+  background: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn-outline-primary:hover {
+  background: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+/* Badge Styling - Black */
 .badge.bg-success {
-  background: #28a745 !important;
+  background: #18181b !important;
+  color: #fafafa !important;
   font-size: 0.875rem;
   letter-spacing: 0.3px;
+  border-radius: 9999px;
 }
 
 /* Card Title */
 .card-title {
   font-size: 1.125rem;
   line-height: 1.4;
-  color: #2c3e50;
+  color: #18181b;
+}
+
+/* Search Bar */
+.search-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.search-card .input-group {
+  border: 1.5px solid #e4e4e7;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.search-card .input-group:focus-within {
+  border-color: #18181b;
+  box-shadow: 0 0 0 0.2rem rgba(24, 24, 27, 0.1);
+}
+
+.search-card .input-group-text {
+  background: #fafafa;
+  border: none;
+  color: #18181b;
+  font-weight: 600;
+}
+
+.search-card .form-control {
+  border: none;
+  padding: 0.9rem 1rem;
+  font-weight: 500;
+  color: #18181b;
+}
+
+.search-card .form-control::placeholder {
+  color: #a1a1aa;
+}
+
+.search-card .form-control:focus {
+  box-shadow: none;
+}
+
+.search-card .btn-search {
+  border: none;
+  background: #18181b;
+  color: #fafafa;
+  font-weight: 600;
+  padding: 0.85rem 1.4rem;
+  transition: all 0.2s ease;
+}
+
+.search-card .btn-search:hover {
+  background: #27272a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(24, 24, 27, 0.25);
+}
+
+.search-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.search-chip {
+  background: #f4f4f5;
+  color: #18181b;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid #e4e4e7;
 }
 
 /* Empty State */
@@ -239,8 +463,26 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .bg-label-primary {
-  background: rgba(106, 17, 203, 0.1) !important;
-  color: #6a11cb !important;
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+/* Text Colors */
+.text-primary {
+  color: #18181b !important;
+}
+
+.text-muted {
+  color: #71717a !important;
+}
+
+.text-dark {
+  color: #18181b !important;
+}
+
+/* Info Section Border */
+.border-bottom {
+  border-color: #e4e4e7 !important;
 }
 
 /* Responsive Adjustments */
@@ -253,6 +495,12 @@ document.addEventListener('DOMContentLoaded', function() {
 /* Card Body Spacing */
 .card-body {
   border-radius: 12px;
+}
+
+/* Header Card */
+.card.mb-4.border-0.shadow-sm {
+  border: 1px solid #e4e4e7 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
 }
 
 /* Icon Sizing */

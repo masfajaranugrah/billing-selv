@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KwitansiExport;
+use App\Models\Pelanggan;
 use App\Models\Tagihan;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -13,17 +15,22 @@ class TagihanKwitansiController extends Controller
      */
     public function index()
     {
-        // Ambil semua tagihan beserta relasi
-        $tagihans = Tagihan::with(['pelanggan', 'paket'])->latest()->get();
+        $status = request('status');
+        $kabupaten = request('kabupaten');
+        $kecamatan = request('kecamatan');
 
-        // Tambahkan URL kwitansi untuk view
-        foreach ($tagihans as $tagihan) {
-            $tagihan->kwitansi_url = $tagihan->kwitansi
-                ? asset('storage/'.$tagihan->kwitansi)
-                : null;
-        }
+        $tagihans = $this->buildKwitansiQuery($status, $kabupaten, $kecamatan)
+            ->paginate(10)
+            ->appends(request()->query());
 
-        return view('content.apps.Laporan.kwitansi', compact('tagihans'));
+        $kabupatens = Pelanggan::distinct()->pluck('kabupaten');
+        $kecamatans = Pelanggan::distinct()->pluck('kecamatan');
+
+        return view('content.apps.Laporan.kwitansi', compact(
+            'tagihans',
+            'kabupatens',
+            'kecamatans'
+        ));
     }
 
     /**
@@ -31,34 +38,38 @@ class TagihanKwitansiController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        $query = Tagihan::with(['pelanggan', 'paket']);
+        $status = $request->input('status');
+        $kabupaten = $request->input('kabupaten');
+        $kecamatan = $request->input('kecamatan');
 
-        // Filter status pembayaran
-        if ($request->filled('status_pembayaran')) {
-            $query->where('status_pembayaran', $request->status_pembayaran);
+        $query = $this->buildKwitansiQuery($status, $kabupaten, $kecamatan);
+
+        if (!$query->exists()) {
+            return back()->with('error', 'Data kwitansi tidak ditemukan untuk filter yang dipilih.');
         }
 
-        // Filter kabupaten/kecamatan melalui relasi pelanggan
-        if ($request->filled('kabupaten')) {
-            $kabupaten = strtolower($request->kabupaten);
-            $query->whereHas('pelanggan', function ($q) use ($kabupaten) {
-                $q->whereRaw('LOWER(kabupaten) = ?', [$kabupaten]);
-            });
-        }
-
-        if ($request->filled('kecamatan')) {
-            $kecamatan = strtolower($request->kecamatan);
-            $query->whereHas('pelanggan', function ($q) use ($kecamatan) {
-                $q->whereRaw('LOWER(kecamatan) = ?', [$kecamatan]);
-            });
-        }
-
-        $tagihans = $query->get();
-
-        // Download Excel menggunakan TagihanExport
-        return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\KwitansiExport($tagihans),
+        return Excel::download(
+            new KwitansiExport($status, $kabupaten, $kecamatan),
             'laporan_kwitansi.xlsx'
         );
+    }
+
+    private function buildKwitansiQuery($status, $kabupaten, $kecamatan)
+    {
+        return Tagihan::with(['pelanggan', 'paket'])
+            ->when($status, function ($query, $status) {
+                $query->where('status_pembayaran', $status);
+            })
+            ->when($kabupaten, function ($query, $kabupaten) {
+                $query->whereHas('pelanggan', function ($q) use ($kabupaten) {
+                    $q->where('kabupaten', $kabupaten);
+                });
+            })
+            ->when($kecamatan, function ($query, $kecamatan) {
+                $query->whereHas('pelanggan', function ($q) use ($kecamatan) {
+                    $q->where('kecamatan', $kecamatan);
+                });
+            })
+            ->orderBy('tanggal_mulai', 'desc');
     }
 }

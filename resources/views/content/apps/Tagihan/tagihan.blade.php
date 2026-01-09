@@ -4,8 +4,6 @@
 
 @section('vendor-style')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
   'resources/assets/vendor/libs/select2/select2.scss',
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss',
   'resources/assets/vendor/libs/flatpickr/flatpickr.scss',
@@ -19,7 +17,7 @@
   --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.12);
   --border-radius: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --primary-color: #696cff;
+  --primary-color: #111827;
   --success-color: #28c76f;
 }
 
@@ -51,33 +49,40 @@
 }
 
 .card-border-shadow-primary::before {
-  background: linear-gradient(180deg, #696cff 0%, #5a5dc9 100%);
+  background: linear-gradient(180deg, #111827 0%, #0b1220 100%);
 }
 
 .card-border-shadow-success::before {
-  background: linear-gradient(180deg, #71dd37 0%, #5cb82e 100%);
+  background: linear-gradient(180deg, #d1d5db 0%, #9ca3af 100%);
 }
 
 .card-border-shadow-warning::before {
-  background: linear-gradient(180deg, #ffab00 0%, #e09900 100%);
+  background: linear-gradient(180deg, #e5e7eb 0%, #d1d5db 100%);
 }
 
 .card-border-shadow-info::before {
-  background: linear-gradient(180deg, #03c3ec 0%, #02a8cc 100%);
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
 }
 
 /* Stats Card */
 .stats-card {
   border-radius: var(--border-radius);
   padding: 1.5rem;
-  background: #fff;
-  border: 1px solid #f0f0f0;
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #e5e7eb;
   transition: var(--transition);
+}
+
+.stats-card p,
+.stats-card h2,
+.stats-card .text-muted {
+  color: #0f172a !important;
 }
 
 .stats-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
 }
 
 .stats-icon {
@@ -88,6 +93,8 @@
   align-items: center;
   justify-content: center;
   font-size: 28px;
+  background: #f3f4f6;
+  color: #111827;
 }
 
 /* Avatar */
@@ -100,66 +107,325 @@
   transform: scale(1.05);
 }
 
-/* Buttons */
+/* ========================================= */
+/* SHADCN UI STYLE BUTTONS - ALL BLACK */
+/* Override Bootstrap default button colors */
+/* ========================================= */
 .btn {
-  border-radius: 8px;
-  padding: 0.625rem 1.25rem;
-  font-weight: 600;
-  transition: var(--transition);
-  border: none;
+  border-radius: 6px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
 }
 
+/* Primary Button - Black */
+.btn.btn-primary,
 .btn-primary {
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
-  box-shadow: 0 2px 8px rgba(105, 108, 255, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-primary:hover,
 .btn-primary:hover {
-  background: linear-gradient(135deg, #5a5dc9 0%, #4a4db9 100%);
-  box-shadow: 0 4px 12px rgba(105, 108, 255, 0.4);
-  transform: translateY(-1px);
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
+.btn.btn-primary:focus,
+.btn-primary:focus,
+.btn.btn-primary:focus-visible,
+.btn-primary:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+.btn.btn-primary:active,
+.btn-primary:active {
+  background: #09090b !important;
+  color: #fafafa !important;
+}
+
+/* Warning Button - Black */
+.btn.btn-warning,
 .btn-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%);
-  box-shadow: 0 2px 8px rgba(255, 171, 0, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-warning:hover,
 .btn-warning:hover {
-  background: linear-gradient(135deg, #e09900 0%, #c78800 100%);
-  box-shadow: 0 4px 12px rgba(255, 171, 0, 0.4);
-  transform: translateY(-1px);
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
+.btn.btn-warning:focus,
+.btn-warning:focus,
+.btn.btn-warning:focus-visible,
+.btn-warning:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+/* Success Button - Black */
+.btn.btn-success,
 .btn-success {
-  background: linear-gradient(135deg, #71dd37 0%, #5cb82e 100%);
-  box-shadow: 0 2px 8px rgba(113, 221, 55, 0.3);
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-success:hover,
+.btn-success:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.btn.btn-success:focus,
+.btn-success:focus,
+.btn.btn-success:focus-visible,
+.btn-success:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+/* Secondary Button - Black */
+.btn.btn-secondary,
 .btn-secondary {
-  background: #f8f9fa;
-  border: 1px solid #e0e0e0;
-  color: #6c757d;
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
 }
 
+.btn.btn-secondary:hover,
 .btn-secondary:hover {
-  background: #e9ecef;
-  border-color: #ccc;
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
 }
 
-.btn-sm {
-  padding: 0.375rem 0.875rem;
-  font-size: 0.875rem;
+.btn.btn-secondary:focus,
+.btn-secondary:focus,
+.btn.btn-secondary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+  background: #18181b !important;
+  color: #fafafa !important;
 }
+
+/* Danger Button - Black */
+.btn.btn-danger,
+.btn-danger {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn.btn-danger:hover,
+.btn-danger:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.btn.btn-danger:focus,
+.btn-danger:focus,
+.btn.btn-danger:focus-visible,
+.btn-danger:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+  background: #18181b !important;
+  color: #fafafa !important;
+}
+
+/* Search Button - Black (shadcn-like) */
+.btn.btn-search-dark,
+.btn-search-dark {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
+  border: 1px solid #18181b !important;
+}
+
+.btn.btn-search-dark:hover,
+.btn-search-dark:hover {
+  background: #27272a !important;
+  background-color: #27272a !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.btn.btn-search-dark:focus,
+.btn-search-dark:focus,
+.btn.btn-search-dark:focus-visible,
+.btn-search-dark:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+}
+
+.btn.btn-search-dark:active,
+.btn-search-dark:active {
+  background: #09090b !important;
+}
+
+/* Outline Buttons - Light background, black text */
+.btn.btn-outline-primary,
+.btn.btn-outline-secondary,
+.btn.btn-outline-danger,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-danger {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+}
+
+.btn.btn-outline-primary:hover,
+.btn.btn-outline-secondary:hover,
+.btn.btn-outline-danger:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-danger:hover {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #a1a1aa !important;
+  color: #18181b !important;
+}
+
+.btn.btn-outline-primary:focus,
+.btn.btn-outline-secondary:focus,
+.btn.btn-outline-danger:focus,
+.btn-outline-primary:focus-visible,
+.btn-outline-secondary:focus-visible,
+.btn-outline-danger:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #18181b !important;
+}
+
+/* Small Button */
+.btn.btn-sm,
+.btn-sm {
+  padding: 0.375rem 0.75rem !important;
+  font-size: 0.8125rem !important;
+}
+
+/* Icon Button */
+.btn-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================= */
+/* SHADCN UI STYLE BADGES & TEXT */
+/* ========================================= */
 
 /* Badges */
 .badge {
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
   font-weight: 500;
   font-size: 0.75rem;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
+
+/* Neutralize accent labels and badges - shadcn style */
+.bg-label-primary,
+.bg-label-success,
+.bg-label-warning,
+.bg-label-dark {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+}
+
+/* Badge Paket - Black background, white text */
+.bg-label-info {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
+}
+
+.stats-icon.bg-label-primary,
+.stats-icon.bg-label-success,
+.stats-icon.bg-label-warning,
+.stats-icon.bg-label-info {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+/* Status Lunas - Black */
+.badge.bg-success {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
+}
+
+/* Status Belum Bayar - Red with white text, rounded */
+.badge.bg-danger {
+  background: #dc2626 !important;
+  color: #fafafa !important;
+  border: none !important;
+  border-radius: 9999px !important;
+}
+
+/* Solid badges default */
+.bg-info,
+.bg-warning,
+.bg-primary,
+.bg-dark {
+  background: #18181b !important;
+  color: #fafafa !important;
+  border: none !important;
+}
+
+/* All text colors - Black (shadcn style) */
+.text-success,
+.text-info,
+.text-warning,
+.text-primary,
+.text-danger,
+.text-muted {
+  color: #71717a !important;
+}
+
+ 
 
 /* Form Controls */
 .form-select, .form-control {
@@ -170,45 +436,100 @@
 }
 
 .form-select:focus, .form-control:focus {
-  border-color: #696cff;
-  box-shadow: 0 0 0 3px rgba(105, 108, 255, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
 }
 
-/* Modal */
+/* ========================================= */
+/* SHADCN UI STYLE MODAL */
+/* ========================================= */
 .modal-content {
-  border-radius: 16px;
-  border: none;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  overflow: hidden;
 }
 
 .modal-header {
-  border-radius: 16px 16px 0 0;
-  padding: 1.5rem;
-  border-bottom: none;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e4e4e7;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header .modal-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #18181b;
+  margin: 0;
 }
 
 .modal-header.bg-primary {
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%) !important;
+  background: #18181b !important;
+  border-bottom: none;
+}
+
+.modal-header.bg-primary .modal-title {
+  color: #fafafa;
 }
 
 .modal-header.bg-warning {
-  background: linear-gradient(135deg, #ffab00 0%, #e09900 100%) !important;
+  background: #18181b !important;
+  border-bottom: none;
+}
+
+.modal-header.bg-warning .modal-title {
+  color: #fafafa;
+}
+
+.modal-header .btn-close {
+  padding: 0.5rem;
+  margin: -0.5rem -0.5rem -0.5rem auto;
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
 }
 
 .modal-body {
-  padding: 2rem;
-  max-height: 70vh;
+  padding: 1.5rem;
+  padding-top: 2rem;
+  max-height: 65vh;
   overflow-y: auto;
 }
 
 .modal-footer {
-  padding: 1.5rem;
-  border-top: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid #e4e4e7;
   background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 .btn-close-white {
   filter: brightness(0) invert(1);
+}
+
+/* Modal Dialog Centered with proper spacing */
+.modal-dialog-centered {
+  min-height: calc(100% - 3.5rem);
+  margin: 1.75rem auto;
+}
+
+/* Modal backdrop with blur effect */
+.modal-backdrop.show {
+  opacity: 1;
+  background-color: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Table */
@@ -218,11 +539,11 @@
 }
 
 .table thead th {
-  background: #f8f9fa;
+  background: #f8fafc;
   border: none;
   padding: 1rem;
   font-weight: 600;
-  color: #5a5f7d;
+  color: #0f172a;
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -234,14 +555,19 @@
 }
 
 .table tbody tr:not(.empty-state-row):hover {
-  background: #f8f9ff;
+  background: #f1f5f9;
   transform: scale(1.001);
 }
 
 .table tbody td {
   padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e5e7eb;
   vertical-align: middle;
+}
+
+.table thead th:first-child,
+.table tbody td:first-child {
+  text-align: center;
 }
 
 /* Empty State */
@@ -284,7 +610,7 @@
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #696cff 0%, #5a5dc9 100%);
+  background: linear-gradient(135deg, #111827 0%, #0b1220 100%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -314,20 +640,25 @@
 
 .detail-section {
   background: #ffffff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
   padding: 1.25rem;
   margin-bottom: 1.25rem;
   transition: all 0.2s;
 }
 
+.detail-section:first-child,
+.modal-body > .detail-section:first-of-type {
+  margin-top: 0.5rem;
+}
+
 .detail-section:hover {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  border-color: #696cff;
+  border-color: #111827;
 }
 
 .detail-section h6 {
-  color: #696cff;
+  color: #111827;
   font-weight: 700;
   margin-bottom: 1.25rem;
   font-size: 0.9rem;
@@ -336,7 +667,7 @@
   display: flex;
   align-items: center;
   padding-bottom: 0.75rem;
-  border-bottom: 2px solid #696cff;
+  border-bottom: 2px solid #111827;
 }
 
 .detail-section h6 i {
@@ -414,9 +745,16 @@
   border-radius: 0 0 var(--border-radius) var(--border-radius);
 }
 
+.pagination-info {
+  color: #71717a;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 .pagination {
   margin: 0;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .pagination .page-item .page-link {
@@ -427,47 +765,120 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e0e0e0;
-  color: #6c757d;
+  border: 1px solid #e4e4e7;
+  color: #18181b;
   font-weight: 600;
   background-color: #fff;
-  margin: 0 2px;
+  margin: 0 4px;
   transition: all 0.3s ease;
 }
 
 .pagination .page-item .page-link:hover {
-  background-color: #f3f2ff;
-  border-color: var(--primary-color);
-  color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(105, 108, 255, 0.2);
+  background-color: #f4f4f5;
+  border-color: #18181b;
+  color: #18181b;
 }
 
 .pagination .page-item.active .page-link {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 12px rgba(105, 108, 255, 0.4);
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+  box-shadow: none;
 }
 
 .pagination .page-item.disabled .page-link {
-  background-color: #f8f9fa;
-  border-color: #e0e0e0;
-  color: #adb5bd;
+  background-color: #f4f4f5;
+  border-color: #e4e4e7;
+  color: #a1a1aa;
   cursor: not-allowed;
 }
 
-.pagination-info {
-  color: #6c757d;
+/* DataTables pagination styles */
+.dataTables_wrapper .dataTables_info {
+  float: left !important;
+  padding-top: 1.25rem;
+  padding-bottom: 1rem;
+  color: #71717a;
   font-size: 0.875rem;
-  font-weight: 500;
 }
 
-/* Hide DataTables default controls */
-.dataTables_info,
-.dataTables_paginate,
+.dataTables_wrapper .dataTables_paginate {
+  float: right !important;
+  text-align: right !important;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .pagination {
+  justify-content: flex-end !important;
+  margin: 0 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item .page-link {
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 4px !important;
+  border: 1px solid #e4e4e7 !important;
+  color: #18181b !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item .page-link:hover {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #18181b !important;
+  color: #18181b !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+  background: #18181b !important;
+  background-color: #18181b !important;
+  border-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+  background: #f4f4f5 !important;
+  background-color: #f4f4f5 !important;
+  border-color: #e4e4e7 !important;
+  color: #a1a1aa !important;
+  cursor: not-allowed !important;
+}
+
+.dataTables_wrapper::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* Hide DataTables default controls if using custom pagination */
 .dataTables_length,
 .dataTables_filter {
+  display: none !important;
+}
+
+/* Hide default Laravel pagination results text */
+.pagination-wrapper .pagination + div,
+.pagination-wrapper nav + div,
+.pagination-wrapper div:has(> nav) > p,
+.pagination-wrapper > div > nav ~ *:not(.pagination),
+.pagination-wrapper > div:last-child p {
+  display: none !important;
+}
+
+/* Alternative: Hide any 'Showing X to Y of Z results' text */
+.pagination-wrapper div:last-child > p,
+.pagination-wrapper > div > .text-sm,
+nav[role="navigation"] > div:first-child,
+nav[role="navigation"] > div > p {
   display: none !important;
 }
 
@@ -500,7 +911,6 @@
 
 @section('vendor-script')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
   'resources/assets/vendor/libs/select2/select2.js',
   'resources/assets/vendor/libs/sweetalert2/sweetalert2.js',
   'resources/assets/vendor/libs/flatpickr/flatpickr.js',
@@ -529,23 +939,31 @@ document.addEventListener("DOMContentLoaded", function () {
     $(document).on('shown.bs.modal', '[id^="modalEditTagihan-"]', function () {
         flatpickr($(this).find('.flatpickr-edit-start'), {
             dateFormat: "Y-m-d",
-            allowInput: true
+        allowInput: true,
+        minDate: null,
+        disableMobile: true
         });
         flatpickr($(this).find('.flatpickr-edit-end'), {
             dateFormat: "Y-m-d",
-            allowInput: true
+        allowInput: true,
+        minDate: null,
+        disableMobile: true
         });
     });
 
     flatpickr("#tanggal_mulai", {
         dateFormat: "Y-m-d",
         defaultDate: new Date(),
-        allowInput: true
+      allowInput: true,
+      minDate: null,
+      disableMobile: true
     });
 
     flatpickr("#tanggal_berakhir", {
         dateFormat: "Y-m-d",
-        allowInput: false
+      allowInput: false,
+      minDate: null,
+      disableMobile: true
     });
 
     // ========================================
@@ -606,40 +1024,6 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#pelangganSelect').val(list.val()).trigger('change');
         }
     });
-
-    // ========================================
-    // DATATABLES - TANPA SEARCH & PAGINATION
-    // ========================================
-    const $table = $('.datatables-users');
-    if ($table.length) {
-        const hasData = $table.find('tbody tr').not('.empty-state-row').length > 0;
-
-        if (hasData) {
-            try {
-                $table.DataTable({
-                    paging: false,
-                    lengthChange: false,
-                    searching: false,
-                    ordering: true,
-                    info: false,
-                    scrollX: true,
-                    autoWidth: false,
-                    dom: 'rt',
-                    columnDefs: [
-                        { orderable: false, targets: [0, -1] },
-                        { width: '80px', targets: 0 },
-                        { width: '100px', targets: 1 }
-                    ],
-                    language: {
-                        emptyTable: "Tidak ada data tersedia",
-                        zeroRecords: "Tidak ada data yang sesuai"
-                    }
-                });
-            } catch (error) {
-                console.warn('DataTables initialization error:', error);
-            }
-        }
-    }
 
     // ========================================
     // AUTO SUBMIT ON FILTER CHANGE
@@ -753,15 +1137,138 @@ document.addEventListener("DOMContentLoaded", function () {
         flatpickr(".flatpickr-select-start-all", {
             dateFormat: "Y-m-d",
             defaultDate: new Date(),
-            minDate: "today",
-            allowInput: true
+        allowInput: true,
+        minDate: null,
+        disableMobile: true
         });
         flatpickr(".flatpickr-select-start-end", {
             dateFormat: "Y-m-d",
             defaultDate: new Date().fp_incr(7),
-            minDate: "today",
-            allowInput: true
+        allowInput: true,
+        minDate: null,
+        disableMobile: true
         });
+
+        // Reset search dan checkbox saat modal dibuka
+        $('#searchPelanggan').val('');
+        $('#selectAllPelanggan').prop('checked', false);
+        $('.pelanggan-checkbox').prop('checked', false);
+        $('.pelanggan-item').show();
+        updateSelectedCount();
+    });
+
+    // ========================================
+    // SEARCH PELANGGAN
+    // ========================================
+    $(document).on('keyup input paste', '#searchPelanggan', function() {
+        const searchTerm = $(this).val().toLowerCase().trim();
+
+        // Hapus pesan "tidak ada hasil" jika ada
+        $('#noResultMessage').remove();
+
+        if (searchTerm === '') {
+            $('.pelanggan-item').show();
+            updateSelectAllState();
+            return;
+        }
+
+        let visibleCount = 0;
+        $('.pelanggan-item').each(function() {
+            const $item = $(this);
+            const nama = String($item.attr('data-nama') || '').toLowerCase();
+            const nomerId = String($item.attr('data-nomer-id') || '').toLowerCase();
+            const wa = String($item.attr('data-wa') || '').toLowerCase();
+
+            // Normalize search term (hapus spasi, dash, dll untuk nomor)
+            const normalizedSearch = searchTerm.replace(/[\s\-+]/g, '');
+            const normalizedWa = wa.replace(/[\s\-+]/g, '');
+
+            if (nama.includes(searchTerm) ||
+                nomerId.includes(searchTerm) ||
+                wa.includes(searchTerm) ||
+                normalizedWa.includes(normalizedSearch)) {
+                $item.show();
+                visibleCount++;
+            } else {
+              // Sembunyikan saja tanpa menghapus pilihan supaya tidak hilang saat berganti search
+              $item.hide();
+            }
+        });
+
+        // Update select all state setelah filter
+        updateSelectAllState();
+        updateSelectedCount();
+
+        // Jika tidak ada hasil, tampilkan pesan
+        if (visibleCount === 0) {
+            $('#pelangganList').append('<div id="noResultMessage" class="text-center py-3 text-muted"><i class="ri-search-line me-1"></i>Tidak ada hasil ditemukan</div>');
+        }
+    });
+
+    // ========================================
+    // SELECT ALL
+    // ========================================
+    $('#selectAllPelanggan').on('change', function() {
+        const isChecked = $(this).prop('checked');
+        $('.pelanggan-item:visible .pelanggan-checkbox').prop('checked', isChecked);
+        updateSelectedCount();
+    });
+
+    // ========================================
+    // INDIVIDUAL CHECKBOX
+    // ========================================
+    $(document).on('change', '.pelanggan-checkbox', function() {
+        updateSelectedCount();
+        updateSelectAllState();
+    });
+
+    // ========================================
+    // UPDATE SELECTED COUNT
+    // ========================================
+    function updateSelectedCount() {
+        const count = $('.pelanggan-checkbox:checked').length;
+        $('#selectedCount').text(count + ' dipilih');
+        $('#submitCount').text(count);
+
+        // Disable submit jika tidak ada yang dipilih
+        if (count === 0) {
+            $('#btnSubmitMass').prop('disabled', true).addClass('opacity-50');
+        } else {
+            $('#btnSubmitMass').prop('disabled', false).removeClass('opacity-50');
+        }
+    }
+
+    // ========================================
+    // UPDATE SELECT ALL STATE
+    // ========================================
+    function updateSelectAllState() {
+        const visibleCheckboxes = $('.pelanggan-item:visible .pelanggan-checkbox');
+        const checkedCheckboxes = $('.pelanggan-item:visible .pelanggan-checkbox:checked');
+
+        if (visibleCheckboxes.length === 0) {
+            $('#selectAllPelanggan').prop('checked', false);
+        } else {
+            $('#selectAllPelanggan').prop('checked', visibleCheckboxes.length === checkedCheckboxes.length);
+        }
+    }
+
+    // ========================================
+    // FORM SUBMIT VALIDATION
+    // ========================================
+    $('#formMassTagihan').on('submit', function(e) {
+        const selectedCount = $('.pelanggan-checkbox:checked').length;
+        if (selectedCount === 0) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan',
+                text: 'Pilih minimal 1 pelanggan untuk dibuatkan tagihan.',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+
+        showLoading();
     });
 
     // ========================================
@@ -771,13 +1278,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const $row = $(this).closest('tr');
 
         // Ambil data dari table cells
+        // Ambil data utama sesuai urutan kolom tabel
         const nomorId = $row.find('.badge.bg-label-dark').text().trim();
-        const namaLengkap = $row.find('td:nth-child(3) strong').text().trim();
+        const namaLengkap = $row.find('td:nth-child(4) strong').text().trim();
         const noWhatsapp = $row.find('code').text().trim().replace(/\D/g, '');
         const noWhatsappDisplay = $row.find('code').text().trim();
-        const status = $row.find('td:nth-child(5) .badge').text().trim();
-        const paket = $row.find('td:nth-child(6) .badge').text().trim();
-        const harga = $row.find('td:nth-child(7) strong').text().trim();
+        const status = $row.find('td:nth-child(6) .badge').text().trim();
+        const paket = $row.find('td:nth-child(7) .badge').text().trim();
+        const harga = $row.find('td:nth-child(8) strong').text().trim();
 
         // Data dari attribute
         const alamat = $row.data('alamat') || '-';
@@ -968,8 +1476,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <i class="ri-checkbox-circle-line"></i>
           </div>
           <div>
-            <p class="mb-0 text-muted small">Pembayaran Lunas</p>
-            <h2 class="mb-0 fw-bold text-success">{{ $lunas }}</h2>
+
+            <p class="mb-0 text-muted small">Tagihan Lunas</p>
+            <h2 class="mb-0 fw-bold text-success">{{ $customerLunas ?? 0 }}</h2>
           </div>
         </div>
       </div>
@@ -1027,11 +1536,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
           <div class="col-md-3">
             <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary flex-grow-1">
+              <button type="submit" class="btn btn-search-dark flex-grow-1">
                 <i class="ri-search-line me-1"></i>Cari
               </button>
               @if(request()->hasAny(['search']))
-                <a href="{{ route('tagihan.index') }}" class="btn btn-secondary">
+                <a href="{{ route('tagihan.get') }}" class="btn btn-secondary">
                   <i class="ri-refresh-line me-1"></i>Reset
                 </a>
               @endif
@@ -1057,9 +1566,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div class="d-flex align-items-center gap-2">
           @if($tagihans->total() > 0)
-            <span class="badge bg-label-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+            <span class="badge" style="padding: 10px 20px; font-size: 0.9rem; background: rgba(24, 24, 27, 0.1); color: #18181b; border: 1px solid rgba(24, 24, 27, 0.2);">
               <i class="ri-database-2-line me-1"></i>
-              {{ $tagihans->total() }} Data Total
+              {{ $tagihans->total() }} Tagihan
             </span>
           @endif
 
@@ -1075,15 +1584,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <div class="card-body p-0">
       <div class="table-responsive p-3">
-        <table class="datatables-users table table-hover nowrap" style="width: 100%;">
+        <table class="table table-hover align-middle" style="width: 100%;">
           <thead>
             <tr>
+              <th>No</th>
               <th><i class="ri-eye-line me-1"></i>Detail</th>
               <th><i class="ri-barcode-line me-1"></i>No. ID</th>
               <th><i class="ri-user-3-line me-1"></i>Nama</th>
               <th><i class="ri-whatsapp-line me-1"></i>No. WA</th>
               <th><i class="ri-shield-check-line me-1"></i>Status</th>
-              <th><i class="ri-box-3-line me-1"></i>Paket</th>
               <th><i class="ri-money-dollar-circle-line me-1"></i>Harga</th>
               <th><i class="ri-settings-3-line me-1"></i>Actions</th>
             </tr>
@@ -1120,6 +1629,7 @@ document.addEventListener("DOMContentLoaded", function () {
               data-catatan="{{ $item['catatan'] ?? '-' }}"
               data-bukti="{{ $buktiUrl }}"
             >
+              <td class="text-muted fw-semibold" style="width: 60px;">{{ ($tagihans->firstItem() ?? 1) + $loop->index }}</td>
               <td>
                 <button class="btn btn-sm btn-icon btn-outline-primary btn-detail" title="Lihat Detail">
                   <i class="ri-eye-line"></i>
@@ -1127,9 +1637,9 @@ document.addEventListener("DOMContentLoaded", function () {
               </td>
               <td><span class="badge bg-label-dark">{{ $item['nomer_id'] }}</span></td>
               <td><strong>{{ $item['nama_lengkap'] }}</strong></td>
-              <td>
+              <td style="min-width: 180px;">
                 <a href="https://wa.me/{{ $item['no_whatsapp'] }}" target="_blank" class="text-decoration-none">
-                  <code style="background: #f8f9fa; padding: 6px 12px; border-radius: 6px; font-size: 0.875rem; font-weight: 600; color: #25D366;">
+                  <code style="background: #18181b; padding: 6px 12px; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; color: #fafafa; white-space: nowrap; display: inline-flex; align-items: center;">
                     <i class="ri-whatsapp-line me-1"></i>{{ $item['no_whatsapp'] }}
                   </code>
                 </a>
@@ -1138,11 +1648,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span class="{{ $badgeClass }}">
                   <i class="ri-{{ $status == 'lunas' ? 'checkbox-circle' : 'close-circle' }}-line me-1"></i>
                   {{ ucfirst($status ?: '-') }}
-                </span>
-              </td>
-              <td>
-                <span class="badge bg-label-info">
-                  <i class="ri-box-line me-1"></i>{{ $item['paket']['nama_paket'] ?? '-' }}
                 </span>
               </td>
               <td><strong>Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}</strong></td>
@@ -1191,7 +1696,7 @@ document.addEventListener("DOMContentLoaded", function () {
                       @endif
                     </div>
 
-                    <a href="{{ route('tagihan.index') }}" class="btn btn-primary mt-2">
+                    <a href="{{ route('tagihan.get') }}" class="btn btn-primary mt-2">
                       <i class="ri-refresh-line me-1"></i>Reset & Tampilkan Semua Data
                     </a>
                   @else
@@ -1229,7 +1734,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div class="modal fade" id="detailModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
+      <div class="modal-header bg-primary py-4">
         <h5 class="modal-title text-white fw-bold">
           <i class="ri-information-line me-2"></i>Detail Pelanggan
         </h5>
@@ -1238,11 +1743,11 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="modal-body">
         <!-- Content will be inserted via JavaScript -->
       </div>
-      <div class="modal-footer">
+      {{-- <div class="modal-footer py-4">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           <i class="ri-close-line me-1"></i>Tutup
         </button>
-      </div>
+      </div> --}}
     </div>
   </div>
 </div>
@@ -1513,9 +2018,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- MODAL: MASS TAGIHAN -->
 <!-- ========================================= -->
 <div class="modal fade" id="modalMassTagihan" tabindex="-1">
-  <div class="modal-dialog modal-md modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-      <form action="{{ route('tagihan.massStore') }}" method="POST">
+      <form action="{{ route('tagihan.massStore') }}" method="POST" id="formMassTagihan">
         @csrf
 
         <div class="modal-header bg-warning text-dark">
@@ -1526,42 +2031,68 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <div class="modal-body">
-          <div class="alert alert-info d-flex align-items-center">
-            <i class="ri-information-line me-2" style="font-size: 1.5rem;"></i>
-            <div>
-              <strong>{{ count($pelanggan) }} pelanggan</strong> akan dibuatkan tagihan secara otomatis
-            </div>
+          <!-- Search Box -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="ri-search-line me-1"></i>Cari Pelanggan
+            </label>
+            <input type="text" id="searchPelanggan" class="form-control" placeholder="Cari berdasarkan nama, No. ID, WhatsApp...">
           </div>
 
-          <div class="border rounded p-3 mb-3" style="max-height: 200px; overflow-y: auto; background: #f8f9fa;">
+          <!-- Select All -->
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="selectAllPelanggan">
+              <label class="form-check-label fw-semibold" for="selectAllPelanggan">
+                Pilih Semua
+              </label>
+            </div>
+            <span class="badge bg-primary" id="selectedCount">0 dipilih</span>
+          </div>
+
+          <!-- List Pelanggan dengan Checkbox -->
+          <div class="border rounded p-3 mb-3" style="max-height: 300px; overflow-y: auto; background: #f8f9fa;" id="pelangganList">
             @foreach($pelanggan as $p)
-            <div class="py-2 border-bottom">
-              <span class="badge bg-dark me-2">{{ $p->nomer_id }}</span>
-              <strong>{{ $p->nama_lengkap }}</strong>
+            <div class="pelanggan-item py-2 border-bottom"
+                 data-nama="{{ strtolower($p->nama_lengkap ?? '') }}"
+                 data-nomer-id="{{ strtolower($p->nomer_id ?? '') }}"
+                 data-wa="{{ strtolower(str_replace([' ', '-', '+'], '', $p->no_whatsapp ?? '')) }}">
+              <div class="form-check">
+                <input class="form-check-input pelanggan-checkbox" type="checkbox" name="pelanggan_ids[]" value="{{ $p->id }}" id="pelanggan_{{ $p->id }}">
+                <label class="form-check-label w-100" for="pelanggan_{{ $p->id }}">
+                  <span class="badge bg-dark me-2">{{ $p->nomer_id }}</span>
+                  <strong>{{ $p->nama_lengkap }}</strong>
+                  @if($p->paket)
+                    <span class="badge bg-label-info ms-2">{{ $p->paket->nama_paket }}</span>
+                  @else
+                    <span class="badge bg-label-danger ms-2">Tidak ada paket</span>
+                  @endif
+                </label>
+              </div>
             </div>
             @endforeach
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-semibold">Tanggal Mulai</label>
+            <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
             <input type="text" name="tanggal_mulai" class="form-control flatpickr-select-start-all" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-semibold">Tanggal Jatuh Tempo</label>
+            <label class="form-label fw-semibold">Tanggal Jatuh Tempo <span class="text-danger">*</span></label>
             <input type="text" name="tanggal_berakhir" class="form-control flatpickr-select-start-end" required>
           </div>
 
-          <div class="alert alert-warning small mb-0">
-            <i class="ri-error-warning-line me-1"></i>
-            Semua pelanggan di atas akan otomatis dibuatkan tagihan baru
+          <div class="alert alert-info small mb-0">
+            <i class="ri-information-line me-1"></i>
+            Hanya pelanggan yang dipilih akan dibuatkan tagihan baru
           </div>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="submit" class="btn btn-warning">
-            <i class="ri-check-circle-line me-1"></i>Buat Semua Tagihan
+          <button type="submit" class="btn btn-warning" id="btnSubmitMass">
+            <i class="ri-check-circle-line me-1"></i>Buat Tagihan (<span id="submitCount">0</span>)
           </button>
         </div>
       </form>

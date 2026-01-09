@@ -15,55 +15,67 @@ $menuData = $menuData ?? [];
 /* Update Font untuk Sidebar Menu */
 #layout-menu {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+  overflow: auto !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
 }
 
-/* Styling untuk menu aktif - Background #666cff, Text Putih */
+/* Hide scrollbar for Chrome, Safari and Opera */
+#layout-menu::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Hide scrollbar on menu-inner as well */
+.menu-inner {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.menu-inner::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Styling untuk menu aktif - Background Hitam, Text Putih */
 .menu-item.active > .menu-link {
-  background-color: #666cff !important;
-  color: #fff !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
   font-weight: 600;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 .menu-item.active > .menu-link i {
-  color: #fff !important;
+  color: #fafafa !important;
 }
 
 .menu-item.active > .menu-link div {
-  color: #fff !important;
-}
-
-/* Styling untuk submenu aktif */
-.menu-sub .menu-item.active > .menu-link {
-  background-color: #666cff !important;
-  color: #fff !important;
-  border-left: 3px solid #4d4dcc;
-  padding-left: 1.2rem;
-  font-weight: 500;
-}
-
-.menu-sub .menu-item.active > .menu-link div {
-  color: #fff !important;
+  color: #fafafa !important;
 }
 
 /* Hover effect untuk menu yang tidak aktif */
 .menu-item:not(.active) > .menu-link:hover {
-  background-color: #f5f5f5;
+  background-color: #f4f4f5;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
 
 /* Styling untuk menu dropdown yang terbuka (open) */
 .menu-item.open:not(.active) > .menu-link {
-  background-color: #666cff !important;
-  color: #fff !important;
+  background-color: #18181b !important;
+  color: #fafafa !important;
   border-radius: 6px;
 }
 
 .menu-item.open:not(.active) > .menu-link i,
 .menu-item.open:not(.active) > .menu-link div {
-  color: #fff !important;
+  color: #fafafa !important;
 }
 
 /* Jarak bottom untuk menu paling akhir */
@@ -92,6 +104,7 @@ $menuData = $menuData ?? [];
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 700;
   font-size: 1.25rem;
+  color: #18181b !important;
 }
 
 </style>
@@ -105,7 +118,7 @@ $menuData = $menuData ?? [];
           JMK
         </span>
       </a>
-      
+
       <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8.47 11.72C8.12 12.07 8.12 12.65 8.47 13.01L12.07 16.61C12.46 17.00 12.46 17.63 12.07 18.02C11.68 18.41 11.05 18.41 10.66 18.02L5.83 13.19C5.37 12.74 5.37 11.99 5.83 11.53L10.66 6.71C11.05 6.32 11.68 6.32 12.07 6.71C12.46 7.10 12.46 7.73 12.07 8.12L8.47 11.72Z" fill-opacity="0.9" />
@@ -146,17 +159,21 @@ $menuData = $menuData ?? [];
               $currentRouteName = Route::currentRouteName();
               $slug = $menu->slug ?? '';
 
-              if ($currentRouteName === $slug) {
-                $activeClass = 'active';
-              } elseif (isset($menu->submenu)) {
+              // Aktif jika route name sama atau salah satu slug submenu muncul di route name
+              $hasActiveChild = false;
+              if (isset($menu->submenu)) {
                 foreach ($menu->submenu as $sub) {
                   if (str_contains($currentRouteName, $sub->slug ?? '')) {
-                    $activeClass = 'active open';
+                    $hasActiveChild = true;
                     break;
                   }
                 }
               }
-              
+
+              if ($currentRouteName === $slug || $hasActiveChild) {
+                $activeClass = $hasActiveChild ? 'active open' : 'active';
+              }
+
               // Generate unique menu ID
               $menuId = 'menu-' . Str::slug($menu->name ?? 'item');
             @endphp
@@ -165,13 +182,13 @@ $menuData = $menuData ?? [];
               <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}"
                 class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}"
                 @if (isset($menu->target) && !empty($menu->target)) target="_blank" @endif>
-                
+
                 @isset($menu->icon)
                   <i class="{{ $menu->icon }}"></i>
                 @endisset
-                
+
                 <div>{{ $menu->name ?? '' }}</div>
-                
+
                 @isset($menu->badge)
                   <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">
                     {{ $menu->badge[1] }}
@@ -186,6 +203,7 @@ $menuData = $menuData ?? [];
                     @php
                       $submenuRoles = $submenu->roles ?? null;
                       $submenuAllowed = true;
+                      $submenuId = 'submenu-' . Str::slug($submenu->name ?? ($submenu->slug ?? 'subitem'));
 
                       if ($submenuRoles) {
                         if (is_array($submenuRoles)) {
@@ -197,7 +215,10 @@ $menuData = $menuData ?? [];
                     @endphp
 
                     @if ($submenuAllowed)
-                      <li class="menu-item {{ str_contains($currentRouteName, $submenu->slug ?? '') ? 'active' : '' }}">
+                      @php
+                        $isSubActive = str_contains($currentRouteName, $submenu->slug ?? '');
+                      @endphp
+                      <li class="menu-item {{ $isSubActive ? 'active' : '' }}" data-submenu-id="{{ $submenuId }}">
                         <a href="{{ url($submenu->url) }}" class="menu-link">
                           <div>{{ $submenu->name }}</div>
                         </a>
@@ -226,7 +247,7 @@ $menuData = $menuData ?? [];
 document.addEventListener('DOMContentLoaded', function() {
   // Restore menu state dari localStorage
   const openMenus = JSON.parse(localStorage.getItem('openMenus') || '[]');
-  
+
   openMenus.forEach(function(menuId) {
     const menuItem = document.querySelector('[data-menu-id="' + menuId + '"]');
     if (menuItem && !menuItem.classList.contains('active')) {
@@ -241,6 +262,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const menuId = menuItem.getAttribute('data-menu-id');
       let openMenus = JSON.parse(localStorage.getItem('openMenus') || '[]');
 
+      // Tutup dropdown lain agar hanya satu terbuka
+      document.querySelectorAll('.menu-item.open').forEach(function(item) {
+        if (item !== menuItem) {
+          item.classList.remove('open');
+          const otherId = item.getAttribute('data-menu-id');
+          openMenus = openMenus.filter(id => id !== otherId);
+        }
+      });
+
       if (menuItem.classList.contains('open')) {
         // Remove dari array jika menu ditutup
         openMenus = openMenus.filter(id => id !== menuId);
@@ -252,6 +282,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       localStorage.setItem('openMenus', JSON.stringify(openMenus));
+    });
+  });
+
+  // Tandai submenu yang diklik dan simpan
+  document.querySelectorAll('.menu-sub .menu-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      // Tidak menyimpan highlight khusus, hanya biarkan state default
     });
   });
 });
