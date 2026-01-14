@@ -941,12 +941,12 @@ public function lunas(Request $request)
         }
 
         // Hapus file bukti pembayaran jika ada
-        if ($tagihan->bukti_pembayaran && \Storage::disk('public')->exists($tagihan->bukti_pembayaran)) {
-            \Storage::disk('public')->delete($tagihan->bukti_pembayaran);
+        if ($tagihan->bukti_pembayaran && Storage::disk('public')->exists($tagihan->bukti_pembayaran)) {
+            Storage::disk('public')->delete($tagihan->bukti_pembayaran);
         }
         // Hapus file kwitansi jika ada
-        if ($tagihan->kwitansi && \Storage::disk('public')->exists($tagihan->kwitansi)) {
-            \Storage::disk('public')->delete($tagihan->kwitansi);
+        if ($tagihan->kwitansi && Storage::disk('public')->exists($tagihan->kwitansi)) {
+            Storage::disk('public')->delete($tagihan->kwitansi);
         }
 
         $tagihan->delete();

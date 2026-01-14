@@ -141,7 +141,7 @@ public function loginMem(Request $request)
         // Auto login setelah register
         Auth::login($user);
 
-        return redirect('/dashboard/admin/tagihan')->with('success', 'Registrasi berhasil! Selamat datang, '.$user->name);
+        return redirect('/dashboard')->with('success', 'Registrasi berhasil! Selamat datang, '.$user->name);
     }
 
     public function login(Request $request)
@@ -173,10 +173,10 @@ public function loginMem(Request $request)
             switch ($user->role) {
 
                 case 'administrator':
-                    return redirect('/dashboard/admin/tagihan');
+                    return redirect('/dashboard');
 
                 case 'admin':
-                    return redirect('/dashboard/admin/tagihan');
+                    return redirect('/dashboard');
 
                 case 'marketing':
                     return redirect('/dashboard/marketing/pelanggan');

@@ -56,6 +56,7 @@ use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomBroadcastController;
+use App\Http\Controllers\DashboardController;
 
 Route::middleware('web')->group(function () {
     Route::post('/broadcasting/auth', function (Request $request) {
@@ -84,6 +85,15 @@ Route::post('/customer/logout', [AuthController::class, 'logoutCustomer'])->name
 
 // auth pelanggan
  
+
+
+
+// Dashboard Welcome
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.welcome');
+});
+
+
 
 Route::prefix('/pelanggan/jernihnet')->group(function () {
 
@@ -284,13 +294,13 @@ Route::prefix('dashboard/admin/pembukuan')->group(function () {
     Route::get('/masuk', [LedgerController::class, 'index'])->name('pembukuan.index');
     Route::get('/keluar', [LedgerController::class, 'keluar'])->name('pembukuan.keluar');
     Route::get('/total', [LedgerController::class, 'total'])->name('pembukuan.total');
-
- // Saldo Awal Routes
+    Route::get('/total/export', [LedgerController::class, 'exportExcel'])->name('pembukuan.total.export');
+    
+    // Saldo Awal Routes
     Route::get('/saldo-awal', [\App\Http\Controllers\SaldoAwalController::class, 'index'])->name('saldo-awal.index');
     Route::post('/saldo-awal/store', [\App\Http\Controllers\SaldoAwalController::class, 'store'])->name('saldo-awal.store');
     Route::put('/saldo-awal/{id}', [\App\Http\Controllers\SaldoAwalController::class, 'update'])->name('saldo-awal.update');
 });
-
 Route::middleware(['auth', 'role:karyawan'])->group(function () {
     Route::get('/dashboard/karyawan/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/dashboard/karyawan/data/absensi', [AbsensiController::class, 'getAll'])->name('absensi.indexAll');

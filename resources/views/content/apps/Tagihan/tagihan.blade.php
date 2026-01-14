@@ -424,9 +424,7 @@
 .text-muted {
   color: #71717a !important;
 }
-
  
-
 /* Form Controls */
 .form-select, .form-control {
   border-radius: 8px;
@@ -1450,74 +1448,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <div class="container-fluid px-4 py-4">
   <!-- ========================================= -->
-  <!-- DASHBOARD CARDS -->
-  <!-- ========================================= -->
-  <div class="row g-4 mb-4">
-    <!-- Total Customer -->
-    <div class="col-xl-3 col-md-6">
-      <div class="stats-card">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-label-primary me-3">
-            <i class="ri-group-line"></i>
-          </div>
-          <div>
-            <p class="mb-0 text-muted small">Total Customer</p>
-            <h2 class="mb-0 fw-bold">{{ $totalCustomer }}</h2>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Lunas -->
-    <div class="col-xl-3 col-md-6">
-      <div class="stats-card">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-label-success me-3">
-            <i class="ri-checkbox-circle-line"></i>
-          </div>
-          <div>
-
-            <p class="mb-0 text-muted small">Tagihan Lunas</p>
-            <h2 class="mb-0 fw-bold text-success">{{ $customerLunas ?? 0 }}</h2>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Belum Lunas -->
-    <div class="col-xl-3 col-md-6">
-      <div class="stats-card">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-label-warning me-3">
-            <i class="ri-error-warning-line"></i>
-          </div>
-          <div>
-            <p class="mb-0 text-muted small">Belum Lunas</p>
-            <h2 class="mb-0 fw-bold text-warning">{{ $belumLunas }}</h2>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Total Paket -->
-    <div class="col-xl-3 col-md-6">
-      <div class="stats-card">
-        <div class="d-flex align-items-center">
-          <div class="stats-icon bg-label-info me-3">
-            <i class="ri-box-3-line"></i>
-          </div>
-          <div>
-            <p class="mb-0 text-muted small">Total Paket</p>
-            <h2 class="mb-0 fw-bold text-info">{{ $totalPaket }}</h2>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================= -->
   <!-- FILTER & SEARCH -->
   <!-- ========================================= -->
+
   <div class="card mb-4">
     <div class="card-body">
       <form method="GET" action="{{ route('tagihan.get') }}" id="filterForm">

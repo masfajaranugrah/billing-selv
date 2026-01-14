@@ -47,19 +47,7 @@ $navbarDetached = $navbarDetached ?? '';
           </li>
         @endif
 
-        {{-- Style Switcher --}}
-        @if($configData['hasCustomizer'])
-          <li class="nav-item dropdown-style-switcher dropdown me-1 me-xl-0">
-            <a class="nav-link btn btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-              <i class='ri-22px'></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
-              <li><a class="dropdown-item" href="javascript:void(0);" data-theme="light"><i class='ri-sun-line ri-22px me-3'></i>Light</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0);" data-theme="dark"><i class="ri-moon-clear-line ri-22px me-3"></i>Dark</a></li>
-              <li><a class="dropdown-item" href="javascript:void(0);" data-theme="system"><i class="ri-computer-line ri-22px me-3"></i>System</a></li>
-            </ul>
-          </li>
-        @endif
+     
 
         {{-- User Dropdown --}}
 @php
@@ -113,12 +101,7 @@ $navbarDetached = $navbarDetached ?? '';
 
             <li><div class="dropdown-divider"></div></li>
 
-            {{-- My Profile --}}
-            <li>
-              <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
-                <i class="ri-user-3-line ri-22px me-3"></i> My Profile
-              </a>
-            </li>
+           
 
             <li><div class="dropdown-divider"></div></li>
 

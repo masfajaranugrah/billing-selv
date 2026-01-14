@@ -755,7 +755,7 @@ body {
             </div>
           </div>
 
-         
+
 
           <div class="price-section">
    <!-- <p class="period-label">
@@ -784,11 +784,11 @@ body {
                   </span>
               @else
                   <span class="status-badge status-belum">
-                      <i class="bi bi-exclamation-circle-fill"></i> Belum Bayar
+                      <i class="bi bi-cloud-arrow-up-fill"></i> Menunggu Upload
                   </span>
                   <div>
                       <button class="btn btn-bayar bayar-btn" data-id="{{ $tagihan->id }}">
-                          <i class="bi bi-wallet2"></i> Bayar Sekarang
+                          <i class="bi bi-upload"></i> Upload Bukti Pembayaran
                       </button>
                   </div>
               @endif

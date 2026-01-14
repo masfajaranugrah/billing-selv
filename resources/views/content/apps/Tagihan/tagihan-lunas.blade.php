@@ -629,13 +629,11 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     function buildModalFooter(data) {
       const deleteButton = `
-        <form class="d-inline form-delete-tagihan" method="POST" action="/dashboard/admin/tagihan-lunas/${data.id}" onsubmit="return confirm('Yakin ingin menghapus tagihan lunas ini?');">
-          <input type="hidden" name="_token" value="${$('meta[name=csrf-token]').attr('content')}">
-          <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-outline-danger">
-            <i class="ri-delete-bin-line me-1"></i>Hapus Tagihan Lunas
-          </button>
-        </form>
+        <button type="button" class="btn btn-outline-danger btn-delete-modal" 
+          data-tagihan-id="${data.id}" 
+          data-nama="${data.nama}">
+          <i class="ri-delete-bin-line me-1"></i>Hapus Tagihan Lunas
+        </button>
       `;
 
       const konfirmasiButton = data.status === 'lunas'
@@ -765,7 +763,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //             showLoading();
     //             const form = $('<form>', {
     //                 'method': 'POST',
-    //                 'action': `/dashboard/admin/tagihan-lunas/${tagihanId}`
+    //                 'action': `/dashboard/admin/tagihan/tagihan-lunas/${tagihanId}`
     //             });
     //             form.append($('<input>', {
     //                 'type': 'hidden',
@@ -868,6 +866,112 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
                 });
+            }
+        });
+    });
+
+    // ========================================
+    // DELETE TAGIHAN LUNAS HANDLER
+    // ========================================
+    $(document).on('click', '.btn-delete-tagihan', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const tagihanId = $(this).data('tagihan-id');
+        const nama = $(this).data('nama');
+        
+        Swal.fire({
+            title: 'Konfirmasi Hapus',
+            html: `Yakin ingin menghapus tagihan <strong>${nama}</strong>?<br><small class="text-danger">Data tagihan dan kwitansi akan dihapus permanen!</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="ri-delete-bin-line me-1"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="ri-close-line me-1"></i>Batal',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#71717a',
+            customClass: {
+                confirmButton: 'btn btn-danger me-2',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading();
+                
+                // Submit delete form
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': `/dashboard/admin/tagihan/tagihan-lunas/${tagihanId}`
+                });
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_token',
+                    'value': $('meta[name="csrf-token"]').attr('content')
+                }));
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_method',
+                    'value': 'DELETE'
+                }));
+                
+                $('body').append(form);
+                form.submit();
+            }
+        });
+    });
+
+    // Handler untuk tombol hapus di modal (SweetAlert)
+    $(document).on('click', '.btn-delete-modal', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const tagihanId = $(this).data('tagihan-id');
+        const nama = $(this).data('nama');
+        
+        // Tutup modal detail dulu
+        const detailModalEl = document.getElementById('detailModal');
+        const detailModal = bootstrap.Modal.getInstance(detailModalEl);
+        if (detailModal) {
+            detailModal.hide();
+        }
+        
+        Swal.fire({
+            title: 'Konfirmasi Hapus',
+            html: `Yakin ingin menghapus tagihan <strong>${nama}</strong>?<br><small class="text-danger">Data tagihan dan kwitansi akan dihapus permanen!</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="ri-delete-bin-line me-1"></i>Ya, Hapus!',
+            cancelButtonText: '<i class="ri-close-line me-1"></i>Tidak',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#71717a',
+            customClass: {
+                confirmButton: 'btn btn-danger me-2',
+                cancelButton: 'btn btn-secondary'
+            },
+            buttonsStyling: false,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading();
+                
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': `/dashboard/admin/tagihan/tagihan-lunas/${tagihanId}`
+                });
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_token',
+                    'value': $('meta[name="csrf-token"]').attr('content')
+                }));
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_method',
+                    'value': 'DELETE'
+                }));
+                
+                $('body').append(form);
+                form.submit();
             }
         });
     });
@@ -1052,6 +1156,8 @@ document.addEventListener("DOMContentLoaded", function () {
               <th>Paket</th>
               <th>Harga</th>
               <th>Kecepatan</th>
+              <th>Kwitansi</th>
+              <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -1099,6 +1205,23 @@ document.addEventListener("DOMContentLoaded", function () {
               <td><span class="badge bg-label-info">{{ $item['paket']['nama_paket'] ?? '-' }}</span></td>
               <td><strong>Rp {{ number_format($item['paket']['harga'] ?? 0, 0, ',', '.') }}</strong></td>
               <td>{{ $item['paket']['kecepatan'] ?? '-' }} Mbps</td>
+              <td>
+                @if(!empty($item['kwitansi']))
+                  <a href="{{ asset('storage/' . $item['kwitansi']) }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Download Kwitansi">
+                    <i class="ri-file-pdf-line"></i>
+                  </a>
+                @else
+                  <span class="text-muted">-</span>
+                @endif
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-danger btn-delete-tagihan" 
+                  data-tagihan-id="{{ $item['id'] }}" 
+                  data-nama="{{ $item['nama_lengkap'] }}" 
+                  title="Hapus Tagihan">
+                  <i class="ri-delete-bin-line"></i>
+                </button>
+              </td>
             </tr>
             @endforeach
           </tbody>
@@ -1392,3 +1515,4 @@ document.addEventListener("DOMContentLoaded", function () {
 @endforeach
 
 @endsection
+s

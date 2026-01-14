@@ -7,6 +7,8 @@ use App\Models\Income;
 use App\Models\SaldoAwal;
 use App\Models\Tagihan;
 use App\Models\Paket;
+use App\Exports\PembukuanTotalExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\DB;
@@ -160,8 +162,8 @@ class LedgerController extends Controller
         $bulan = $request->get('bulan', date('m'));
         $tahun = $request->get('tahun', date('Y'));
         
-        // Get Saldo Awal
-        $saldoAwal = SaldoAwal::getByPeriod($bulan, $tahun);
+        // Get Saldo Awal (default to empty model if null to prevent crashes)
+        $saldoAwal = SaldoAwal::getByPeriod($bulan, $tahun) ?? new SaldoAwal();
         
         // Get first and last day of the month
         $startDate = Carbon::createFromDate($tahun, $bulan, 1)->startOfMonth();
@@ -177,61 +179,82 @@ class LedgerController extends Controller
             ->orderBy('tanggal_keluar', 'asc')
             ->get();
         
-        // Calculate Pemasukan
-        $pemasukanRegistrasi = $incomes->where('kategori', 'Registrasi')->sum('jumlah');
-        
-        // Pemasukan Dedicated dari Tagihan (paket dengan nama mengandung "dedicated" dan status lunas)
+        // ===== PEMASUKAN =====
+        // Pemasukan Dedicated dari Tagihan (paket dengan nama mengandung "dedicated" atau "DAD" dan status lunas)
         $dedicatedData = $this->getDedicatedFromTagihan($startDate, $endDate);
+        
+        // 1. Kotor taken AUTOMATICALLY from Tagihan
         $pemasukanDedicatedKotor = $dedicatedData['kotor'];
-        $potonganDedicated = $dedicatedData['potongan'];
+        
+        // 2. Potongan taken MANUALLY from Saldo Awal
+        $potonganDedicated = $saldoAwal->pemasukan_dedicated_potongan ?? 0;
+        
+        // 3. Bersih = Kotor - Potongan
         $pemasukanDedicatedBersih = $pemasukanDedicatedKotor - $potonganDedicated;
+        
         $jumlahDedicatedLunas = $dedicatedData['jumlah_lunas'];
         $jumlahDedicatedTotal = $dedicatedData['jumlah_total'];
         
-        // Pemasukan Home Net
-        $pemasukanHomeNetKotor = $incomes->where('kategori', 'Home Net Kotor')->sum('jumlah');
-        $potonganHomeNet = abs($incomes->where('kategori', 'Potongan Home Net')->sum('jumlah'));
-        $pemasukanHomeNetBersih = $pemasukanHomeNetKotor - $potonganHomeNet;
+        // Pemasukan Registrasi dan Home Net - MANUAL from DB
+        $pemasukanRegistrasi = $saldoAwal->pemasukan_registrasi ?? 0;
+        $pemasukanHomeNetKotor = $saldoAwal->pemasukan_homenet_kotor ?? 0;
+        $potonganHomeNet = $saldoAwal->pemasukan_homenet_potongan ?? 0;
+        $pemasukanHomeNetBersih = $saldoAwal->pemasukan_homenet_bersih ?? 0;
         
         // Total Pemasukan
         $totalPemasukan = $pemasukanRegistrasi + $pemasukanDedicatedBersih + $pemasukanHomeNetBersih;
         
-        // Calculate Pengeluaran per kategori
-        $pengeluaranDetail = [];
-        $totalPengeluaran = 0;
+        // ===== PENGELUARAN =====
+        // Define all categories with their codes - show all individually
+        $kategoriPengeluaran = [
+            'BEBAN GAJI' => ['kode' => '202', 'jumlah' => 0],
+            'ALAT KANTOR HABIS PAKAI' => ['kode' => '203', 'jumlah' => 0],
+            'ALAT LOGISTIK' => ['kode' => '203', 'jumlah' => 0],
+            'ALAT TULIS KANTOR' => ['kode' => '203', 'jumlah' => 0],
+            'KONSUMSI' => ['kode' => '204', 'jumlah' => 0],
+            'BEBAN TRANSPORTASI' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN PERAWATAN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN KEPERLUAN RUMAH TANGGA' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN TAGIHAN INTERNET' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN LAIN-LAIN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN KOMITMEN / FEE' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN PRIVE' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN SRAGEN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN GUNUNGKIDUL' => ['kode' => '205', 'jumlah' => 0],
+        ];
         
-        foreach ($this->kategoriPengeluaran as $kategori => $kode) {
-            $jumlah = $expenses->where('kategori', $kategori)->sum('jumlah');
-            $pengeluaranDetail[] = [
-                'kode' => $kode,
-                'kategori' => $kategori,
-                'jumlah' => $jumlah,
+        // Sum expenses by kategori field
+        foreach ($expenses as $expense) {
+            $kategori = strtoupper(trim($expense->kategori ?? ''));
+            if (isset($kategoriPengeluaran[$kategori])) {
+                $kategoriPengeluaran[$kategori]['jumlah'] += $expense->jumlah;
+            }
+        }
+        
+        // Convert to array format for view
+        $pengeluaranData = [];
+        foreach ($kategoriPengeluaran as $nama => $data) {
+            $pengeluaranData[] = [
+                'kode' => $data['kode'],
+                'kategori' => $nama,
+                'jumlah' => $data['jumlah']
             ];
-            $totalPengeluaran += $jumlah;
         }
         
-        // LedgerData for table (grouped by date)
-        $incomesData = $incomes->groupBy(function($item) { 
-            return Carbon::parse($item->tanggal_masuk)->toDateString(); 
-        });
-        $expensesData = $expenses->groupBy(function($item) { 
-            return Carbon::parse($item->tanggal_keluar)->toDateString(); 
-        });
-        $dates = $incomesData->keys()->merge($expensesData->keys())->unique()->sort();
+        $totalPengeluaran = $expenses->sum('jumlah');
         
-        $ledgerData = collect();
-        foreach ($dates as $date) {
-            $ledgerData->push([
-                'tanggal' => $date,
-                'total_masuk' => $incomesData->has($date) ? $incomesData[$date]->sum('jumlah') : 0,
-                'total_keluar' => $expensesData->has($date) ? $expensesData[$date]->sum('jumlah') : 0,
-            ]);
-        }
-        
-        // Piutang
-        $piutangDedicated = $incomes->where('kategori', 'Dedicated')->where('status', 'Piutang')->sum('jumlah');
-        $piutangHomeNet = $incomes->where('kategori', 'Home Net')->where('status', 'Piutang')->sum('jumlah');
+        // ===== PIUTANG (Manual from DB) =====
+        $piutangDedicated = $saldoAwal->piutang_dedicated ?? 0;
+        $piutangHomeNet = $saldoAwal->piutang_homenet ?? 0;
         $totalPiutang = $piutangDedicated + $piutangHomeNet;
+        
+        // ===== OMSET =====
+        $omsetDedicated = $incomes->where('kategori', 'Dedicated')->where('status', 'Lunas')->sum('jumlah');
+        $omsetKotor = $incomes->where('kategori', 'Home Net Kotor')->sum('jumlah');
+        $potonganOmset = abs($incomes->where('kategori', 'Potongan Home Net')->sum('jumlah'));
+        $omsetHomeNetBersih = $omsetKotor - $potonganOmset;
+        $totalOmset = $omsetDedicated + $omsetHomeNetBersih;
         
         // Compile first month data
         $firstMonth = [
@@ -247,11 +270,9 @@ class LedgerController extends Controller
                 'homeNetKotor' => $pemasukanHomeNetKotor,
                 'potonganHomeNet' => $potonganHomeNet,
                 'homeNetBersih' => $pemasukanHomeNetBersih,
-                // Legacy fields for backward compatibility
-                'dedicated' => $pemasukanDedicatedBersih,
             ],
             'totalPemasukan' => $totalPemasukan,
-            'pengeluaran' => $pengeluaranDetail,
+            'pengeluaran' => $pengeluaranData,
             'totalPengeluaran' => $totalPengeluaran,
             'piutang' => [
                 'dedicated' => $piutangDedicated,
@@ -259,32 +280,129 @@ class LedgerController extends Controller
             ],
             'totalPiutang' => $totalPiutang,
             'omset' => [
-                'dedicated' => $saldoAwal->omset_dedicated ?? 0,
-                'kotor' => $saldoAwal->omset_homenet_kotor ?? 0,
-                'homeNetBersih' => $saldoAwal->omset_homenet_bersih ?? 0,
+                'dedicated' => $omsetDedicated,
+                'kotor' => $omsetKotor,
+                'homeNetBersih' => $omsetHomeNetBersih,
             ],
-            'totalOmset' => ($saldoAwal->omset_dedicated ?? 0) + ($saldoAwal->omset_homenet_bersih ?? 0),
+            'totalOmset' => $totalOmset,
         ];
         
-        return view('content.apps.Pembukuan.total.total', compact(
-            'firstMonth',
-            'saldoAwal',
-            'ledgerData',
-            'bulan',
-            'tahun'
-        ));
+        return view('content.apps.Pembukuan.total.total', compact('firstMonth', 'saldoAwal', 'bulan', 'tahun'));
+    }
+    
+    /**
+     * Export data to Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        $bulan = $request->get('bulan', date('m'));
+        $tahun = $request->get('tahun', date('Y'));
+        
+        // Get Saldo Awal
+        $saldoAwal = SaldoAwal::getByPeriod($bulan, $tahun) ?? new SaldoAwal();
+        
+        // Get first and last day of the month
+        $startDate = Carbon::createFromDate($tahun, $bulan, 1)->startOfMonth();
+        $endDate = Carbon::createFromDate($tahun, $bulan, 1)->endOfMonth();
+        
+        // Get all incomes and expenses
+        $incomes = Income::whereBetween('tanggal_masuk', [$startDate, $endDate])->get();
+        $expenses = Expense::whereBetween('tanggal_keluar', [$startDate, $endDate])->get();
+        
+        // Calculate Pemasukan
+        $dedicatedData = $this->getDedicatedFromTagihan($startDate, $endDate);
+        $pemasukanDedicatedKotor = $dedicatedData['kotor'];
+        $potonganDedicated = $saldoAwal->pemasukan_dedicated_potongan ?? 0;
+        $pemasukanDedicatedBersih = $pemasukanDedicatedKotor - $potonganDedicated;
+        $pemasukanRegistrasi = $saldoAwal->pemasukan_registrasi ?? 0;
+        $pemasukanHomeNetKotor = $saldoAwal->pemasukan_homenet_kotor ?? 0;
+        $potonganHomeNet = $saldoAwal->pemasukan_homenet_potongan ?? 0;
+        $pemasukanHomeNetBersih = $saldoAwal->pemasukan_homenet_bersih ?? 0;
+        $totalPemasukan = $pemasukanRegistrasi + $pemasukanDedicatedBersih + $pemasukanHomeNetBersih;
+        
+        // Calculate Pengeluaran
+        $kategoriPengeluaran = [
+            'BEBAN GAJI' => ['kode' => '202', 'jumlah' => 0],
+            'ALAT KANTOR HABIS PAKAI' => ['kode' => '203', 'jumlah' => 0],
+            'ALAT LOGISTIK' => ['kode' => '203', 'jumlah' => 0],
+            'ALAT TULIS KANTOR' => ['kode' => '203', 'jumlah' => 0],
+            'KONSUMSI' => ['kode' => '204', 'jumlah' => 0],
+            'BEBAN TRANSPORTASI' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN PERAWATAN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN LAT (LISTRIK, AIR, TELEPON)' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN KEPERLUAN RUMAH TANGGA' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN TAGIHAN INTERNET' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN LAIN-LAIN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN KOMITMEN / FEE' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN PRIVE' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN KOS-KOSAN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN SRAGEN' => ['kode' => '205', 'jumlah' => 0],
+            'BEBAN GUNUNGKIDUL' => ['kode' => '205', 'jumlah' => 0],
+        ];
+        
+        foreach ($expenses as $expense) {
+            $kategori = strtoupper(trim($expense->kategori ?? ''));
+            if (isset($kategoriPengeluaran[$kategori])) {
+                $kategoriPengeluaran[$kategori]['jumlah'] += $expense->jumlah;
+            }
+        }
+        
+        $pengeluaranData = [];
+        foreach ($kategoriPengeluaran as $nama => $data) {
+            if ($data['jumlah'] > 0) { // Only include non-zero items
+                $pengeluaranData[] = [
+                    'kode' => $data['kode'],
+                    'kategori' => $nama,
+                    'jumlah' => $data['jumlah']
+                ];
+            }
+        }
+        
+        $totalPengeluaran = $expenses->sum('jumlah');
+        
+        // Piutang
+        $piutangDedicated = $saldoAwal->piutang_dedicated ?? 0;
+        $piutangHomeNet = $saldoAwal->piutang_homenet ?? 0;
+        $totalPiutang = $piutangDedicated + $piutangHomeNet;
+        
+        // Compile data
+        $data = [
+            'label' => Carbon::createFromDate($tahun, $bulan, 1)->locale('id')->isoFormat('MMMM YYYY'),
+            'saldoAwal' => $saldoAwal,
+            'pemasukan' => [
+                'registrasi' => $pemasukanRegistrasi,
+                'dedicatedKotor' => $pemasukanDedicatedKotor,
+                'potonganDedicated' => $potonganDedicated,
+                'dedicatedBersih' => $pemasukanDedicatedBersih,
+                'homeNetKotor' => $pemasukanHomeNetKotor,
+                'potonganHomeNet' => $potonganHomeNet,
+                'homeNetBersih' => $pemasukanHomeNetBersih,
+            ],
+            'totalPemasukan' => $totalPemasukan,
+            'pengeluaran' => $pengeluaranData,
+            'totalPengeluaran' => $totalPengeluaran,
+            'piutang' => [
+                'dedicated' => $piutangDedicated,
+                'homeNet' => $piutangHomeNet,
+            ],
+            'totalPiutang' => $totalPiutang,
+        ];
+        
+        $filename = 'Rugi_Laba_' . Carbon::createFromDate($tahun, $bulan, 1)->format('F_Y') . '.xlsx';
+        
+        return Excel::download(new PembukuanTotalExport($data, $bulan, $tahun), $filename);
     }
     
     /**
      * Get Dedicated income from Tagihan table
-     * Finds tagihan where paket nama contains "dedicated" and status is "Lunas"
+     * Finds tagihan where paket nama contains "dedicated" or "DAD" and status is "Lunas"
      */
     private function getDedicatedFromTagihan($startDate, $endDate)
     {
-        // Get paket IDs that contain "dedicated" in their name
+        // Get paket IDs that contain "dedicated", "dadicated", or "DAD" in their name (case-insensitive)
         $dedicatedPaketIds = Paket::where('nama_paket', 'LIKE', '%dedicated%')
-            ->orWhere('nama_paket', 'LIKE', '%Dedicated%')
-            ->orWhere('nama_paket', 'LIKE', '%DEDICATED%')
+            ->orWhere('nama_paket', 'LIKE', '%dadicated%')
+            ->orWhere('nama_paket', 'LIKE', '%dad%')
             ->pluck('id');
         
         // Get all tagihan with dedicated paket in the period
@@ -292,8 +410,10 @@ class LedgerController extends Controller
             ->whereBetween('tanggal_berakhir', [$startDate, $endDate])
             ->get();
         
-        // Get paid (lunas) tagihan
-        $paidDedicatedTagihan = $allDedicatedTagihan->where('status_pembayaran', 'Lunas');
+        // Get paid (lunas) tagihan - case insensitive check
+        $paidDedicatedTagihan = $allDedicatedTagihan->filter(function($t) {
+            return strtolower($t->status_pembayaran) === 'lunas';
+        });
         
         // Calculate totals
         $kotor = 0;
@@ -305,7 +425,7 @@ class LedgerController extends Controller
         
         return [
             'kotor' => $kotor,
-            'potongan' => 0, // Can be calculated from Income table if there's a "Potongan Dedicated" category
+            'potongan' => 0, 
             'jumlah_lunas' => $paidDedicatedTagihan->count(),
             'jumlah_total' => $allDedicatedTagihan->count(),
         ];

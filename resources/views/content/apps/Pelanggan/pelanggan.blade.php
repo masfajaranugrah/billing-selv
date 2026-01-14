@@ -1034,7 +1034,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 </h4>
                 <p class="mb-0 text-muted small">Kelola dan monitor data pelanggan</p>
             </div>
-            <div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="/pelanggan/export" class="btn btn-outline-primary btn-add">
+                    <i class="ri-file-excel-2-line me-2"></i>Export Excel
+                </a>
                 <a href="{{ route('add-pelanggan') }}" class="btn btn-primary btn-add">
                     <i class="ri-user-add-line me-2"></i>Tambah Pelanggan
                 </a>

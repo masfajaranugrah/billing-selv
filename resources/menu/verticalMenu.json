@@ -1,6 +1,17 @@
 {
   "menu": [
     {
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ri-dashboard-3-line",
+      "slug": "dashboard.welcome",
+      "url": "/dashboard",
+      "roles": [
+        "administrator",
+        "admin",
+	"logistic"
+      ]
+    },
+    {
       "menuHeader": "Data Tagihan",
       "roles": ["administrator", "admin"]
     },
@@ -49,78 +60,78 @@
     },
     {
       "menuHeader": "Data Barang",
-      "roles": ["logistic", "admin"]
+      "roles": "logistic"
     },
     {
       "name": "Barang",
       "icon": "menu-icon tf-icons ri-archive-drawer-line",
       "slug": "app-user",
-      "roles": ["logistic", "admin"],
+      "roles": "logistic",
       "submenu": [
         {
           "url": "/dashboard/admin/barangs",
           "name": "Barang",
           "slug": "app-user-list",
-          "roles": ["logistic", "admin"],
+          "roles": "logistic",
           "icon": "ri-box-3-line"
         },
         {
           "url": "/dashboard/admin/barang-masuks",
           "name": "Barang Masuk",
           "slug": "app-user-list",
-          "roles": ["logistic", "admin"],
+          "roles": "logistic",
           "icon": "ri-inbox-line"
         },
         {
           "url": "/dashboard/admin/barang-keluar",
           "name": "Barang Keluar",
           "slug": "app-user-list",
-          "roles": ["logistic", "admin"],
+          "roles": "logistic",
           "icon": "ri-logout-box-line"
         }
       ]
     },
     {
       "menuHeader": "Data Karyawan",
-      "roles": ["administrator", "admin"]
+      "roles": "administrator"
     },
     {
       "name": "Karyawan",
       "icon": "menu-icon tf-icons ri-group-line",
       "slug": "app-user",
-      "roles": ["administrator", "admin"],
+      "roles":"administrator",
       "submenu": [
         {
           "url": "/dashboard/admin/employees",
           "name": "List",
           "slug": "app-user-list",
-          "roles": ["administrator", "admin"],
+          "roles": "administrator",
           "icon": "ri-user-settings-line"
         },
         {
           "url": "/dashboard/admin/employees/upload/data",
           "name": "Upload Excel",
           "slug": "app-user-list",
-          "roles": ["administrator", "admin"],
+          "roles": "administrator",
           "icon": "ri-file-excel-2-line"
         }
       ]
     },
     {
       "menuHeader": "Data Gaji Karyawan",
-      "roles": ["administrator", "admin"]
+      "roles": "administrator"
     },
     {
       "name": "Gaji Karyawan",
       "icon": "menu-icon tf-icons ri-wallet-3-line",
       "slug": "app-user",
-      "roles": ["administrator", "admin"],
+      "roles": "administrator",
       "submenu": [
         {
           "url": "/dashboard/admin/salary",
           "name": "List",
           "slug": "app-user-list",
-          "roles": ["administrator", "admin"],
+          "roles": "administrator",
           "icon": "ri-money-dollar-circle-line"
         }
       ]
@@ -172,19 +183,19 @@
     },
     {
       "menuHeader": "Data Akun",
-      "roles": ["administrator", "admin"]
+      "roles": "administrator"
     },
     {
       "name": "Akun",
       "icon": "menu-icon tf-icons ri-admin-line",
       "slug": "app-user",
-      "roles": ["administrator", "admin"],
+      "roles": "administrator",
       "submenu": [
         {
           "url": "/dashboard/admin/users",
           "name": "List Akun",
           "slug": "app-user-list",
-          "roles": ["administrator", "admin"],
+          "roles": "administrator",
           "icon": "ri-user-star-line"
         }
       ]
@@ -404,7 +415,7 @@
         },
         {
           "url": "/dashboard/admin/pembukuan/total",
-          "name": "Total",
+          "name": "Tutup Buku",
           "slug": "app-user-list",
           "roles": "administrator",
           "icon": "ri-calculator-line"
