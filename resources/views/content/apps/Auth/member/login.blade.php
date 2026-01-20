@@ -222,24 +222,6 @@ body::after {
     z-index: 1;
 }
 
-/* Prefix untuk Nomer ID */
-.input-prefix {
-    position: absolute;
-    left: 48px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    font-weight: 600;
-    color: #64748b;
-    pointer-events: none;
-    z-index: 1;
-    display: none;
-}
-
-.input-prefix.active {
-    display: block;
-}
-
 .form-input {
     width: 100%;
     padding: 14px 16px 14px 48px;
@@ -250,10 +232,6 @@ body::after {
     border-radius: 12px;
     transition: all 0.2s ease;
     font-family: 'Inter', sans-serif;
-}
-
-.form-input.with-prefix {
-    padding-left: 80px;
 }
 
 .form-input:focus {
@@ -427,7 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('login_input');
     const inputLabel = document.getElementById('inputLabel');
     const inputIcon = document.getElementById('inputIcon');
-    const inputPrefix = document.getElementById('inputPrefix');
     const helpText = document.getElementById('helpText');
     const rememberCheckbox = document.getElementById('remember');
     
@@ -449,10 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (savedMethod === 'nomer_id') {
             toggleButtons(btnNomerId, btnWhatsApp);
             updateUI('nomer_id', false);
-
-            // Tampilkan value tanpa prefix JMK untuk user experience
-            const displayValue = savedInput.replace(/^JMK/i, '');
-            input.value = displayValue;
+            input.value = savedInput; // Tampilkan value apa adanya
         } else {
             toggleButtons(btnWhatsApp, btnNomerId);
             updateUI('whatsapp', false);
@@ -485,16 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
             inputLabel.textContent = 'Nomor WhatsApp';
             input.placeholder = '08123456789 atau 628123456789';
             inputIcon.className = 'bi bi-whatsapp input-icon';
-            inputPrefix.classList.remove('active');
-            input.classList.remove('with-prefix');
             helpText.textContent = 'Gunakan nomor WhatsApp yang terdaftar pada sistem kami. Format: 08xxx atau 628xxx';
         } else {
             inputLabel.textContent = 'Nomer ID Pelanggan';
-            input.placeholder = 'GK1111 atau 1111';
+            input.placeholder = 'JMK.123 atau BMN.456';
             inputIcon.className = 'bi bi-person-badge input-icon';
-            inputPrefix.classList.add('active');
-            input.classList.add('with-prefix');
-            helpText.textContent = 'Prefix "JMK" akan ditambahkan otomatis. Contoh input: GK1111 atau 1111';
+            helpText.textContent = 'Masukkan ID pelanggan lengkap. Contoh: JMK.123, BMN.456';
         }
         
         if (clearInput) {
@@ -517,17 +487,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Jika metode Nomer ID, tambahkan prefix JMK jika belum ada
-        if (currentMethod === 'nomer_id') {
-            // Jika belum diawali JMK, baru tambahkan
-            if (!/^JMK/i.test(loginInput)) {
-                loginInput = 'JMK' + loginInput;
-            }
-
-            // Update input value dengan prefix lengkap
-            // Bagian setelah JMK disimpan apa adanya (.12345, 12345, dst)
-            input.value = loginInput;
-        }
+        // Nomer ID: user input manual lengkap (JMK.123, BMN.456, dll)
+        // Tidak perlu modifikasi, langsung submit apa adanya
+        input.value = loginInput;
 
         // Simpan / hapus ke/dari localStorage sesuai checkbox
         if (rememberCheckbox.checked) {
@@ -624,7 +586,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             autofocus
                             required>
                         <i class="bi bi-whatsapp input-icon" id="inputIcon"></i>
-                        <span class="input-prefix" id="inputPrefix">JMK</span>
                     </div>
                 </div>
 

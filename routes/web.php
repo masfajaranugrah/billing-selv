@@ -535,8 +535,8 @@ Route::prefix('dashboard/admin/backup')->name('backup.')->group(function () {
     Route::get('/', [DatabaseBackupController::class, 'index'])
         ->name('index');
 
-    // Proses buat backup database
-    Route::get('/run', [DatabaseBackupController::class, 'backup'])
+    // Proses buat backup database (POST untuk AJAX)
+    Route::post('/run', [DatabaseBackupController::class, 'backup'])
         ->name('create');
 
     // Download file backup
@@ -547,8 +547,11 @@ Route::get('/download/{filename}', [DatabaseBackupController::class, 'download']
     Route::delete('/delete/{filename}', [DatabaseBackupController::class, 'delete'])
         ->name('delete');
 
-});
+    // Cek status backup (AJAX)
+    Route::get('/status', [DatabaseBackupController::class, 'checkStatus'])
+        ->name('status');
 
+});
 Route::middleware(['auth'])->group(function () {
 
     // List iklan

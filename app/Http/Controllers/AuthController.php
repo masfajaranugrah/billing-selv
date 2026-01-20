@@ -93,11 +93,9 @@ public function loginMem(Request $request)
     // Login pelanggan
     Auth::guard('customer')->login($pelanggan, $remember);
 
-    // Update status
-    Status::updateOrCreate(
-        ['pelanggan_id' => $pelanggan->id],
-        ['is_active' => true, 'logged_in_at' => now()]
-    );
+    // Update status menjadi aktif (hanya update, tidak create)
+    Status::where('pelanggan_id', $pelanggan->id)
+        ->update(['is_active' => 1, 'logged_in_at' => now()]);
 
     // Update token dan timestamp jika remember me dicentang
     if ($remember) {
@@ -227,9 +225,9 @@ public function loginMem(Request $request)
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Hapus status aktif
+        // Update status menjadi tidak aktif
         if ($pelanggan) {
-            Status::where('pelanggan_id', $pelanggan->id)->delete();
+            Status::where('pelanggan_id', $pelanggan->id)->update(['is_active' => 0]);
         }
 
         return redirect('/pelanggan/jernihnet/login')->with('success', 'Berhasil logout.');
